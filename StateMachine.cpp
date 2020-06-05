@@ -1,30 +1,31 @@
 /**
- * The IStateMachine interface class defines a basic state machine interface
- * that can be used to create all specialized state machine classes (action state, animation state)
+ * The StateMachine class defines a basic state machine
+ * that can be used as a component to create all specialized state machines derived objects (action manager, animation manager..)
  *
- * @file IStateMachine.cpp
+ * @file StateMachine.cpp
  * @author Boris Burdin
  * @date 20201805 - Initial Release
+ * @date 20200605 - Define as a Classic class instead of an Interface
  */
 
-#include "IStateMachine.h"
+#include "StateMachine.h"
 
 namespace Generic
 {
-	IStateMachine::IStateMachine()
+	StateMachine::StateMachine()
 	{
 	}
 
-	IStateMachine::~IStateMachine()
+	StateMachine::~StateMachine()
 	{
 	}
 
-	typeStateID IStateMachine::GetActiveState() const
+	typeStateID StateMachine::GetActiveState() const
 	{
 		return mActiveState;
 	}
 
-	std::vector<typeTransitionID> IStateMachine::GetAvailableTransitions() const
+	std::vector<typeTransitionID> StateMachine::GetAvailableTransitions() const
 	{
 		std::vector<typeTransitionID> anResult = {};
 		if (not mActiveState.empty())
@@ -35,7 +36,7 @@ namespace Generic
 		return anResult;
 	}
 
-	bool IStateMachine::HasTransition(typeTransitionID transitionID) const
+	bool StateMachine::HasTransition(typeTransitionID transitionID) const
 	{
 		bool anResult = false;
 		std::vector<typeTransitionID> availableTransitions = GetAvailableTransitions();
@@ -47,7 +48,7 @@ namespace Generic
 		return anResult;
 	}
 
-	void IStateMachine::DoTransition(typeTransitionID transitionID)
+	void StateMachine::DoTransition(typeTransitionID transitionID)
 	{
 		if (HasTransition(transitionID))
 		{
@@ -57,7 +58,7 @@ namespace Generic
 		}
 	}
 
-	void IStateMachine::AddState(typeStateID stateID)
+	void StateMachine::AddState(typeStateID stateID)
 	{
 		auto it = mStates.find(stateID);
 		// if the state does not already exist
@@ -72,7 +73,7 @@ namespace Generic
 		}
 	}
 
-	void IStateMachine::RemoveState(typeStateID stateID)
+	void StateMachine::RemoveState(typeStateID stateID)
 	{
 		// we can't remove the active state
 		if (stateID == mActiveState) return;
@@ -120,7 +121,7 @@ namespace Generic
 		}
 	}
 
-	std::vector<typeStateID> IStateMachine::GetAllStates() const
+	std::vector<typeStateID> StateMachine::GetAllStates() const
 	{
 		std::vector<typeStateID> allStates = {};
 
@@ -135,7 +136,7 @@ namespace Generic
 		return allStates;
 	}
 
-	void IStateMachine::AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID)
+	void StateMachine::AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID)
 	{
 		// we can't have two transitions with the same ID
 		auto it1 = mTransitions.find(transitionID);
@@ -157,7 +158,7 @@ namespace Generic
 		mStates[fromStateID].push_back(transitionID);
 	}
 
-	void IStateMachine::RemoveTransition(typeTransitionID transitionID)
+	void StateMachine::RemoveTransition(typeTransitionID transitionID)
 	{
 		auto it1 = mTransitions.find(transitionID);
 		if (it1 != mTransitions.end())
@@ -180,7 +181,7 @@ namespace Generic
 		}
 	}
 
-	std::vector<typeTransitionID> IStateMachine::GetAllTransitions() const
+	std::vector<typeTransitionID> StateMachine::GetAllTransitions() const
 	{
 		std::vector<typeStateID> allTransitions = {};
 		if (!mTransitions.empty())
@@ -195,7 +196,7 @@ namespace Generic
 }
 
 /**
- * @class Generic::IStateMachine
+ * @class Generic::StateMachine
  *
  * Copyright (c) 2020- Boris Burdin
  * Permission is hereby granted, free of charge, to any person obtaining a copy

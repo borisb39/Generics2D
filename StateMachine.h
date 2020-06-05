@@ -1,10 +1,12 @@
 /**
- * The IStateMachine interface class defines a basic state machine interface
- * that can be used to create all specialized state machines classes (action state, animation state)
+ * The StateMachine class defines a basic state machine
+ * that can be used as a component to create all specialized state machines derived objects (action manager, animation manager..)
  *
- * @file IStateMachine.h
+ * @file StateMachine.h
  * @author Boris Burdin
  * @date 20201805 - Initial Release
+  * @date 20200605 - Define as a Classic class instead of an Interface
+					Remove pure virtual updateFixed() method
  */
 
 #pragma once
@@ -13,18 +15,18 @@
 
 namespace Generic
 {
-	/// The IStateMachine base class 
-	class IStateMachine
+	/// The StateMachine base class 
+	class StateMachine
 	{
 	public:
 		/**
-		* IStateMachine default constructor
+		* StateMachine default constructor
 		*/
-		IStateMachine();
+		StateMachine();
 		/**
 	    * IStateMachine destructor
 	    */
-		virtual ~IStateMachine();
+		virtual ~StateMachine();
 
 	    /**
 	    * GetActiveState will return the ID of the current active state
@@ -84,12 +86,6 @@ namespace Generic
 		*/
 		std::vector<typeTransitionID> GetAllTransitions() const;
 
-		/**
-		* UpdateFixed is called to perform fixed updates on the state machine component owner
-		* Must be defined for each specialized state machine class 
-		*/
-		virtual void UpdateFixed() = 0;
-
 	private:
 		// the current active state
 		typeStateID mActiveState;
@@ -101,8 +97,7 @@ namespace Generic
 }
 
 /**
- * @class GQE::IStateMachine
- * @ingroup Entity
+ * @class Generic::StateMachine
  *
  * Copyright (c) 2020- Boris Burdin
  * Permission is hereby granted, free of charge, to any person obtaining a copy

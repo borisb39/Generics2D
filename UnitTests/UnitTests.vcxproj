@@ -157,7 +157,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="UnitTestIStateMachine.cpp" />
+    <ClCompile Include="UnitTestStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Generic.vcxproj">

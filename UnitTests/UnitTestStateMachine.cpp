@@ -1,10 +1,10 @@
 #include "CppUnitTest.h"
 
-#include "../IStateMachine.h"
+#include "../StateMachine.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-class StateMachine : public Generic::IStateMachine
+class StateMachine : public Generic::StateMachine
 {
 public:
 	virtual void UpdateFixed() {};
