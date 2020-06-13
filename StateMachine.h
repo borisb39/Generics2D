@@ -5,15 +5,17 @@
  * @file StateMachine.h
  * @author Boris Burdin
  * @date 20201805 - Initial Release
-  * @date 20200605 - Define as a Classic class instead of an Interface
+ * @date 20200605 - Define as a Classic class instead of an Interface
 					Remove pure virtual updateFixed() method
+ * @date 20200613 - Add GetTransitionBounds() method
+ * @date 20200613 - Return a boolean on Add/RemoveState methods call to check if they are are successful
  */
 
 #pragma once
 
-#include "Generic_types.h"
+#include "Generics_types.h"
 
-namespace Generic
+namespace Generics
 {
 	/// The StateMachine base class 
 	class StateMachine
@@ -46,7 +48,13 @@ namespace Generic
 		*/
 		bool HasTransition(typeTransitionID transitionID) const;
 
-	    /**
+		/**
+		* GetTransitionBounds return the two StateIDs associated to the transitionID provided
+		* @return a pair of typeStateID from/to associated to the transitionID
+		*/
+		std::pair<typeStateID, typeStateID> GetTransitionBounds(typeTransitionID transitionID) const;
+
+		/**
 		* DoTransition is responsible from using the transitionID provided to change the active state, if the transitionID
 		* provided starts from the active state
 		*/
@@ -54,13 +62,15 @@ namespace Generic
 
 		/**
 		* AddState will add the new stateID provided to the state machine if it does not already exist 
+		* @return a boolean true if the state is inserted, false otherwise
 		*/
-		void AddState(typeStateID stateID);
+		bool AddState(typeStateID stateID);
 
 		/**
 		* RemoveState will remove the stateID provided if this state is not the active state
+		* @return a boolean true if the state is removed, false otherwise
 		*/
-		void RemoveState(typeStateID stateID);
+		bool RemoveState(typeStateID stateID);
 
 		/**
 		* GetAllStates will get all the states registered in the state machine
@@ -97,7 +107,7 @@ namespace Generic
 }
 
 /**
- * @class Generic::StateMachine
+ * @class Generics::StateMachine
  *
  * Copyright (c) 2020- Boris Burdin
  * Permission is hereby granted, free of charge, to any person obtaining a copy

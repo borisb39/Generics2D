@@ -1,5 +1,5 @@
 /**
- * The Generic_types headers defines a basic types shared by Generic Classes
+ * The Generics_types headers defines basic types shared by Generics Classes
  *
  * @file Generic_types.h
  * @author Boris Burdin
@@ -12,7 +12,7 @@
 #include <vector>
 #include <map>
 
-namespace Generic
+namespace Generics
 {
 	typedef std::string typeStateID;
 	typedef std::string typeTransitionID;

@@ -100,7 +100,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalLibraryDirectories>$(SolutionDir)Debug;$(VCInstallDir)UnitTest\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>IStateMachine.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Generics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -160,7 +160,7 @@
     <ClCompile Include="UnitTestStateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Generic.vcxproj">
+    <ProjectReference Include="..\Generics.vcxproj">
       <Project>{d216b6cb-f41d-4ee5-b122-957994dc8a78}</Project>
     </ProjectReference>
   </ItemGroup>

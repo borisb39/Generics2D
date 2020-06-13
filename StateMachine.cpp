@@ -6,11 +6,14 @@
  * @author Boris Burdin
  * @date 20201805 - Initial Release
  * @date 20200605 - Define as a Classic class instead of an Interface
+ * @date 20200613 - Add GetTransitionBounds() method
+ * @date 20200613 - Return a boolean on Add/RemoveState methods call to check if they are are successful
  */
 
+#include <cassert>
 #include "StateMachine.h"
 
-namespace Generic
+namespace Generics
 {
 	StateMachine::StateMachine()
 	{
@@ -48,6 +51,17 @@ namespace Generic
 		return anResult;
 	}
 
+	std::pair<typeStateID, typeStateID> StateMachine::GetTransitionBounds(typeTransitionID transitionID) const
+	{
+		std::pair<typeStateID, typeStateID> bounds{ "", "" };
+		auto it = mTransitions.find(transitionID);
+		if (it != mTransitions.end())
+		{
+			bounds = it->second;
+		}
+		return bounds;
+	}
+
 	void StateMachine::DoTransition(typeTransitionID transitionID)
 	{
 		if (HasTransition(transitionID))
@@ -58,30 +72,36 @@ namespace Generic
 		}
 	}
 
-	void StateMachine::AddState(typeStateID stateID)
+	bool StateMachine::AddState(typeStateID stateID)
 	{
+		assert(!stateID.empty() && "Empty stateID not allowed");
+
+		bool status = false;
 		auto it = mStates.find(stateID);
 		// if the state does not already exist
 		if (it == mStates.end())
 		{
+			status = true;
 			mStates.insert(std::pair<typeStateID, std::vector<typeTransitionID>>(stateID, {}));
-
 			if (mActiveState.empty())
 			{
 				mActiveState = stateID;
 			}
 		}
+		return status;
 	}
 
-	void StateMachine::RemoveState(typeStateID stateID)
+	bool StateMachine::RemoveState(typeStateID stateID)
 	{
+		bool status = false;
 		// we can't remove the active state
-		if (stateID == mActiveState) return;
+		if (stateID == mActiveState) return status;
 
 		auto it1 = mStates.find(stateID);
 		// if the state existe
 		if (it1 != mStates.end())
 		{
+			status = true;
 			// we remove the state
 			mStates.erase(it1);
 
@@ -119,6 +139,7 @@ namespace Generic
 				}
 			}
 		}
+		return status;
 	}
 
 	std::vector<typeStateID> StateMachine::GetAllStates() const
@@ -138,6 +159,8 @@ namespace Generic
 
 	void StateMachine::AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID)
 	{
+		assert(!transitionID.empty() && "Empty transitionID not allowed");
+
 		// we can't have two transitions with the same ID
 		auto it1 = mTransitions.find(transitionID);
 		if (it1 != mTransitions.end()) return;
@@ -196,7 +219,7 @@ namespace Generic
 }
 
 /**
- * @class Generic::StateMachine
+ * @class Generics::StateMachine
  *
  * Copyright (c) 2020- Boris Burdin
  * Permission is hereby granted, free of charge, to any person obtaining a copy
