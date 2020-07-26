@@ -262,5 +262,44 @@ namespace UnitTests
 			Assert::AreEqual(size_t(0), StateMachine.GetAllTransitions().size());
 			Assert::AreEqual(size_t(0), StateMachine.GetAvailableTransitions().size());
 		}
+
+		TEST_METHOD(ReadGoodJSON)
+		{
+			StateMachine StateMachine;
+			StateMachine.ReadJSON("state_machine_exemple.json");
+			Assert::AreEqual(Generics::typeStateID("state1"), StateMachine.GetActiveState());
+			Assert::IsTrue(std::vector<Generics::typeStateID>{"state1", "state2", "state3"} == StateMachine.GetAllStates());
+			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"transition4","transition2"} == StateMachine.GetAvailableTransitions());
+			StateMachine.DoTransition("transition4");
+			Assert::AreEqual(Generics::typeStateID("state2"), StateMachine.GetActiveState());
+			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"transition3"} == StateMachine.GetAvailableTransitions());
+			StateMachine.DoTransition("transition3");
+			Assert::AreEqual(Generics::typeStateID("state3"), StateMachine.GetActiveState());
+			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"transition1"} == StateMachine.GetAvailableTransitions());
+			StateMachine.DoTransition("transition1");
+			Assert::AreEqual(Generics::typeStateID("state1"), StateMachine.GetActiveState());
+			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"transition4", "transition2"} == StateMachine.GetAvailableTransitions());
+			StateMachine.DoTransition("transition2");
+			Assert::AreEqual(Generics::typeStateID("state3"), StateMachine.GetActiveState());
+			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"transition1"} == StateMachine.GetAvailableTransitions());
+		}
+
+		TEST_METHOD(ReadBadJSONValue)
+		{
+			StateMachine StateMachine;
+			StateMachine.ReadJSON("state_machine_exemple_bad_value.json");
+			Assert::IsTrue(std::vector<Generics::typeStateID>{"state1", "state2", "state4"} == StateMachine.GetAllStates());
+			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"transition1", "transition3"} == StateMachine.GetAllTransitions());
+		}
+
+		TEST_METHOD(ReadBadJSONFormat)
+		{
+			// in case of wrong file format the state machine in not changed
+			StateMachine StateMachine;
+			StateMachine.ReadJSON("state_machine_exemple_bad_format.json");
+			Assert::AreEqual(std::string(""), StateMachine.GetActiveState());
+			Assert::AreEqual(size_t(0), StateMachine.GetAllStates().size());
+			Assert::AreEqual(size_t(0), StateMachine.GetAllTransitions().size());
+		}
 	};
 }

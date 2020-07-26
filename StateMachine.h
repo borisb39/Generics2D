@@ -9,11 +9,17 @@
 					Remove pure virtual updateFixed() method
  * @date 20200613 - Add GetTransitionBounds() method
  * @date 20200613 - Return a boolean on Add/RemoveState methods call to check if they are are successful
+ * @date 20200726 - Add ReadJSON() method
  */
 
 #pragma once
 
+#include <fstream>
+#include <iostream>
+#include <typeinfo>
+
 #include "Generics_types.h"
+#include "json.hpp"
 
 namespace Generics
 {
@@ -95,6 +101,12 @@ namespace Generics
 		* @return a vector with all the transitionIDs registered
 		*/
 		std::vector<typeTransitionID> GetAllTransitions() const;
+
+		/**
+		* ReadJSON reads a json file formatted using the Evan Wallace Finite State Machine Designer (http://madebyevan.com/fsm/)
+		* and creates the valid states and transitions associated
+		*/
+		void ReadJSON(std::string pathToJSONFile);
 
 	private:
 		// the current active state
