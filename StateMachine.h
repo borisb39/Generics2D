@@ -10,6 +10,7 @@
  * @date 20200613 - Add GetTransitionBounds() method
  * @date 20200613 - Return a boolean on Add/RemoveState methods call to check if they are are successful
  * @date 20200726 - Add ReadJSON() method
+ * @date 20200728 - Return a boolean on Add/RemoveTransition methods call to check if they are are successful
  */
 
 #pragma once
@@ -88,13 +89,15 @@ namespace Generics
 		* AddTransition will add the new transitionID fromStateID to toStateID if the transitionID doesn't already exist,
 		* if fromStateID and toStateID are registered and if fromStateID and toStateID are different. 
 		* Otherwise the state machine is not modified.
+		* @return a boolean true if the transition is added, false otherwise
 		*/
-		void AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID);
+		bool AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID);
 
 		/**
-		* RemoveTransition will remove the transitionID provided
+		* RemoveTransition will remove the transitionID provided if the transition was previsouly registered
+		* @return a boolean true if the transition is removed, false otherwise
 		*/
-		void RemoveTransition(typeTransitionID transitionID);
+		bool RemoveTransition(typeTransitionID transitionID);
 
 		/**
 		* GetAllTransitions will Get all the transitions registered

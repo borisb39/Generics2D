@@ -84,7 +84,7 @@ namespace UnitTests
 			Assert::AreEqual(size_t(0), StateMachine.GetAllTransitions().size());
 			Assert::AreEqual(size_t(0), StateMachine.GetAvailableTransitions().size());
 			// try to add a transition to a state not defined -> this must not affect the state machine
-			StateMachine.AddTransition("testTransition1", "testState1", "testState3");
+			Assert::IsFalse(StateMachine.AddTransition("testTransition1", "testState1", "testState3"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(2), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(0), StateMachine.GetAllTransitions().size());
@@ -92,7 +92,7 @@ namespace UnitTests
 			Assert::IsFalse(StateMachine.HasTransition("testTransition1"));
 			Assert::IsTrue(std::pair<Generics::typeStateID, Generics::typeStateID>{"",""} == StateMachine.GetTransitionBounds("testTransition1"));
 			// try to add a transition from a state not defined -> this must not affect the state machine
-			StateMachine.AddTransition("testTransition1", "testState3", "testState1");
+			Assert::IsFalse(StateMachine.AddTransition("testTransition1", "testState3", "testState1"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(2), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(0), StateMachine.GetAllTransitions().size());
@@ -100,7 +100,7 @@ namespace UnitTests
 			Assert::IsFalse(StateMachine.HasTransition("testTransition1"));
 			Assert::IsTrue(std::pair<Generics::typeStateID, Generics::typeStateID>{"", ""} == StateMachine.GetTransitionBounds("testTransition1"));
 			// add a new transition (from the active state)
-			StateMachine.AddTransition("testTransition1", "testState1", "testState2");
+			Assert::IsTrue(StateMachine.AddTransition("testTransition1", "testState1", "testState2"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(2), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(1), StateMachine.GetAllTransitions().size());
@@ -111,7 +111,7 @@ namespace UnitTests
 			// add a new state
 			StateMachine.AddState("testState3");
 			// try to add a transition already defined -> this must not affect the state machine
-			StateMachine.AddTransition("testTransition1", "testState1", "testState3");
+			Assert::IsFalse(StateMachine.AddTransition("testTransition1", "testState1", "testState3"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(3), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(1), StateMachine.GetAllTransitions().size());
@@ -120,7 +120,7 @@ namespace UnitTests
 			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"testTransition1"} == StateMachine.GetAvailableTransitions());
 			Assert::IsTrue(std::pair<Generics::typeStateID, Generics::typeStateID>{"testState1", "testState2"} == StateMachine.GetTransitionBounds("testTransition1"));
 			// add a new transition (from the active state)
-			StateMachine.AddTransition("testTransition2", "testState1", "testState3");
+			Assert::IsTrue(StateMachine.AddTransition("testTransition2", "testState1", "testState3"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(3), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(2), StateMachine.GetAllTransitions().size());
@@ -129,7 +129,7 @@ namespace UnitTests
 			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"testTransition1", "testTransition2"} == StateMachine.GetAvailableTransitions());
 			Assert::IsTrue(std::pair<Generics::typeStateID, Generics::typeStateID>{"testState1", "testState3"} == StateMachine.GetTransitionBounds("testTransition2"));
 			// try to remove a transition not defined -> this must not affect the state machine
-			StateMachine.RemoveTransition("testTransition3");
+			Assert::IsFalse(StateMachine.RemoveTransition("testTransition3"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(3), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(2), StateMachine.GetAllTransitions().size());
@@ -138,7 +138,7 @@ namespace UnitTests
 			Assert::IsTrue(std::vector<Generics::typeTransitionID>{"testTransition1", "testTransition2"} == StateMachine.GetAvailableTransitions());
 			Assert::IsTrue(std::pair<Generics::typeStateID, Generics::typeStateID>{"testState1", "testState3"} == StateMachine.GetTransitionBounds("testTransition2"));
 			// remove a transition (from the active state)
-			StateMachine.RemoveTransition("testTransition1");
+			Assert::IsTrue(StateMachine.RemoveTransition("testTransition1"));
 			Assert::AreEqual(Generics::typeStateID("testState1"), StateMachine.GetActiveState());
 			Assert::AreEqual(size_t(3), StateMachine.GetAllStates().size());
 			Assert::AreEqual(size_t(1), StateMachine.GetAllTransitions().size());

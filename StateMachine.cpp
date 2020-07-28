@@ -9,6 +9,7 @@
  * @date 20200613 - Add GetTransitionBounds() method
  * @date 20200613 - Return a boolean on Add/RemoveState methods call to check if they are are successful
  * @date 20200726 - Add ReadJSON() method
+ * @date 20200728 - Return a boolean on Add/RemoveTransition methods call to check if they are are successful
  */
 
 #include <cassert>
@@ -158,32 +159,37 @@ namespace Generics
 		return allStates;
 	}
 
-	void StateMachine::AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID)
+	bool StateMachine::AddTransition(typeTransitionID transitionID, typeStateID fromStateID, typeStateID toStateID)
 	{
 		assert(!transitionID.empty() && "Empty transitionID not allowed");
 
+		bool status = false;
 		// we can't have two transitions with the same ID
 		auto it1 = mTransitions.find(transitionID);
-		if (it1 != mTransitions.end()) return;
+		if (it1 != mTransitions.end()) return status;
 
 		// we can't add a transition from a state to itself
-		if (fromStateID == toStateID) return;
+		if (fromStateID == toStateID) return status;
 
 		// we need a fromStateID already registered
 		auto it2 = mStates.find(fromStateID);
-		if (it2 == mStates.end()) return;
+		if (it2 == mStates.end()) return status;
 
 		// we need a toStateID already registered
 		auto it3 = mStates.find(toStateID);
-		if (it3 == mStates.end()) return;
+		if (it3 == mStates.end()) return status;
 
 		mTransitions.insert(std::pair<typeTransitionID, std::pair<typeStateID, typeStateID>>
 			(transitionID, std::pair<typeStateID, typeStateID>(fromStateID, toStateID)));
 		mStates[fromStateID].push_back(transitionID);
+		status = true;
+
+		return status;
 	}
 
-	void StateMachine::RemoveTransition(typeTransitionID transitionID)
+	bool StateMachine::RemoveTransition(typeTransitionID transitionID)
 	{
+		bool status = false;
 		auto it1 = mTransitions.find(transitionID);
 		if (it1 != mTransitions.end())
 		{
@@ -202,7 +208,9 @@ namespace Generics
 
 			//then we remove the transition
 			mTransitions.erase(it1);
+			status = true;
 		}
+		return status;
 	}
 
 	std::vector<typeTransitionID> StateMachine::GetAllTransitions() const
