@@ -4,11 +4,7 @@
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-class StateMachine : public Generics::StateMachine
-{
-public:
-	virtual void UpdateFixed() {};
-};
+using namespace Generics;
 
 namespace UnitTests
 {		
