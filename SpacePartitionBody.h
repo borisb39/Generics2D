@@ -5,11 +5,16 @@
  * @file SpacePartionBody.h
  * @author Boris Burdin
  * @date 20210423 - Initial Release
+ * @date 20210425 - Add Collider managment
+ *                  Add method createCollider, getColliderPropertiesAt, getNumberOfColliders
+ *                  Add mColliders attribut
   */
 
 #pragma once
 
 #include "Generics_types.h"
+
+#include "SpacePartitionCollider.h"
 
 namespace Generics
 {
@@ -65,6 +70,24 @@ namespace Generics
 		*/
 		void updateFromAcceleration(double dt);
 
+		/**
+		* createCollider will create and add to the internal colliders container
+		* a new collider based on the provided <ColliderProperties>
+		*/
+		void createCollider(ColliderProperties);
+
+		/**
+		* getColliderPropertiesAt will get properties of 
+		* the collider situated at indice <idx> in the collider container. 
+		* In case of out of bound indice a NFED ColliderProperties is returned.
+		*/
+		ColliderProperties getColliderPropertiesAt(int idx);
+
+		/**
+		* getNumberOfColliders will get the number of colliders stored in the container.
+		*/
+		int getNumberOfColliders();
+
 	private:
 		// time relative properties associated to the body
 		Vect2d mPosition{ 0, 0 };
@@ -73,6 +96,9 @@ namespace Generics
 		// max magnitude allowed for time relative properties
 		float mMaxVelocityMagnitude = 0;
 		float mMaxAccelerationMagnitude = 0;
+
+		//Container for associated colliders
+		std::vector<SpacePartitionCollider> mColliders;
 
 		/**
 		* checkMagnitude will check and correct the provided <vector> 

@@ -146,12 +146,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="SpacePartitionBody.cpp" />
+    <ClCompile Include="SpacePartitionCollider.cpp" />
     <ClCompile Include="StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Generics_types.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="SpacePartitionBody.h" />
+    <ClInclude Include="SpacePartitionCollider.h" />
     <ClInclude Include="StateMachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -123,5 +123,58 @@ namespace UnitTests
 			Assert::IsTrue(body.getVelocity() == th_velocity_corrected);
 			Assert::IsTrue(body.getPosition() == th_position_corrected);
 		}
+
+		TEST_METHOD(CollidersManagement)
+		{
+			// create colliders and get properties
+			std::vector< ColliderProperties > th_properties;
+			SpacePartitionBody body;
+			ColliderProperties defaultProperties;
+			ColliderProperties properties;
+			body.createCollider(properties);
+			th_properties.push_back(properties);
+			properties.tag = "CircleCollider";
+			properties.type = ColliderType::CIRCLE;
+			properties.radius = 5;
+			body.createCollider(properties);
+			th_properties.push_back(properties);
+			properties.tag = "BoxCollider";
+			properties.type = ColliderType::BOX;
+			properties.boxWidth = 5.3;
+			properties.boxHeight = 12.6;
+			body.createCollider(properties);
+			th_properties.push_back(properties);
+			properties.tag = "EdgeCollider";
+			properties.type = ColliderType::EDGE;
+			properties.vertice0 = Vect2d{ 0, -10 };
+			properties.vertice1 = Vect2d{ -6., 5 };
+			body.createCollider(properties);
+			th_properties.push_back(properties);
+			th_properties.push_back(defaultProperties); //out of bound test
+			th_properties.push_back(defaultProperties); //out of bound test
+			for (int i = 0; i < th_properties.size(); i++)
+			{
+				ColliderProperties propertiesAtIdx = body.getColliderPropertiesAt(i);
+				Assert::IsTrue(th_properties[i].type == propertiesAtIdx.type);
+				Assert::IsTrue(th_properties[i].tag == propertiesAtIdx.tag);
+				Assert::IsTrue(th_properties[i].position == propertiesAtIdx.position);
+				Assert::IsTrue(th_properties[i].boxWidth == propertiesAtIdx.boxWidth);
+				Assert::IsTrue(th_properties[i].boxHeight == propertiesAtIdx.boxHeight);
+				Assert::IsTrue(th_properties[i].radius == propertiesAtIdx.radius);
+				Assert::IsTrue(th_properties[i].vertice0 == propertiesAtIdx.vertice0);
+				Assert::IsTrue(th_properties[i].vertice1 == propertiesAtIdx.vertice1);
+			}
+			//size of colliders container
+			Assert::IsTrue(body.getNumberOfColliders() == 4);
+			// non negative properties
+			SpacePartitionBody body2;
+			properties.radius = -5;
+			properties.boxWidth = -5.3;
+			properties.boxHeight = -12.6;
+			body2.createCollider(properties);
+			Assert::IsTrue(0 == body2.getColliderPropertiesAt(0).boxWidth);
+			Assert::IsTrue(0 == body2.getColliderPropertiesAt(0).boxHeight);
+			Assert::IsTrue(0 == body2.getColliderPropertiesAt(0).radius);
+		}
 	};
 }

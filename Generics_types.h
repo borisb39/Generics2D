@@ -5,6 +5,7 @@
  * @author Boris Burdin
  * @date 20200605 - Initial Release
  * @date 20210423 - Add vect2d struct
+ * @date 20210424 - Add SpacePartitionColliderProperties
  */
 
 #pragma once
@@ -23,7 +24,7 @@ namespace Generics
 
     //SpacePartition
 
-    //2d vector with basic arithmetic operations
+    ////2d vector with basic arithmetic operations
     struct Vect2d {
         float x; 
         float y;
@@ -75,4 +76,25 @@ namespace Generics
         return c /= val;
     }
 
+    ////SpacePartitionCollider
+
+    enum class ColliderType
+    {
+        NDEF,
+        BOX,
+        CIRCLE,
+        EDGE
+    };
+    typedef std::string typeColliderTag;
+    struct ColliderProperties
+    {
+        ColliderType type = ColliderType::NDEF ;
+        typeColliderTag tag = "None";
+        Vect2d position{ 0, 0 };
+        float boxWidth = 0;
+        float boxHeight = 0;
+        float radius = 0;
+        Vect2d vertice0{ 0, 0 };
+        Vect2d vertice1{ 0, 0 };
+    };
 }
