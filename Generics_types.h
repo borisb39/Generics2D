@@ -3,10 +3,10 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
- * @date 20200605 - Initial Release
- * @date 20210423 - Add vect2d struct
- * @date 20210424 - Add SpacePartitionColliderProperties
  * @date 20210501 - Add AABB struct
+ * @date 20210424 - Add SpacePartitionColliderProperties
+ * @date 20210423 - Add vect2d struct
+ * @date 20200605 - Initial Release
  */
 
 #pragma once

@@ -4,13 +4,13 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
- * @date 20210423 - Initial Release
+ * @date 20210501 - Add Axis Aligned bounding Box
+ *                  Add methods updateAABB, getAABB, add attribut mAABB
  * @date 20210425 - Add Collider managment
  *                  Add method createCollider, getColliderPropertiesAt, getNumberOfColliders
  *                  Add mColliders attribut
- * @date 20210501 - Add Axis Aligned bounding Box
- *                  Add methods updateAABB, getAABB, add attribut mAABB
-  */
+ * @date 20210423 - Initial Release
+ */
 
 #pragma once
 

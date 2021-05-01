@@ -1,16 +1,3 @@
-/**
- * The StateMachine class defines a basic state machine
- * that can be used as a component to create all specialized state machines derived objects (action manager, animation manager..)
- *
- * @file StateMachine.cpp
- * @author Boris Burdin
- * @date 20201805 - Initial Release
- * @date 20200605 - Define as a Classic class instead of an Interface
- * @date 20200613 - Add GetTransitionBounds() method
- * @date 20200613 - Return a boolean on Add/RemoveState methods call to check if they are are successful
- * @date 20200726 - Add ReadJSON() method
- * @date 20200728 - Return a boolean on Add/RemoveTransition methods call to check if they are are successful
- */
 
 #include <cassert>
 #include "StateMachine.h"

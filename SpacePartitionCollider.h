@@ -4,9 +4,9 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
- * @date 20210424 - Initial Release
- * @date 20210425 - Add getProperties method
  * @date 20210105 - Add getAABB method, mIsEnabled, mIsSensor attribut
+ * @date 20210425 - Add getProperties method
+ * @date 20210424 - Initial Release
  */
 
 #pragma once
