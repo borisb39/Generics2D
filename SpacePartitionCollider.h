@@ -4,6 +4,9 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20210501 - Collider class > struct
+ *                  Remove non-default constructor, getProperties method
+ *                  Update method getAABB
  * @date 20210105 - Add getAABB method, mIsEnabled, mIsSensor attribut
  * @date 20210425 - Add getProperties method
  * @date 20210424 - Initial Release
@@ -16,40 +19,24 @@
 namespace Generics
 {
     /// The SpacePartitionCollider base class 
-    class SpacePartitionCollider
+    struct SpacePartitionCollider
     {
-    public:
-        /**
-        * SpacePartitionCollider constructor
-        */
-        SpacePartitionCollider(ColliderProperties);
-        /**
-        * SpacePartitionCollider destructor
-        */
-        ~SpacePartitionCollider() {};
-
-        /**
-        * getter for internal properties
-        */
-        ColliderProperties getProperties() const;
+        //collider properties
+        ColliderType type = ColliderType::BOX;
+        typeColliderTag tag = "None";
+        bool isEnabled = false;
+        bool isSensor = false;
+        Vect2d position{ 0, 0 };//relative to the associated body center
+        float boxWidth = 0;//center at position
+        float boxHeight = 0;//center at position
+        float radius = 0;//center at position
+        Vect2d vertice0{ 0, 0 };// relative to position
+        Vect2d vertice1{ 0, 0 };// relative to position
 
         /**
         * getAABB will extrapolate the collider AABB from its internal properties
         * and return it.
         */
-        AABB getAABB() const;
-        
-    private:
-        //collider properties
-        ColliderType mType;
-        typeColliderTag mTag;
-        bool mIsEnabled = true;
-        bool mIsSensor = false;
-        Vect2d mPosition; //relative to the associated body center
-        float mBoxWidth; //center at mPosition
-        float mBoxHeight; //center at mPosition
-        float mRadius; //center at mPosition
-        Vect2d mVertice0; // relative to mPosition
-        Vect2d mVertice1; // relative to mPosition
+        AABB getAABB() const;     
     };
 }

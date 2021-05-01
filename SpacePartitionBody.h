@@ -4,6 +4,9 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20210501 - Collider class > struct
+ *                  Replace method  createCollider > appendCollider
+ *                  Update method getColliderAt
  * @date 20210501 - Add Axis Aligned bounding Box
  *                  Add methods updateAABB, getAABB, add attribut mAABB
  * @date 20210425 - Add Collider managment
@@ -74,15 +77,15 @@ namespace Generics
 		AABB getAABB() const { return mAABB; }
 
 		/**
-		* createCollider will create and add to the internal colliders container
-		* a new collider based on the provided <ColliderProperties>
+		* appendCollider will append to the internal colliders container
+		* a copy of the provided collider
 		*/
-		void createCollider(ColliderProperties);
+		void appendCollider(SpacePartitionCollider);
 
 		/**
 		* getColliderAt will get a copy of 
 		* the collider situated at indice <idx> in the collider container. 
-		* In case of out of bound indice a default Collider is returned.
+		* In case of out of bound indice a default collider is returned.
 		*/
 		SpacePartitionCollider getColliderAt(int idx) const;
 

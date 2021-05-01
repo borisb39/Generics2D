@@ -126,73 +126,74 @@ namespace UnitTests
 
 		TEST_METHOD(CollidersManagement)
 		{
-			// create colliders and get properties
-			std::vector< ColliderProperties > th_properties; // what we expect 
-			SpacePartitionBody body; // body where the colliders will be created
-			ColliderProperties defaultProperties;
+			// create Colliders, append to and get from a body
+			std::vector< SpacePartitionCollider > th_colliders; // what we expect 
+			SpacePartitionBody body; // body where the colliders will be added
+			SpacePartitionCollider defaultCollider;
 			//first collider : default
-			ColliderProperties properties;
-			body.createCollider(properties);
-			th_properties.push_back(properties);
+			SpacePartitionCollider collider;
+			body.appendCollider(collider);
+			th_colliders.push_back(collider);
 			//2st collider : Circle
-			properties.tag = "CircleCollider";
-			properties.type = ColliderType::CIRCLE;
-			properties.radius = 5;
-			properties.position = Vect2d{ 3, 2 };
-			properties.isEnabled = false;
-			properties.isSensor = true;
-			body.createCollider(properties);
-			th_properties.push_back(properties);
+			collider.tag = "CircleCollider";
+			collider.type = ColliderType::CIRCLE;
+			collider.radius = 5;
+			collider.position = Vect2d{ 3, 2 };
+			collider.isEnabled = false;
+			collider.isSensor = true;
+			body.appendCollider(collider);
+			th_colliders.push_back(collider);
 			//3rd collider : Box
-			properties.tag = "BoxCollider";
-			properties.type = ColliderType::BOX;
-			properties.boxWidth = 5.3;
-			properties.boxHeight = 12.6;
-			properties.position = Vect2d{ -1, 0 };
-			properties.isEnabled = true;
-			properties.isSensor = true;
-			body.createCollider(properties);
-			th_properties.push_back(properties);
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxWidth = 5.3;
+			collider.boxHeight = 12.6;
+			collider.position = Vect2d{ -1, 0 };
+			collider.isEnabled = true;
+			collider.isSensor = true;
+			body.appendCollider(collider);
+			th_colliders.push_back(collider);
 			//4th collider : Edge
-			properties.tag = "EdgeCollider";
-			properties.type = ColliderType::EDGE;
-			properties.vertice0 = Vect2d{ 0, -10 };
-			properties.vertice1 = Vect2d{ -6., 5 };
-			properties.position = Vect2d{ 2.1, 4 };
-			properties.isEnabled = false;
-			properties.isSensor = false;
-			body.createCollider(properties);
-            th_properties.push_back(properties);
+			collider.tag = "EdgeCollider";
+			collider.type = ColliderType::EDGE;
+			collider.vertice0 = Vect2d{ 0, -10 };
+			collider.vertice1 = Vect2d{ -6., 5 };
+			collider.position = Vect2d{ 2.1, 4 };
+			collider.isEnabled = false;
+			collider.isSensor = false;
+			body.appendCollider(collider);
+			th_colliders.push_back(collider);
 			//we will iterate out ouf colliders container bounds 
 			//to check if default colliders are correctly returned in this case
-			th_properties.push_back(defaultProperties); 
-			th_properties.push_back(defaultProperties); 
+			th_colliders.push_back(defaultCollider);
+			th_colliders.push_back(defaultCollider);
 			//test the size of the colliders container
 			Assert::IsTrue(body.getNumberOfColliders() == 4);
 			//test each collider 
 			for (int i = 0; i < 6; i++)
 			{
-				ColliderProperties propertiesAtIdx = body.getColliderAt(i).getProperties();
-				Assert::IsTrue(th_properties[i].type == propertiesAtIdx.type);
-				Assert::IsTrue(th_properties[i].tag == propertiesAtIdx.tag);
-				Assert::IsTrue(th_properties[i].isEnabled == propertiesAtIdx.isEnabled);
-				Assert::IsTrue(th_properties[i].isSensor == propertiesAtIdx.isSensor);
-				Assert::IsTrue(th_properties[i].position == propertiesAtIdx.position);
-				Assert::IsTrue(th_properties[i].boxWidth == propertiesAtIdx.boxWidth);
-				Assert::IsTrue(th_properties[i].boxHeight == propertiesAtIdx.boxHeight);
-				Assert::IsTrue(th_properties[i].radius == propertiesAtIdx.radius);
-				Assert::IsTrue(th_properties[i].vertice0 == propertiesAtIdx.vertice0);
-				Assert::IsTrue(th_properties[i].vertice1 == propertiesAtIdx.vertice1);
+				SpacePartitionCollider colliderAtIdx = body.getColliderAt(i);
+				Assert::IsTrue(th_colliders[i].type == colliderAtIdx.type);
+				Assert::IsTrue(th_colliders[i].tag == colliderAtIdx.tag);
+				Assert::IsTrue(th_colliders[i].isEnabled == colliderAtIdx.isEnabled);
+				Assert::IsTrue(th_colliders[i].isSensor == colliderAtIdx.isSensor);
+				Assert::IsTrue(th_colliders[i].position == colliderAtIdx.position);
+				Assert::IsTrue(th_colliders[i].boxWidth == colliderAtIdx.boxWidth);
+				Assert::IsTrue(th_colliders[i].boxHeight == colliderAtIdx.boxHeight);
+				Assert::IsTrue(th_colliders[i].radius == colliderAtIdx.radius);
+				Assert::IsTrue(th_colliders[i].vertice0 == colliderAtIdx.vertice0);
+				Assert::IsTrue(th_colliders[i].vertice1 == colliderAtIdx.vertice1);
 			}
+
 			// test non negative properties
 			SpacePartitionBody body2;
-			properties.radius = -5;
-			properties.boxWidth = -5.3;
-			properties.boxHeight = -12.6;
-			body2.createCollider(properties);
-			Assert::IsTrue(0 == body2.getColliderAt(0).getProperties().boxWidth);
-			Assert::IsTrue(0 == body2.getColliderAt(0).getProperties().boxHeight);
-			Assert::IsTrue(0 == body2.getColliderAt(0).getProperties().radius);
+			collider.radius = -5;
+			collider.boxWidth = -5.3;
+			collider.boxHeight = -12.6;
+			body2.appendCollider(collider);
+			Assert::IsTrue(0 == body2.getColliderAt(0).boxWidth);
+			Assert::IsTrue(0 == body2.getColliderAt(0).boxHeight);
+			Assert::IsTrue(0 == body2.getColliderAt(0).radius);
 		}
 
 		TEST_METHOD(AxisAlignedBoundingBox)
@@ -201,61 +202,79 @@ namespace UnitTests
 			SpacePartitionBody body;
 			std::vector< AABB > th_cAABB; // expected colliders AABB
 			//first collider : default
-			ColliderProperties properties;
-			body.createCollider(properties);
+			SpacePartitionCollider collider;
+			body.appendCollider(collider);
 			th_cAABB.push_back({ 0, 0, 0, 0 });
 			Assert::IsTrue(AABB{ 0, 0, 0, 0 } == body.getAABB());
 			//2st collider : Collider with no shape
-			properties.tag = "CircleCollider";
-			properties.type = ColliderType::CIRCLE;
-			properties.radius = 0;
-			properties.position = Vect2d{ 3, 2 };
-			body.createCollider(properties);
+			collider.tag = "CircleCollider";
+			collider.type = ColliderType::CIRCLE;
+			collider.radius = 0;
+			collider.position = Vect2d{ 3, 2 };
+			body.appendCollider(collider);
 			th_cAABB.push_back({ 3, 2, 0, 0 });
 			Assert::IsTrue(AABB{ 0, 0, 0, 0 } == body.getAABB()); // no impact on Body AABB
 			//3rd collider : Box
-			properties.tag = "BoxCollider";
-			properties.type = ColliderType::BOX;
-			properties.boxWidth = 5.3;
-			properties.boxHeight = 12.6;
-			properties.position = Vect2d{ -1, -2.6 };
-			body.createCollider(properties);
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxWidth = 5.3;
+			collider.boxHeight = 12.6;
+			collider.position = Vect2d{ -1, -2.6 };
+			body.appendCollider(collider);
 			th_cAABB.push_back({ -1, -2.6, 5.3, 12.6 });
 			Assert::IsTrue(AABB{ -1, -2.6, 5.3, 12.6 } == body.getAABB()); // the Body AABB is initialized with the collider AABB
 			//4th collider : Edge
-			properties.tag = "EdgeCollider";
-			properties.type = ColliderType::EDGE;
-			properties.vertice0 = Vect2d{ 0, -10 };
-			properties.vertice1 = Vect2d{ -6., 5 };
-			properties.position = Vect2d{ 2.1, -5 };
-			body.createCollider(properties);
+			collider.tag = "EdgeCollider";
+			collider.type = ColliderType::EDGE;
+			collider.vertice0 = Vect2d{ 0, -10 };
+			collider.vertice1 = Vect2d{ -6., 5 };
+			collider.position = Vect2d{ 2.1, -5 };
+			body.appendCollider(collider);
 			th_cAABB.push_back({ -0.9, -7.5, 6, 15 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7} == body.getAABB()); // the Body AABB is updated with the collider AABB
-			//5th collider : Edge indentical as previous one
-			properties.tag = "EdgeCollider";
-			properties.type = ColliderType::EDGE;
-			properties.vertice0 = Vect2d{ 0, -10 };
-			properties.vertice1 = Vect2d{ -6., 5 };
-			properties.position = Vect2d{ 2.1, -5 };
-			body.createCollider(properties);
+			//5th collider : Edge identical as previous one
+			collider.tag = "EdgeCollider";
+			collider.type = ColliderType::EDGE;
+			collider.vertice0 = Vect2d{ 0, -10 };
+			collider.vertice1 = Vect2d{ -6., 5 };
+			collider.position = Vect2d{ 2.1, -5 };
+			body.appendCollider(collider);
 			th_cAABB.push_back({ -0.9, -7.5, 6, 15 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7 } == body.getAABB()); // no impact on Body AABB
 			//6th collider : Circle already inside body
-			properties.tag = "CircleCollider";
-			properties.type = ColliderType::CIRCLE;
-			properties.radius = 1;
-			properties.position = Vect2d{ 1, 2 };
-			body.createCollider(properties);
+			collider.tag = "CircleCollider";
+			collider.type = ColliderType::CIRCLE;
+			collider.radius = 1;
+			collider.position = Vect2d{ 1, 2 };
+			body.appendCollider(collider);
 			th_cAABB.push_back({ 1, 2, 2, 2 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7 } == body.getAABB()); // no impact on Body AABB
 			//7th collider : Circle
-			properties.tag = "CircleCollider";
-			properties.type = ColliderType::CIRCLE;
-			properties.radius = 5.;
-			properties.position = Vect2d{ -0.9, -7. };
-			body.createCollider(properties);
+			collider.tag = "CircleCollider";
+			collider.type = ColliderType::CIRCLE;
+			collider.radius = 5.;
+			collider.position = Vect2d{ -0.9, -7. };
+			body.appendCollider(collider);
 			th_cAABB.push_back({ -0.9, -7, 10, 10 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 10,  18.7 } == body.getAABB()); // the Body AABB is updated with the collider AABB
+			//8rd collider : Collider with negative properties
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxWidth = -100;
+			collider.boxHeight = -100;
+			collider.position = Vect2d{ 100, 200 };
+			body.appendCollider(collider);
+			th_cAABB.push_back({ 100, 200, 0, 0 });
+			Assert::IsTrue(AABB{ -0.9, -5.65, 10,  18.7 } == body.getAABB()); // no impact on Body AABB
+			//9rd collider : Collider with one negative property
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxWidth = -100;
+			collider.boxHeight = 100;
+			collider.position = Vect2d{ -100, 0 };
+			body.appendCollider(collider);
+			th_cAABB.push_back({ -100, 0, 0, 100 });
+			Assert::IsTrue(AABB{ -47.95, 0, 104.1, 100 } == body.getAABB()); // the Body AABB is updated with the collider AABB
 			for (int i = 0; i < th_cAABB.size(); i++)
 			{
 				Assert::IsTrue(th_cAABB[i] == body.getColliderAt(i).getAABB());

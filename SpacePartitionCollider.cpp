@@ -2,61 +2,30 @@
 
 namespace Generics
 {
-    SpacePartitionCollider::SpacePartitionCollider(ColliderProperties properties)
-    {
-        mType = properties.type;
-        mTag = properties.tag;
-        mIsEnabled = properties.isEnabled;
-        mIsSensor = properties.isSensor;
-        mPosition = properties.position;
-        mBoxWidth = fmax(0, properties.boxWidth);
-        mBoxHeight = fmax(0, properties.boxHeight);
-        mRadius = fmax(0, properties.radius);
-        mVertice0 = properties.vertice0;
-        mVertice1 = properties.vertice1;
-    }
-
-    ColliderProperties SpacePartitionCollider::getProperties() const
-    {
-        ColliderProperties properties;
-        properties.type = mType;
-        properties.tag = mTag;
-        properties.isEnabled = mIsEnabled;
-        properties.isSensor = mIsSensor;
-        properties.position = mPosition;
-        properties.boxWidth = mBoxWidth;
-        properties.boxHeight = mBoxHeight;
-        properties.radius = mRadius;
-        properties.vertice0 = mVertice0;
-        properties.vertice1 = mVertice1;
-
-        return properties;
-    }
-
     AABB SpacePartitionCollider::getAABB() const
     {
 		AABB aabb;
-		if (mType == ColliderType::BOX)
+		if (type == ColliderType::BOX)
 		{
-			aabb.position = mPosition;
-			aabb.height = mBoxHeight;
-			aabb.width = mBoxWidth;
+			aabb.position = position;
+			aabb.height = fmax(0, boxHeight);
+			aabb.width = fmax(0, boxWidth);
 		}
-		else if (mType == ColliderType::CIRCLE)
+		else if (type == ColliderType::CIRCLE)
 		{
-			aabb.position = mPosition;
-			aabb.height = mRadius * 2;
-			aabb.width = mRadius * 2;
+			aabb.position = position;
+			aabb.height = fmax(0, radius) * 2;
+			aabb.width = fmax(0, radius) * 2;
 		}
-		else if (mType == ColliderType::EDGE)
+		else if (type == ColliderType::EDGE)
 		{
-			aabb.position = mPosition
+			aabb.position = position
 				+ Vect2d{
-				(mVertice0.x + mVertice1.x) / 2,
-				(mVertice0.y + mVertice1.y) / 2
+				(vertice0.x + vertice1.x) / 2,
+				(vertice0.y + vertice1.y) / 2
 			};
-            aabb.height = abs(mVertice0.y - mVertice1.y);
-            aabb.width = abs(mVertice0.x - mVertice1.x);
+            aabb.height = abs(vertice0.y - vertice1.y);
+            aabb.width = abs(vertice0.x - vertice1.x);
 		}
         return aabb;
     }

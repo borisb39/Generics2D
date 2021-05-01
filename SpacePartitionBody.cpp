@@ -43,17 +43,18 @@ namespace Generics
 		updateFromVelocity(dt);
 	}
 
-	void SpacePartitionBody::createCollider(ColliderProperties properties)
+	void SpacePartitionBody::appendCollider(SpacePartitionCollider collider)
 	{
-		SpacePartitionCollider collider(properties);
+		collider.boxHeight = fmax(0, collider.boxHeight);
+		collider.boxWidth = fmax(0, collider.boxWidth);
+		collider.radius = fmax(0, collider.radius);
 		mColliders.push_back(collider);
 		updateAABB(collider);
 	}
 
 	SpacePartitionCollider SpacePartitionBody::getColliderAt(int idx) const
 	{
-		ColliderProperties properties;
-		SpacePartitionCollider collider(properties);
+		SpacePartitionCollider collider;
 		if (idx < mColliders.size())
 			collider = mColliders[idx];
 		return collider;

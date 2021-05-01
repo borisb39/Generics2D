@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20210501 - Collider class > struct
+ *                  Remove ColliderProperties
  * @date 20210501 - Add AABB struct
  * @date 20210424 - Add SpacePartitionColliderProperties
  * @date 20210423 - Add vect2d struct
@@ -25,7 +27,7 @@ namespace Generics
 
     //SpacePartition
 
-    //comparison of to float
+    //comparison of two floats
     inline bool isEqual(float f1, float f2)
     {
         static constexpr auto epsilon = 1.0e-05f;
@@ -117,17 +119,4 @@ namespace Generics
         EDGE
     };
     typedef std::string typeColliderTag;
-    struct ColliderProperties
-    {
-        ColliderType type = ColliderType::BOX;
-        typeColliderTag tag = "None";
-        bool isEnabled = false;
-        bool isSensor = false;
-        Vect2d position{ 0, 0 };
-        float boxWidth = 0;
-        float boxHeight = 0;
-        float radius = 0;
-        Vect2d vertice0{ 0, 0 };
-        Vect2d vertice1{ 0, 0 };
-    };
 }
