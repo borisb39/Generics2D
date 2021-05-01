@@ -6,6 +6,7 @@
  * @date 20200605 - Initial Release
  * @date 20210423 - Add vect2d struct
  * @date 20210424 - Add SpacePartitionColliderProperties
+ * @date 20210501 - Add AABB struct
  */
 
 #pragma once
@@ -24,17 +25,19 @@ namespace Generics
 
     //SpacePartition
 
+    //comparison of to float
+    inline bool isEqual(float f1, float f2)
+    {
+        static constexpr auto epsilon = 1.0e-05f;
+        if (abs(f1 - f2) <= epsilon)
+            return true;
+        return abs(f1 - f2) <= epsilon * fmax(abs(f1), abs(f2));
+    }
+
     ////2d vector with basic arithmetic operations
     struct Vect2d {
         float x; 
         float y;
-        bool isEqual(float f1, float f2) const
-        {
-            static constexpr auto epsilon = 1.0e-05f;
-            if (abs(f1 - f2) <= epsilon)
-                return true;
-            return abs(f1 - f2) <= epsilon * fmax(abs(f1), abs(f2));
-        }
         bool operator==(const Vect2d&  other) const {
             return isEqual(x, other.x) && isEqual(y, other.y);
         }
@@ -80,8 +83,13 @@ namespace Generics
     struct AABB
     {
         Vect2d position{0, 0};
-        float width = 0;;
+        float width = 0;
         float height = 0;
+        bool operator==(const AABB& other) const {
+            return (position == other.position)
+                && isEqual(width, other.width)
+            && isEqual(height, other.height);
+        }
         float top() const
         {
             return position.y + height / 2;
@@ -104,7 +112,6 @@ namespace Generics
 
     enum class ColliderType
     {
-        NDEF,
         BOX,
         CIRCLE,
         EDGE
@@ -112,8 +119,10 @@ namespace Generics
     typedef std::string typeColliderTag;
     struct ColliderProperties
     {
-        ColliderType type = ColliderType::NDEF ;
+        ColliderType type = ColliderType::BOX;
         typeColliderTag tag = "None";
+        bool isEnabled = false;
+        bool isSensor = false;
         Vect2d position{ 0, 0 };
         float boxWidth = 0;
         float boxHeight = 0;

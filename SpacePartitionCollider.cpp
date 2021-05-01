@@ -6,6 +6,8 @@ namespace Generics
     {
         mType = properties.type;
         mTag = properties.tag;
+        mIsEnabled = properties.isEnabled;
+        mIsSensor = properties.isSensor;
         mPosition = properties.position;
         mBoxWidth = fmax(0, properties.boxWidth);
         mBoxHeight = fmax(0, properties.boxHeight);
@@ -19,6 +21,8 @@ namespace Generics
         ColliderProperties properties;
         properties.type = mType;
         properties.tag = mTag;
+        properties.isEnabled = mIsEnabled;
+        properties.isSensor = mIsSensor;
         properties.position = mPosition;
         properties.boxWidth = mBoxWidth;
         properties.boxHeight = mBoxHeight;

@@ -8,6 +8,8 @@
  * @date 20210425 - Add Collider managment
  *                  Add method createCollider, getColliderPropertiesAt, getNumberOfColliders
  *                  Add mColliders attribut
+ * @date 20210501 - Add Axis Aligned bounding Box
+ *                  Add methods updateAABB, getAABB, add attribut mAABB
   */
 
 #pragma once
@@ -49,12 +51,8 @@ namespace Generics
 		/**
 		* Setters for max magnitude properties
 		*/
-		void setMaxVelocityMagnitude(float magnitude) {
-			mMaxVelocityMagnitude = fmax(0, magnitude);
-		};
-		void setMaxAccelerationMagnitude(float magnitude) {
-			mMaxAccelerationMagnitude = fmax(0, magnitude);
-		};
+		void setMaxVelocityMagnitude(float magnitude);
+		void setMaxAccelerationMagnitude(float magnitude);
 
 		/**
 		* updateFromVelocity will update the position of 
@@ -71,22 +69,27 @@ namespace Generics
 		void updateFromAcceleration(double dt);
 
 		/**
+		* getter for Body AABB
+		*/
+		AABB getAABB() const { return mAABB; }
+
+		/**
 		* createCollider will create and add to the internal colliders container
 		* a new collider based on the provided <ColliderProperties>
 		*/
 		void createCollider(ColliderProperties);
 
 		/**
-		* getColliderPropertiesAt will get properties of 
+		* getColliderAt will get a copy of 
 		* the collider situated at indice <idx> in the collider container. 
-		* In case of out of bound indice a NDEF ColliderProperties is returned.
+		* In case of out of bound indice a default Collider is returned.
 		*/
-		ColliderProperties getColliderPropertiesAt(int idx);
+		SpacePartitionCollider getColliderAt(int idx) const;
 
 		/**
 		* getNumberOfColliders will get the number of colliders stored in the container.
 		*/
-		int getNumberOfColliders();
+		int getNumberOfColliders() const;
 
 	private:
 		// time relative properties associated to the body in World coordinates

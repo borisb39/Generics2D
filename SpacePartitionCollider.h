@@ -6,6 +6,7 @@
  * @author Boris Burdin
  * @date 20210424 - Initial Release
  * @date 20210425 - Add getProperties method
+ * @date 20210105 - Add getAABB method, mIsEnabled, mIsSensor attribut
  */
 
 #pragma once
@@ -42,10 +43,12 @@ namespace Generics
         //collider properties
         ColliderType mType;
         typeColliderTag mTag;
+        bool mIsEnabled = true;
+        bool mIsSensor = false;
         Vect2d mPosition; //relative to the associated body center
-        float mBoxWidth; 
-        float mBoxHeight; 
-        float mRadius; 
+        float mBoxWidth; //center at mPosition
+        float mBoxHeight; //center at mPosition
+        float mRadius; //center at mPosition
         Vect2d mVertice0; // relative to mPosition
         Vect2d mVertice1; // relative to mPosition
     };

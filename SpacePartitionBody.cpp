@@ -20,6 +20,16 @@ namespace Generics
 		mAcceleration = checkMagnitude(acceleration, mMaxAccelerationMagnitude);
 	};
 
+	void SpacePartitionBody::setMaxVelocityMagnitude(float magnitude)
+	{
+		mMaxVelocityMagnitude = fmax(0, magnitude);
+	}
+
+	void SpacePartitionBody::setMaxAccelerationMagnitude(float magnitude)
+	{
+		mMaxAccelerationMagnitude = fmax(0, magnitude);
+	}
+
 	void SpacePartitionBody::updateFromVelocity(double dt)
 	{
 		Vect2d position = mPosition + mVelocity * dt;
@@ -40,15 +50,16 @@ namespace Generics
 		updateAABB(collider);
 	}
 
-	ColliderProperties SpacePartitionBody::getColliderPropertiesAt(int idx)
+	SpacePartitionCollider SpacePartitionBody::getColliderAt(int idx) const
 	{
 		ColliderProperties properties;
+		SpacePartitionCollider collider(properties);
 		if (idx < mColliders.size())
-			properties = mColliders[idx].getProperties();
-		return properties;
+			collider = mColliders[idx];
+		return collider;
 	}
 
-	int SpacePartitionBody::getNumberOfColliders()
+	int SpacePartitionBody::getNumberOfColliders() const
 	{
 		return mColliders.size();
 	}
@@ -66,17 +77,25 @@ namespace Generics
 
 	void SpacePartitionBody::updateAABB(SpacePartitionCollider collider)
 	{
-		if (collider.getProperties().type == ColliderType::NDEF)
+		AABB cAABB = collider.getAABB();
+		// if the collider has no shape we do not consider it
+		if (cAABB.width == 0 && cAABB.height == 0)
 			return;
 
-		AABB cAABB = collider.getAABB();
-		float top = fmax(cAABB.top(), mAABB.top());
-		float bottom = fmin(cAABB.bottom(), mAABB.bottom());
-		float right = fmax(cAABB.right(), mAABB.right());
-		float left = fmin(cAABB.left(), mAABB.left());
-		mAABB.position.y = (top + bottom) / 2;
-		mAABB.position.x = (right + left) / 2;
-		mAABB.height = top - bottom;
-		mAABB.width = right - left;
+		//if the body has no shape we initialize the body AABB with le collider AABB
+		if (mAABB.width == 0 && mAABB.height == 0)
+			mAABB = cAABB;
+		else
+		{
+			//else we include the collider AABB inside the body AABB
+			float top = fmax(cAABB.top(), mAABB.top());
+			float bottom = fmin(cAABB.bottom(), mAABB.bottom());
+			float right = fmax(cAABB.right(), mAABB.right());
+			float left = fmin(cAABB.left(), mAABB.left());
+			mAABB.position.y = (top + bottom) / 2;
+			mAABB.position.x = (right + left) / 2;
+			mAABB.height = top - bottom;
+			mAABB.width = right - left;
+		}
 	}
 }
