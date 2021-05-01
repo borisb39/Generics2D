@@ -28,6 +28,34 @@ namespace Generics
 
         return properties;
     }
+
+    AABB SpacePartitionCollider::getAABB() const
+    {
+		AABB aabb;
+		if (mType == ColliderType::BOX)
+		{
+			aabb.position = mPosition;
+			aabb.height = mBoxHeight;
+			aabb.width = mBoxWidth;
+		}
+		else if (mType == ColliderType::CIRCLE)
+		{
+			aabb.position = mPosition;
+			aabb.height = mRadius * 2;
+			aabb.width = mRadius * 2;
+		}
+		else if (mType == ColliderType::EDGE)
+		{
+			aabb.position = mPosition
+				+ Vect2d{
+				(mVertice0.x + mVertice1.x) / 2,
+				(mVertice0.y + mVertice1.y) / 2
+			};
+            aabb.height = abs(mVertice0.y - mVertice1.y);
+            aabb.width = abs(mVertice0.x - mVertice1.x);
+		}
+        return aabb;
+    }
 }
 
 

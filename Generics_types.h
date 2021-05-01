@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <map>
@@ -31,9 +31,9 @@ namespace Generics
         bool isEqual(float f1, float f2) const
         {
             static constexpr auto epsilon = 1.0e-05f;
-            if (fabs(f1 - f2) <= epsilon)
+            if (abs(f1 - f2) <= epsilon)
                 return true;
-            return fabs(f1 - f2) <= epsilon * fmax(fabs(f1), fabs(f2));
+            return abs(f1 - f2) <= epsilon * fmax(abs(f1), abs(f2));
         }
         bool operator==(const Vect2d&  other) const {
             return isEqual(x, other.x) && isEqual(y, other.y);
@@ -75,6 +75,30 @@ namespace Generics
         Vect2d c(a);
         return c /= val;
     }
+
+    ////SpacePartition Axis Aligned Bounding Box
+    struct AABB
+    {
+        Vect2d position{0, 0};
+        float width = 0;;
+        float height = 0;
+        float top() const
+        {
+            return position.y + height / 2;
+        }
+        float bottom() const
+        {
+            return position.y - height / 2;
+        }
+        float right() const
+        {
+            return position.x + width / 2;
+        }
+        float left() const
+        {
+            return position.x - width / 2;
+        }
+    };
 
     ////SpacePartitionCollider
 

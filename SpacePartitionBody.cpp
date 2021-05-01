@@ -37,6 +37,7 @@ namespace Generics
 	{
 		SpacePartitionCollider collider(properties);
 		mColliders.push_back(collider);
+		updateAABB(collider);
 	}
 
 	ColliderProperties SpacePartitionBody::getColliderPropertiesAt(int idx)
@@ -63,7 +64,19 @@ namespace Generics
 		return vector;
 	}
 
+	void SpacePartitionBody::updateAABB(SpacePartitionCollider collider)
+	{
+		if (collider.getProperties().type == ColliderType::NDEF)
+			return;
 
-
-
+		AABB cAABB = collider.getAABB();
+		float top = fmax(cAABB.top(), mAABB.top());
+		float bottom = fmin(cAABB.bottom(), mAABB.bottom());
+		float right = fmax(cAABB.right(), mAABB.right());
+		float left = fmin(cAABB.left(), mAABB.left());
+		mAABB.position.y = (top + bottom) / 2;
+		mAABB.position.x = (right + left) / 2;
+		mAABB.height = top - bottom;
+		mAABB.width = right - left;
+	}
 }

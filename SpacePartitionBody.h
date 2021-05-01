@@ -79,7 +79,7 @@ namespace Generics
 		/**
 		* getColliderPropertiesAt will get properties of 
 		* the collider situated at indice <idx> in the collider container. 
-		* In case of out of bound indice a NFED ColliderProperties is returned.
+		* In case of out of bound indice a NDEF ColliderProperties is returned.
 		*/
 		ColliderProperties getColliderPropertiesAt(int idx);
 
@@ -89,7 +89,7 @@ namespace Generics
 		int getNumberOfColliders();
 
 	private:
-		// time relative properties associated to the body
+		// time relative properties associated to the body in World coordinates
 		Vect2d mPosition{ 0, 0 };
 		Vect2d mVelocity{ 0, 0 };
 		Vect2d mAcceleration{ 0, 0 };
@@ -100,11 +100,20 @@ namespace Generics
 		//Container for associated colliders
 		std::vector<SpacePartitionCollider> mColliders;
 
+		//Body AABB included all associated colliders
+		AABB mAABB;
+
 		/**
 		* checkMagnitude will check and correct the provided <vector> 
-		* so that its magnitude does not exceed the <maxMagnitude> associated
+		* so that its magnitude does not exceed the <maxMagnitude> 
 		 @ return vect2d the corrected vector value
 		*/
 		Vect2d checkMagnitude(Vect2d vector, float maxMagnitude);
+
+		/**
+		* updateAABB will update (increase the size of) the Body AABB according to 
+		* the provided collider if the collider AABB is out of Body AABB bounds
+		*/
+		void updateAABB(SpacePartitionCollider);
 	};
 }

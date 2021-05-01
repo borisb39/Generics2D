@@ -127,32 +127,41 @@ namespace UnitTests
 		TEST_METHOD(CollidersManagement)
 		{
 			// create colliders and get properties
-			std::vector< ColliderProperties > th_properties;
-			SpacePartitionBody body;
+			std::vector< ColliderProperties > th_properties; // what we expect 
+			SpacePartitionBody body; // body where the colliders will be created
 			ColliderProperties defaultProperties;
+			//first collider : default
 			ColliderProperties properties;
 			body.createCollider(properties);
 			th_properties.push_back(properties);
+			//2st collider : Circle
 			properties.tag = "CircleCollider";
 			properties.type = ColliderType::CIRCLE;
 			properties.radius = 5;
 			body.createCollider(properties);
 			th_properties.push_back(properties);
+			//3rd collider : Box
 			properties.tag = "BoxCollider";
 			properties.type = ColliderType::BOX;
 			properties.boxWidth = 5.3;
 			properties.boxHeight = 12.6;
 			body.createCollider(properties);
 			th_properties.push_back(properties);
+			//4th collider : Edge
 			properties.tag = "EdgeCollider";
 			properties.type = ColliderType::EDGE;
 			properties.vertice0 = Vect2d{ 0, -10 };
 			properties.vertice1 = Vect2d{ -6., 5 };
 			body.createCollider(properties);
-			th_properties.push_back(properties);
-			th_properties.push_back(defaultProperties); //out of bound test
-			th_properties.push_back(defaultProperties); //out of bound test
-			for (int i = 0; i < th_properties.size(); i++)
+            th_properties.push_back(properties);
+			//we will iterate out ouf colliders container bounds 
+			//to check if default colliders are correctly returned in this case
+			th_properties.push_back(defaultProperties); 
+			th_properties.push_back(defaultProperties); 
+			//test the size of the colliders container
+			Assert::IsTrue(body.getNumberOfColliders() == 4);
+			//test each collider 
+			for (int i = 0; i < 6; i++)
 			{
 				ColliderProperties propertiesAtIdx = body.getColliderPropertiesAt(i);
 				Assert::IsTrue(th_properties[i].type == propertiesAtIdx.type);
@@ -164,9 +173,7 @@ namespace UnitTests
 				Assert::IsTrue(th_properties[i].vertice0 == propertiesAtIdx.vertice0);
 				Assert::IsTrue(th_properties[i].vertice1 == propertiesAtIdx.vertice1);
 			}
-			//size of colliders container
-			Assert::IsTrue(body.getNumberOfColliders() == 4);
-			// non negative properties
+			// test non negative properties
 			SpacePartitionBody body2;
 			properties.radius = -5;
 			properties.boxWidth = -5.3;
@@ -175,6 +182,36 @@ namespace UnitTests
 			Assert::IsTrue(0 == body2.getColliderPropertiesAt(0).boxWidth);
 			Assert::IsTrue(0 == body2.getColliderPropertiesAt(0).boxHeight);
 			Assert::IsTrue(0 == body2.getColliderPropertiesAt(0).radius);
+		}
+
+		TEST_METHOD(AxisAlignedBoundingBox)
+		{
+			// Colliders AABB
+			//first collider : default
+			ColliderProperties properties;
+			body.createCollider(properties);
+			th_AABB.push_back(properties);
+			//2st collider : Circle
+			properties.tag = "CircleCollider";
+			properties.type = ColliderType::CIRCLE;
+			properties.radius = 5;
+			body.createCollider(properties);
+			th_properties.push_back(properties);
+			//3rd collider : Box
+			properties.tag = "BoxCollider";
+			properties.type = ColliderType::BOX;
+			properties.boxWidth = 5.3;
+			properties.boxHeight = 12.6;
+			body.createCollider(properties);
+			th_properties.push_back(properties);
+			//4th collider : Edge
+			properties.tag = "EdgeCollider";
+			properties.type = ColliderType::EDGE;
+			properties.vertice0 = Vect2d{ 0, -10 };
+			properties.vertice1 = Vect2d{ -6., 5 };
+			body.createCollider(properties);
+
+
 		}
 	};
 }
