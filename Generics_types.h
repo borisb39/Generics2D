@@ -5,7 +5,7 @@
  * @author Boris Burdin
  * @date 20210501 - Collider class > struct
  *                  Remove ColliderProperties
- * @date 20210501 - Add AABB struct
+ *                - Add AABB struct
  * @date 20210424 - Add SpacePartitionColliderProperties
  * @date 20210423 - Add vect2d struct
  * @date 20200605 - Initial Release
@@ -107,6 +107,11 @@ namespace Generics
         float left() const
         {
             return position.x - width / 2;
+        }
+        bool intersect(AABB other) const
+        {
+            return (abs(position.x - other.position.x) * 2 <= (width + other.width)) &&
+                (abs(position.y - other.position.y) * 2 <= (height + other.height));
         }
     };
 

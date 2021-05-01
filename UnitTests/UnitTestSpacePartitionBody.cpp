@@ -196,7 +196,7 @@ namespace UnitTests
 			Assert::IsTrue(0 == body2.getColliderAt(0).radius);
 		}
 
-		TEST_METHOD(AxisAlignedBoundingBox)
+		TEST_METHOD(BodyAndColliderAxisAlignedBoundingBox)
 		{
 			// Test Body and Colliders AABB
 			SpacePartitionBody body;
@@ -279,6 +279,24 @@ namespace UnitTests
 			{
 				Assert::IsTrue(th_cAABB[i] == body.getColliderAt(i).getAABB());
 			}
+		}
+
+		TEST_METHOD(AxisAlignedBoundingBoxIntersection)
+		{
+			Assert::IsTrue(AABB{ 0, 0, 5, 5 }.intersect(AABB{ 0, 0, 5, 5 }));
+			Assert::IsTrue(AABB{ 5, 0, 5, 5 }.intersect(AABB{ 0, 0, 5, 5 }));
+			Assert::IsTrue(AABB{ 0, -5, 5, 5 }.intersect(AABB{ 0, 0, 5, 5 }));
+			Assert::IsTrue(AABB{ -5, -5, 5, 5 }.intersect(AABB{ 0, 0, 5, 5 }));
+			Assert::IsFalse(AABB{ -5.01, -5, 5, 5 }.intersect(AABB{ 0, 0, 5, 5 }));
+			Assert::IsFalse(AABB{ 10.5, 22.3, 4, 10 }.intersect(AABB{ 20, -6, 10, 5 }));
+			Assert::IsFalse(AABB{ 10.5, 22.3, 4, 10 }.intersect(AABB{ 20, -6, 10, 50 }));
+			Assert::IsFalse(AABB{ 10.5, 22.3, 0, 6.599 }.intersect(AABB{ 20, -6, 50, 50 }));
+			Assert::IsTrue(AABB{ 10.5, 22.3, 0, 6.6 }.intersect(AABB{ 20, -6, 50, 50 }));
+			Assert::IsFalse(AABB{ -10.5, 22.3, 10.999, 6.599 }.intersect(AABB{ 20, -6, 50, 50 }));
+			Assert::IsFalse(AABB{ -10.5, 22.3, 10.99, 6.6 }.intersect(AABB{ 20, -6, 50, 50 }));
+			Assert::IsFalse(AABB{ -10.5, 22.3, 11, 6.599 }.intersect(AABB{ 20, -6, 50, 50 }));
+			Assert::IsTrue(AABB{ -10.5, 22.3, 11, 6.6 }.intersect(AABB{ 20, -6, 50, 50 }));
+			Assert::IsTrue(AABB{ -10.5, 22.3, 11.0001, 6.6001 }.intersect(AABB{ 20, -6, 50, 50 }));
 		}
 	};
 }
