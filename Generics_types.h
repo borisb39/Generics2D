@@ -108,7 +108,7 @@ namespace Generics
         {
             return position.x - width / 2;
         }
-        bool intersect(AABB other) const
+        bool intersect(const AABB& other) const
         {
             return (abs(position.x - other.position.x) * 2 <= (width + other.width)) &&
                 (abs(position.y - other.position.y) * 2 <= (height + other.height));
@@ -120,7 +120,6 @@ namespace Generics
     enum class ColliderType
     {
         BOX,
-        CIRCLE,
         EDGE
     };
     typedef std::string typeColliderTag;

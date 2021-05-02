@@ -147,13 +147,18 @@
   <ItemGroup>
     <ClCompile Include="SpacePartitionBody.cpp" />
     <ClCompile Include="SpacePartitionCollider.cpp" />
+    <ClCompile Include="SpacePartitionGrid.cpp" />
+    <ClCompile Include="SpacePartitionWorld.cpp" />
     <ClCompile Include="StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Generics_types.h" />
-    <ClInclude Include="json.hpp" />
+    <ClInclude Include="ToolsJson.hpp" />
+    <ClInclude Include="ToolsLineSegmentsIntersect.hpp" />
     <ClInclude Include="SpacePartitionBody.h" />
     <ClInclude Include="SpacePartitionCollider.h" />
+    <ClInclude Include="SpacePartitionGrid.h" />
+    <ClInclude Include="SpacePartitionWorld.h" />
     <ClInclude Include="StateMachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

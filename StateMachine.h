@@ -20,7 +20,7 @@
 #include <typeinfo>
 
 #include "Generics_types.h"
-#include "json.hpp"
+#include "ToolsJson.hpp"
 
 namespace Generics
 {

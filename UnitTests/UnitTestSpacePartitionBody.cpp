@@ -134,10 +134,11 @@ namespace UnitTests
 			SpacePartitionCollider collider;
 			body.appendCollider(collider);
 			th_colliders.push_back(collider);
-			//2st collider : Circle
-			collider.tag = "CircleCollider";
-			collider.type = ColliderType::CIRCLE;
-			collider.radius = 5;
+			//2st collider : Box
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxWidth = 10;
+			collider.boxHeight = 10;
 			collider.position = Vect2d{ 3, 2 };
 			collider.isEnabled = false;
 			collider.isSensor = true;
@@ -180,20 +181,17 @@ namespace UnitTests
 				Assert::IsTrue(th_colliders[i].position == colliderAtIdx.position);
 				Assert::IsTrue(th_colliders[i].boxWidth == colliderAtIdx.boxWidth);
 				Assert::IsTrue(th_colliders[i].boxHeight == colliderAtIdx.boxHeight);
-				Assert::IsTrue(th_colliders[i].radius == colliderAtIdx.radius);
 				Assert::IsTrue(th_colliders[i].vertice0 == colliderAtIdx.vertice0);
 				Assert::IsTrue(th_colliders[i].vertice1 == colliderAtIdx.vertice1);
 			}
 
 			// test non negative properties
 			SpacePartitionBody body2;
-			collider.radius = -5;
 			collider.boxWidth = -5.3;
 			collider.boxHeight = -12.6;
 			body2.appendCollider(collider);
 			Assert::IsTrue(0 == body2.getColliderAt(0).boxWidth);
 			Assert::IsTrue(0 == body2.getColliderAt(0).boxHeight);
-			Assert::IsTrue(0 == body2.getColliderAt(0).radius);
 		}
 
 		TEST_METHOD(BodyAndColliderAxisAlignedBoundingBox)
@@ -207,9 +205,10 @@ namespace UnitTests
 			th_cAABB.push_back({ 0, 0, 0, 0 });
 			Assert::IsTrue(AABB{ 0, 0, 0, 0 } == body.getAABB());
 			//2st collider : Collider with no shape
-			collider.tag = "CircleCollider";
-			collider.type = ColliderType::CIRCLE;
-			collider.radius = 0;
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxWidth = 0.;
+			collider.boxHeight = 0.;
 			collider.position = Vect2d{ 3, 2 };
 			body.appendCollider(collider);
 			th_cAABB.push_back({ 3, 2, 0, 0 });
@@ -242,17 +241,19 @@ namespace UnitTests
 			th_cAABB.push_back({ -0.9, -7.5, 6, 15 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7 } == body.getAABB()); // no impact on Body AABB
 			//6th collider : Circle already inside body
-			collider.tag = "CircleCollider";
-			collider.type = ColliderType::CIRCLE;
-			collider.radius = 1;
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
 			collider.position = Vect2d{ 1, 2 };
 			body.appendCollider(collider);
 			th_cAABB.push_back({ 1, 2, 2, 2 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7 } == body.getAABB()); // no impact on Body AABB
-			//7th collider : Circle
-			collider.tag = "CircleCollider";
-			collider.type = ColliderType::CIRCLE;
-			collider.radius = 5.;
+			//7th collider : Box
+			collider.tag = "BoxCollider";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 10;
+			collider.boxWidth = 10;
 			collider.position = Vect2d{ -0.9, -7. };
 			body.appendCollider(collider);
 			th_cAABB.push_back({ -0.9, -7, 10, 10 });

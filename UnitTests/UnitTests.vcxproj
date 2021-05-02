@@ -160,7 +160,9 @@
   <ItemGroup>
     <ClCompile Include="UnitTestGenericsTypes.cpp" />
     <ClCompile Include="UnitTestSpacePartitionBody.cpp" />
+    <ClCompile Include="UnitTestSpacePartitionCollider.cpp" />
     <ClCompile Include="UnitTestStateMachine.cpp" />
+    <ClCompile Include="UnitTestToolsLineSegmentsIntersect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Generics.vcxproj">

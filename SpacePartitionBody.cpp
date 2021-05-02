@@ -47,7 +47,6 @@ namespace Generics
 	{
 		collider.boxHeight = fmax(0, collider.boxHeight);
 		collider.boxWidth = fmax(0, collider.boxWidth);
-		collider.radius = fmax(0, collider.radius);
 		mColliders.push_back(collider);
 		updateAABB(collider);
 	}
