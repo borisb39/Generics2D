@@ -4,9 +4,12 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20210506 - Box edge collision response 
+ *                  Update function BoxEdgeIntersect
+ *                  Add function BoxEdgeDisplacementResponse, projectionPointToLineSegment
  * @date 20210502 - Collider intersection check
  *                  Removes CIRCLE collider
- *                  Add collidersIntersect, BoxBoxIntersect, BoxEdgeIntersect methods
+ *                  Add collidersIntersect, BoxBoxIntersect, BoxEdgeIntersect functions
  * @date 20210501 - Collider class > struct
  *                  Remove non-default constructor, getProperties method
  *                  Update method getAABB
@@ -62,5 +65,19 @@ namespace Generics
     * @return bool : true if they intersect, false otherwise
     */
     bool BoxEdgeIntersect(const SpacePartitionCollider& box, const SpacePartitionCollider& edge);
+
+    /**
+    * projectionPointToLineSegment will compute and return the projection 
+    * coordinate H of a point P3 on a line segment P1, P2
+    */
+    Vect2d projectionPointToLineSegment(Vect2d& P1, Vect2d& P2, Vect2d& P3);
+
+    /**
+    * BoxEdgeDisplacementResponse will compute the displacement of the box with respect to the edge
+    * normal vector, in order the move the box "outside" of the edge
+    */
+    Vect2d BoxEdgeDisplacementResponse(const SpacePartitionCollider& box, const SpacePartitionCollider& edge);
+
+
 
 }
