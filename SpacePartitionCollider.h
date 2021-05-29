@@ -48,7 +48,7 @@ namespace Generics
 
         /**
         * collisionResolution will compute the collision between the two provided colliders
-        * and return the collision response associated in the <Collision> object
+        * and return the collision response associated as a <Collision> object
         */
         static Collision collisionResolution(const SpacePartitionCollider& a, const SpacePartitionCollider& b);
 

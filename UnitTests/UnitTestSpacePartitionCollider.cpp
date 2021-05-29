@@ -390,5 +390,47 @@ namespace UnitTests
 			collider2.vertice1 = Vect2d{ 0, 0 }; 
 			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 0 });
 		}
+
+		TEST_METHOD(GenericCollisionRespone)
+		{
+			// box is already outside of the edge
+			SpacePartitionCollider collider1;
+			collider1.type = ColliderType::BOX;
+			collider1.position = { 10, 10 };
+			collider1.boxWidth = 4;
+			collider1.boxHeight = 4;
+			SpacePartitionCollider collider2;
+			collider2.type = ColliderType::EDGE;
+			collider2.position = { 0, 0 };
+			collider2.vertice0 = Vect2d{ 0, 0 };
+			collider2.vertice1 = Vect2d{ 1, 0 }; //outside on the top
+			Collision calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			Collision expectedCollision = { false,  { 0, 0} };
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
+			// box totaly inside the edge
+			collider1.position = { 0, -3 };
+			collider1.boxWidth = 4;
+			collider1.boxHeight = 4;
+			collider2.position = { 0, 0 };
+			collider2.vertice0 = Vect2d{ 0, 0 };
+			collider2.vertice1 = Vect2d{ 1, 0 };  //outside on the top
+			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			expectedCollision = { false,  { 0, 0} };
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
+			// box partly inside the edge 1
+			collider1.position = { 0, -3 };
+			collider1.boxWidth = 4;
+			collider1.boxHeight = 4;
+			collider2.position = { 0, -3 };
+			collider2.vertice0 = Vect2d{ 0, 0 };
+			collider2.vertice1 = Vect2d{ 1, 0 }; //outside on the top
+			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			expectedCollision = { true,  { 0, 2} };
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
+
+		}
 	};
 }
