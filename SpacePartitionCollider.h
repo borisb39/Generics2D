@@ -4,6 +4,8 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20210529 - Generic collision between two colliders
+ *                  Add method collisionResolution
  * @date 20210506 - Box edge collision response 
  *                  Update function BoxEdgeIntersect
  *                  Add function BoxEdgeDisplacementResponse, projectionPointToLineSegment
@@ -43,6 +45,13 @@ namespace Generics
         * and return it.
         */
         AABB getAABB() const;
+
+        /**
+        * collisionResolution will compute the collision between the two provided colliders
+        * and return the collision response associated in the <Collision> object
+        */
+        static Collision collisionResolution(const SpacePartitionCollider& a, const SpacePartitionCollider& b);
+
     };
 
     /**
@@ -77,7 +86,4 @@ namespace Generics
     * normal vector, in order the move the box "outside" of the edge
     */
     Vect2d BoxEdgeDisplacementResponse(const SpacePartitionCollider& box, const SpacePartitionCollider& edge);
-
-
-
 }

@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20210529 - Generic collision between two colliders
+ *                  Add struct Collision
  * @date 20210501 - Collider class > struct
  *                  Remove ColliderProperties
  *                - Add AABB struct
@@ -123,4 +125,10 @@ namespace Generics
         EDGE
     };
     typedef std::string typeColliderTag;
+
+    struct Collision
+    {
+        bool isTouching = false;
+        Vect2d response = { 0, 0 };
+    };
 }

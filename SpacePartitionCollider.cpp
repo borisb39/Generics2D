@@ -25,6 +25,20 @@ namespace Generics
         return aabb;
     }
 
+	Collision SpacePartitionCollider::collisionResolution(const SpacePartitionCollider& a, const SpacePartitionCollider& b)
+	{
+		Collision collision;
+		collision.isTouching = collidersIntersect(a, b);
+		if (collision.isTouching)
+		{
+			if (a.type == ColliderType::BOX && b.type == ColliderType::EDGE)
+				collision.response = BoxEdgeDisplacementResponse(a, b);
+			else if (a.type == ColliderType::EDGE && b.type == ColliderType::BOX)
+				collision.response = BoxEdgeDisplacementResponse(b, a) * -1;
+		}
+		return collision;
+	}
+
 	bool collidersIntersect(const SpacePartitionCollider& a, const SpacePartitionCollider& b)
 	{
 		bool intersect = false;
