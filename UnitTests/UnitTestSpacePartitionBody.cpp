@@ -164,7 +164,7 @@ namespace UnitTests
 			collider.isSensor = false;
 			body.appendCollider(collider);
 			th_colliders.push_back(collider);
-			//we will iterate out ouf colliders container bounds 
+			//we will iterate out of colliders container bounds 
 			//to check if default colliders are correctly returned in this case
 			th_colliders.push_back(defaultCollider);
 			th_colliders.push_back(defaultCollider);

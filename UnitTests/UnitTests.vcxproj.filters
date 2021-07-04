@@ -30,5 +30,8 @@
     <ClCompile Include="UnitTestSpacePartitionCollider.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTestSpacePartitionGrid.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
