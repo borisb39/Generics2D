@@ -6,7 +6,7 @@
 *
 * @file SpacePartitionGrid.h
 * @author Boris Burdin
-* @date 20210705 - Initial Release
+* @date 20210705 - Initial Release with bodies management
 * @date 20210425 - Initial Release
 */
 

@@ -3,6 +3,7 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20211123 - Add SpacePartitionBody BodyType
  * @date 20210529 - Generic collision between two colliders
  *                  Add struct Collision
  * @date 20210501 - Collider class > struct
@@ -130,5 +131,12 @@ namespace Generics
     {
         bool isTouching = false;
         Vect2d response = { 0, 0 };
+    };
+
+    ////SpacePartitionBody
+    enum class BodyType
+    {
+        STATIC,
+        DYNAMIC
     };
 }

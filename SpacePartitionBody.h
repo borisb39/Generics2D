@@ -4,6 +4,7 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20211123 - Add BodyType argument to SpacePartitionBody constructor  
  * @date 20210501 - Collider class > struct
  *                  Replace method  createCollider > appendCollider
  *                  Update method getColliderAt
@@ -30,8 +31,8 @@ namespace Generics
 		/**
 		* SpacePartionBody constructor
 		*/
-		SpacePartitionBody(Vect2d position = { 0, 0 }) :
-			mPosition(position) {};
+		SpacePartitionBody(Vect2d position = { 0, 0 }, BodyType type = BodyType::STATIC) :
+			mPosition(position), mType(type) {};
 		/**
 		* SpacePartionBody destructor
 		*/
@@ -94,7 +95,10 @@ namespace Generics
 		*/
 		int getNumberOfColliders() const;
 
+		BodyType getType() const { return mType; }
+
 	private:
+		BodyType mType = BodyType::STATIC;
 		// time relative properties associated to the body in World coordinates
 		Vect2d mPosition{ 0, 0 };
 		Vect2d mVelocity{ 0, 0 };
