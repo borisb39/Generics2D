@@ -4,6 +4,9 @@
 *
 * @file SpacePartionWorld.h
 * @author Boris Burdin
+* @date 20211128 - Algo for Min collision detection
+*                  Add method collisionResolutionDynamicVSstaticBodies_Min
+*                  Update method collisionResolutionMeanDynamicVSstaticBodies > collisionResolutionMeanDynamicVSstaticBodies_Mean
 * @date 20211113 add static method collisionResolutionMeanDynamicVSstaticBodies
 * @date 20210425 - Initial Release
 */
@@ -41,14 +44,21 @@ namespace Generics
 		void addBody(SpacePartitionBody& body);
 
 		/**
-		* collisionResolutionMeanDynamicVSstaticBodies will resolve the collision between the provided dynamic <body1> and static <body2>
-		* and return a Collision .
+		* collisionResolutionDynamicVSstaticBodies_Mean will resolve the collision between the provided dynamic <body1> and static <body2>
+		* and return the Collision state.
 		* The resolution considers each possible collision between the colliders of the
 		* two bodies independently, and computes the mean response value.
 		*/
-		static Collision collisionResolutionMeanDynamicVSstaticBodies(SpacePartitionBody* body1, SpacePartitionBody* body2);
+		static Collision collisionResolutionDynamicVSstaticBodies_Mean(SpacePartitionBody& body1, SpacePartitionBody& body2);
 
-		
+		/**
+		* collisionResolutionDynamicVSstaticBodies_Min will resolve the collision between the provided dynamic <body1> and static <body2>
+		* and return the Collision state.
+		* The resolution search for the minimal displacement of body1 that removes the intersection between the two bodies.
+		*/
+		static Collision collisionResolutionDynamicVSstaticBodies_Min(SpacePartitionBody& body1, SpacePartitionBody& body2);
+
+
 
 	private:
 

@@ -4,6 +4,8 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20211128 - Algo for Min collision detection 
+ *                  Add method getColliderAt_globalFrame
  * @date 20211123 - Add BodyType argument to SpacePartitionBody constructor  
  * @date 20210501 - Collider class > struct
  *                  Replace method  createCollider > appendCollider
@@ -89,6 +91,14 @@ namespace Generics
 		* In case of out of bound indice a default collider is returned.
 		*/
 		SpacePartitionCollider getColliderAt(int idx) const;
+
+		/**
+		* getColliderAt_globalFrame will get a copy of
+		* the collider situated at indice <idx> in the collider container
+		* and return it in global (body) frame coordinate.
+		* In case of out of bound indice a default collider is returned.
+		*/
+		SpacePartitionCollider getColliderAt_globalFrame(int idx) const;
 
 		/**
 		* getNumberOfColliders will get the number of colliders stored in the container.

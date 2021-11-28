@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20211128 - Algo for Min collision detection
+ *                  Add method norm to Vect2d
  * @date 20211123 - Add SpacePartitionBody BodyType
  * @date 20210529 - Generic collision between two colliders
  *                  Add struct Collision
@@ -63,6 +65,10 @@ namespace Generics
         Vect2d& operator/=(const T& val) {
             x /= val; y /= val;
             return *this;
+        }
+        float norm() const
+        {
+            return (sqrt(x*x + y*y));
         }
     };
     inline Vect2d operator+(const Vect2d&  a, const Vect2d& b) {

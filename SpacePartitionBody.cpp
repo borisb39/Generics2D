@@ -59,6 +59,14 @@ namespace Generics
 		return collider;
 	}
 
+	SpacePartitionCollider SpacePartitionBody::getColliderAt_globalFrame(int idx) const
+	{
+		SpacePartitionCollider collider = getColliderAt(idx);
+		collider.position += mPosition;
+		return collider;
+	}
+
+
 	int SpacePartitionBody::getNumberOfColliders() const
 	{
 		return mColliders.size();

@@ -192,6 +192,21 @@ namespace UnitTests
 			body2.appendCollider(collider);
 			Assert::IsTrue(0 == body2.getColliderAt(0).boxWidth);
 			Assert::IsTrue(0 == body2.getColliderAt(0).boxHeight);
+			// test body displacement and collider position in global frame
+			collider.boxWidth = 6;
+			collider.boxHeight = 6;
+			collider.position = Vect2d{ 0, 0 };
+			body2.appendCollider(collider);
+			Assert::IsTrue(Vect2d{ 0, 0 } == body2.getColliderAt(1).position);
+			body2.setPosition({ 5, 6 });
+			Assert::IsFalse(Vect2d{ 5, 6 } == body2.getColliderAt(1).position);
+			Assert::IsTrue(Vect2d{ 5, 6 } == body2.getColliderAt_globalFrame(1).position);
+			collider.position = { 1, -2.5 };
+			body2.appendCollider(collider);
+			Assert::IsFalse(Vect2d{ 5, 6 } == body2.getColliderAt(1).position);
+			Assert::IsTrue(Vect2d{ 5, 6 } == body2.getColliderAt_globalFrame(1).position);
+			Assert::IsTrue(Vect2d{ 1, -2.5 } == body2.getColliderAt(2).position);
+			Assert::IsTrue(Vect2d{ 6, 3.5 } == body2.getColliderAt_globalFrame(2).position);
 		}
 
 		TEST_METHOD(BodyAndColliderAxisAlignedBoundingBox)

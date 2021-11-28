@@ -65,5 +65,24 @@ namespace UnitTests
 			Vect2d v31bis = Vect2d{ 3, 3 } *2 + Vect2d{ 4, 4 } +Vect2d{ 4, 4 } -Vect2d{ 3, 3 } / (2 * 6);
 			Assert::IsTrue(v31bis == Vect2d{ 13.75, 13.75 });
 		}
+		TEST_METHOD(TestNorm)
+		{
+			Vect2d v1 = Vect2d{ 3.0, 3.0 };
+			Assert::IsTrue(isEqual(v1.norm(), 4.242640687119285));
+			v1 = Vect2d{ 3.123, -23.45646 };
+			Assert::IsTrue(isEqual(v1.norm(), 23.663445326739723));
+			v1 = Vect2d{ 3.0, -3.0 };
+			Assert::IsTrue(isEqual(v1.norm(), 4.242640687119285));
+			v1 = Vect2d{ -3.0, -3.0 };
+			Assert::IsTrue(isEqual(v1.norm(), 4.242640687119285));
+			v1 = Vect2d{ 3, -3 };
+			Assert::IsTrue(isEqual(v1.norm(), 4.242640687119285));
+			v1 = Vect2d{ 3, 0 };
+			Assert::IsTrue(isEqual(v1.norm(), 3));
+			v1 = Vect2d{ 0, 0 };
+			Assert::IsTrue(isEqual(v1.norm(), 0));
+			v1 = Vect2d{ 0, -3 };
+			Assert::IsTrue(isEqual(v1.norm(), 3));
+		}
 	};
 }
