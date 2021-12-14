@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20211214 - Edge collider : consider restitution vector
+ *                  Add operator^ to Vect2d, Add method pi
  * @date 20211128 - Algo for Min collision detection
  *                  Add method norm to Vect2d
  * @date 20211123 - Add SpacePartitionBody BodyType
@@ -89,6 +91,12 @@ namespace Generics
         Vect2d c(a);
         return c /= val;
     }
+    inline float operator^(const Vect2d& a, const Vect2d& b) {
+        return a.x * b.y - b.x * a.y;
+    }
+
+    //pi expression
+    inline const double pi() { return std::atan(1) * 4; };
 
     ////SpacePartition Axis Aligned Bounding Box
     struct AABB

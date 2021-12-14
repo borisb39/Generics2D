@@ -94,42 +94,23 @@ namespace Generics
 
 		return false;
 	}
-		
-	Vect2d projectionPointToLineSegment(Vect2d& P1, Vect2d& P2, Vect2d& P3)
-	{
-		//Find the projection coordinate H of a point P3 on a line segment P1, P2
-		//The equation of the line is defined as P = P1 + u(P2 - P1)
-		//http://paulbourke.net/geometry/pointlineplane/
-		
-
-		//square distance between P1 and P2
-		float L2 = pow((P2.x - P1.x), 2) + pow((P2.y - P1.y), 2);
-
-		//the line segment is a point : the projection is that point
-		if (L2 == 0)
-			return P1;
-
-		//relative postion of H on line segment
-		float u = ((P3.x - P1.x) * (P2.x - P1.x) + (P3.y - P1.y) * (P2.y - P1.y)) / L2;
-
-		//projection coordinates
-		Vect2d H = { P1.x + u * (P2.x - P1.x) , P1.y + u * (P2.y - P1.y) };
-
-		return H;
-	}
 
 	Vect2d BoxEdgeDisplacementResponse(const SpacePartitionCollider& box, const SpacePartitionCollider& edge)
 	{
-		//Find the displacement of the box with respect to the edge normal vector
+		//Find the displacement of the box with respect to the edge restitution vector
 		//in order the move the box "outside" of the edge
 		//
 		//            OUTSIDE
-        //               ^ 
-		//               | normal
+		//               ^ 
+		//               | restitution vector
 		//edgeV0 *--------------* edgeV1
-		//             INSIDE
+		//             INSIDE           
+		// Remark : the restitution vector may not be the normal vector
 
-		// Box corners
+		//final displacement of the box
+		Vect2d response = { 0, 0 };
+
+		// box corners
 		Vect2d corners[4] = {
 			{ box.position.x - box.boxWidth / 2, //topleft
 			box.position.y + box.boxHeight / 2 },
@@ -138,50 +119,84 @@ namespace Generics
 			{ box.position.x - box.boxWidth / 2, //bottomleft
 			box.position.y - box.boxHeight / 2 },
 			{ box.position.x + box.boxWidth / 2, //bottomright
-			box.position.y - box.boxHeight / 2 } 
+			box.position.y - box.boxHeight / 2 }
 		};
 
-		//final displacement of the box
-		Vect2d response = { 0, 0 };
+		// default edge restitution vector is replaced by normal vector
+		Vect2d restitutionVector = edge.restitutionVector;
+		if (restitutionVector == Vect2d{ 0, 0 })
+		{
+			restitutionVector.x = -(edge.vertice1.y - edge.vertice0.y);
+			restitutionVector.y = edge.vertice1.x - edge.vertice0.x;
+		}
 
-		//we want to find the projection coordinate H
-		//of P3 on the line segment P1 P2
-		//P3 is a box corner
-		//P1 P2 are the edge coordinates
-		Vect2d P1 = edge.position + edge.vertice0;
-		Vect2d P2 = edge.position + edge.vertice1;
-		Vect2d P3;
-		Vect2d H;
-		Vect2d P1P2 = P2 - P1; //vector P1->P2 (edge vector)
-		Vect2d P3H; // vector P3->H (opposite of edge normal vector going throw box corner)
-		
-		//D2 is the square distance between H and P3
-		float D2max = 0;
-		float D2;
+		// min and max displacement allowed for the box collider
+		// to keep the edge and box bounding box touching each other
+		float max_dispx = fmax(0, edge.getAABB().right() + box.boxWidth / 2 - box.position.x);
+		float min_dispx = fmin(0, edge.getAABB().left() - box.boxWidth / 2 - box.position.x);
+		float max_dispy = fmax(0, edge.getAABB().top() + box.boxHeight / 2 - box.position.y);
+		float min_dispy = fmin(0, edge.getAABB().bottom() - box.boxHeight / 2 - box.position.y);
 
-		// for each box corner P3 we calculate the projection coordinate H 
-		// associated and check if the corner is "inside" the edge. The corner
-		// the furthest inside the edge is the one used to define the box displacement
+		//the response calculation is based on vector cross product to find the intersection
+		//between the restitution vector and edge segment vector for each corner of box collider
+	    //https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+		Vect2d p = { edge.position + edge.vertice0 };
+		Vect2d r = { edge.vertice1 - edge.vertice0 };
+		Vect2d s = { restitutionVector };
+
+		// restition vector is parallel or goes 'inside' edge segment vector
+		if ((r ^ s) <= 0)
+			return response;
+
+		// for each box corner we calculate the intersection between the edge segment and restitution vector
+		// goint throught the corner. The distance between the corner and the intersection
+		// is the displacement required to move the corner 'oustisde' of the edge. 
 		for (int i = 0; i < 4; i++)
 		{
-			P3 = corners[i];
-			H = projectionPointToLineSegment(P1, P2, P3);
-			P3H = H - P3;
-			// the sign of the cross product between P1->P2 and P3->H 
-			// says if P3 is considered as "inside"
-			if ((P1P2.x * P3H.y - P1P2.y * P3H.x) > 0 )
+			//box corner
+			Vect2d q = corners[i];
+
+			//corner is already ouside of the edge
+			if ((r ^ (q - p)) >= 0)
+				continue;
+
+			// disp is the displacement of the corner 
+			float t = ((q - p) ^ s) / (r ^ s);
+			Vect2d disp = p + r * t - q;
+
+			//apply boundary conditions
+
+			//box collider left must touch the edge segment
+			if (disp.x > max_dispx)
 			{
-				D2 = pow((P3.x - H.x), 2) + pow((P3.y - H.y), 2);
-				//if the corner is the furthest inside
-				if (D2 > D2max)
-				{
-					D2max = D2;
-					// the displacement of the box is the opposite 
-					// of edge normal vector going throw the corner
-					response = P3H; 
-				}
+				disp.y *= max_dispx / disp.x;
+				disp.x = max_dispx;
 			}
+			//box collider right must touch the edge segment
+			else if (disp.x < min_dispx)
+			{
+				disp.y *= min_dispx / disp.x;
+				disp.x = min_dispx;
+			}
+			//box collider bottom must touch the edge segment
+			if (disp.y > max_dispy)
+			{
+				disp.x *= max_dispy / disp.y;
+				disp.y = max_dispy;
+			}
+			//box collider top must touch the edge segment
+			else if (disp.y < min_dispy)
+			{
+				disp.x *= min_dispy / disp.y;
+				disp.y = min_dispy;
+			}
+
+			// The corner with biggest displacement is used 
+			// to define the box displacement.
+			if (disp.norm() > response.norm())
+				response = disp;
 		}
+
 		return response;
 	}
 }

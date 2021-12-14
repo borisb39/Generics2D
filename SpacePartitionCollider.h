@@ -4,6 +4,8 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20211214 - Edge collider : consider restitution vector
+ *                  Update methods BoxEdgeDisplacementResponse, Remove method projectionPointToLineSegment
  * @date 20210529 - Generic collision between two colliders
  *                  Add method collisionResolution
  * @date 20210506 - Box edge collision response 
@@ -39,6 +41,7 @@ namespace Generics
         float boxHeight = 0;//center at position
         Vect2d vertice0{ 0, 0 };// relative to position
         Vect2d vertice1{ 0, 0 };// relative to position
+        Vect2d restitutionVector{ 0, 0 }; 
 
         /**
         * getAABB will extrapolate the collider AABB from its internal properties
@@ -76,14 +79,8 @@ namespace Generics
     bool BoxEdgeIntersect(const SpacePartitionCollider& box, const SpacePartitionCollider& edge);
 
     /**
-    * projectionPointToLineSegment will compute and return the projection 
-    * coordinate H of a point P3 on a line segment P1, P2
-    */
-    Vect2d projectionPointToLineSegment(Vect2d& P1, Vect2d& P2, Vect2d& P3);
-
-    /**
     * BoxEdgeDisplacementResponse will compute the displacement of the box with respect to the edge
-    * normal vector, in order the move the box "outside" of the edge
+    * restitution vector, in order the move the box "outside" of the edge
     */
     Vect2d BoxEdgeDisplacementResponse(const SpacePartitionCollider& box, const SpacePartitionCollider& edge);
 }
