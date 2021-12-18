@@ -1,5 +1,5 @@
 
-
+#include <cassert>
 #include "SpacePartitionBody.h"
 
 
@@ -81,6 +81,13 @@ namespace Generics
 			vector *= correctionRatio;
 		}
 		return vector;
+	}
+
+	void SpacePartitionBody::setWorldID( int id)
+	{
+		assert(mWorldID == -1 && "worldID can't be assigned twice");
+		assert(id >= 0 && "worldID must be >= 0");
+		mWorldID = id;
 	}
 
 	void SpacePartitionBody::updateAABB(SpacePartitionCollider collider)

@@ -4,6 +4,8 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20211215 - Generic method to catch elapsed time for dynamic bodies
+ *                  Add attribut mWorldID
  * @date 20211128 - Algo for Min collision detection 
  *                  Add method getColliderAt_globalFrame
  * @date 20211123 - Add BodyType argument to SpacePartitionBody constructor  
@@ -107,6 +109,10 @@ namespace Generics
 
 		BodyType getType() const { return mType; }
 
+		// Getters and Setter for worldID 
+		void setWorldID(int id);
+		int getWorldID() const { return mWorldID; }
+
 	private:
 		BodyType mType = BodyType::STATIC;
 		// time relative properties associated to the body in World coordinates
@@ -122,6 +128,10 @@ namespace Generics
 
 		//Body AABB included all associated colliders
 		AABB mAABB;
+
+		// When the body is added to a world container it will be assigned to 
+		// an unique positive ID that identifies it in the world objects pool.
+		int mWorldID = -1;
 
 		/**
 		* checkMagnitude will check and correct the provided <vector> 

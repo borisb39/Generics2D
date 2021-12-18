@@ -8,79 +8,107 @@ namespace Generics
 	}
 
 
-	void SpacePartitionWorld::addBody(SpacePartitionBody& body)
+	SpacePartitionBody* SpacePartitionWorld::addBody(SpacePartitionBody& bodyTemplate)
 	{
-		if (BodyType::STATIC == body.getType())
+		bodyTemplate.setWorldID(totalBodiesNumber());
+
+		SpacePartitionBody* body = nullptr;
+
+		if (BodyType::STATIC == bodyTemplate.getType())
 		{
-			mStaticBodies.push_back(body);
-			mGrid.setBody(&mStaticBodies.back());
+			mStaticBodies.push_back(bodyTemplate);
+			body = &mStaticBodies.back();
+			mGrid.setBody(body);
 		}
-		else if (BodyType::DYNAMIC == body.getType())
+
+		else if (BodyType::DYNAMIC == bodyTemplate.getType())
 		{
-			mDynamicBodies.push_back(body);
-			mGrid.setBody(&mDynamicBodies.back());
+			mDynamicBodies.push_back(bodyTemplate);
+			body = &mDynamicBodies.back();
+			mGrid.setBody(body);
 		}
+		
+		return body;
 	}
 
-	Collision SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies_Mean(SpacePartitionBody& body1, SpacePartitionBody& body2)
-	{
-		// globalCollision decribes the global collision state between the dynamic body1 
-		// and static body2 (considering all colliders from both bodies)
-		Collision globalCollision;
-		// total number of collisions between the 2 bodies
-		int nbOfCollision = 0;
 
-		//We want to test the collision only between a dynamic body1 and a static body2. 
-		//This test also covers the case of identical bodies (they don't collide).
-		if (!(BodyType::DYNAMIC == body1.getType()) || !(BodyType::STATIC == body2.getType()))
-			return globalCollision;
-	
-		// for each collider of dynamic body
-		for (int i = 0; i < body1.getNumberOfColliders(); i++)
+	void SpacePartitionWorld::updateDynamicBodies(double dt)
+	{
+		// catch elapsed time
+		for (auto& body : mDynamicBodies)
 		{
-			SpacePartitionCollider dynamicCollider = body1.getColliderAt_globalFrame(i);
-			// for each collider of static body
-			for (int j = 0; j < body2.getNumberOfColliders(); j++)
+			body.updateFromAcceleration(dt);
+			mGrid.setBody(&body);
+		}
+
+		// each dynamic body will be tested once against each other body
+		std::vector<std::vector<bool> > isDone(
+			dynamicBodiesNumber(),
+			std::vector<bool>(totalBodiesNumber(), false));
+
+		// For each dynamic body we test if 
+		// collisions with static bodies occur
+		int nrk = 0;
+		for (auto& body : mDynamicBodies)
+		{
+			float positive_dispx = 0.f;
+			float negative_dispx = 0.f;
+			float positive_dispy = 0.f;
+			float negative_dispy = 0.f;
+			// iterate in the grid to fetch the dynamic body neighborhood
+			for (auto const& gid : mGrid.getBodygIDs(&body))
 			{
-				SpacePartitionCollider staticCollider = body2.getColliderAt_globalFrame(j);
-				// check if there is an interference between the colliders
-				Collision collision = SpacePartitionCollider::collisionResolution(dynamicCollider, staticCollider);
-				if (collision.isTouching)
+				if (gid == mGrid.OOBgID()) continue; // skip out of bounds bodies
+				for (auto const& neighbor : mGrid.getBodiesAtgID(gid))
 				{
-					// update the global collision state if there is an interferance
-					globalCollision.isTouching = true;
-					globalCollision.response += collision.response;
-					nbOfCollision += 1;
+					int nID = neighbor->getWorldID();
+					if (!isDone[nrk][nID])
+					{
+						// test collision for each neighbor
+						Collision collision = collisionResolutionDynamicVSstaticBodies(body, *neighbor);
+						// we store the maximum positive/negative collision displacement values
+						positive_dispx = fmax(positive_dispx, collision.response.x);
+						negative_dispx = fmin(negative_dispx, collision.response.x);
+						positive_dispy = fmax(positive_dispy, collision.response.y);
+						negative_dispy = fmin(negative_dispy, collision.response.y);
+						isDone[nrk][nID] = true;
+					}
 				}
 			}
+			nrk += 1;
+
+			// if collisions occur we update the body position according the maximum displacement values
+			float divx = (positive_dispx != 0 && negative_dispx != 0) ? 2.f : 1.f;
+			float divy = (positive_dispy != 0 && negative_dispy != 0) ? 2.f : 1.f;
+			float correction_x = (positive_dispx + negative_dispx)/ divx;
+			float correction_y = (positive_dispy + negative_dispy)/ divy;
+			Vect2d correction = { correction_x, correction_y };
+			Vect2d correctedPosition = body.getPosition() + correction;
+			body.setPosition(correctedPosition);
+			mGrid.setBody(&body);
 		}
-
-		// When want to consider the mean collision response value
-		if (nbOfCollision != 0)
-			globalCollision.response /= nbOfCollision;
-
-		return globalCollision;
 	}
 
-	Collision SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies_Min(SpacePartitionBody& body1, SpacePartitionBody& body2)
+	Collision SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies(SpacePartitionBody& body1, SpacePartitionBody& body2)
 	{
+
 		// finalCollision decribes the final collision state between the dynamic body1 
 		// and static body2 
 		Collision finalCollision;
-		// The purpose is to find the collider of static body where
-		// the displacement of dynamic body that removes the intersection
-		// is minimum. For comparison purpose we initialize the finalCollision.response at +infinite.
-		constexpr float inf = std::numeric_limits<float>::infinity();
-		finalCollision.response = { inf, inf };
-		// during the resolution, finalCollision.isTouching is set to true only when
-		// a collision response occured. In some cases there may be an intersection
-		// with no response (intersection of 2 boxes) that must be tracked
-		bool isTouching = false;
 
 		//We want to test the collision only between a dynamic body1 and a static body2. 
 		//This test also covers the case of identical bodies (they don't collide).
 		if (!(BodyType::DYNAMIC == body1.getType()) || !(BodyType::STATIC == body2.getType()))
 			return finalCollision;
+
+		// The purpose is to find the collider of static body where
+		// the displacement of dynamic body that removes the intersection
+		// is minimum. For comparison purpose we initialize the finalCollision.response at +infinite.
+		finalCollision.response = { 999999999999.9, 999999999999.9 };
+		// during the resolution, finalCollision.isTouching is set to true only when
+		// a collision response occured. In some cases there may be an intersection
+		// with no response (intersection of 2 boxes) that must be tracked
+		bool isTouching = false;
 
 		// for each collider of static body
 		for (int i = 0; i < body2.getNumberOfColliders(); i++)
