@@ -140,7 +140,6 @@ namespace UnitTests
 			collider.boxWidth = 10;
 			collider.boxHeight = 10;
 			collider.position = Vect2d{ 3, 2 };
-			collider.isEnabled = false;
 			collider.isSensor = true;
 			body.appendCollider(collider);
 			th_colliders.push_back(collider);
@@ -150,7 +149,6 @@ namespace UnitTests
 			collider.boxWidth = 5.3;
 			collider.boxHeight = 12.6;
 			collider.position = Vect2d{ -1, 0 };
-			collider.isEnabled = true;
 			collider.isSensor = true;
 			body.appendCollider(collider);
 			th_colliders.push_back(collider);
@@ -160,7 +158,6 @@ namespace UnitTests
 			collider.vertice0 = Vect2d{ 0, -10 };
 			collider.vertice1 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, 4 };
-			collider.isEnabled = false;
 			collider.isSensor = false;
 			body.appendCollider(collider);
 			th_colliders.push_back(collider);
@@ -176,7 +173,6 @@ namespace UnitTests
 				SpacePartitionCollider colliderAtIdx = body.getColliderAt(i);
 				Assert::IsTrue(th_colliders[i].type == colliderAtIdx.type);
 				Assert::IsTrue(th_colliders[i].tag == colliderAtIdx.tag);
-				Assert::IsTrue(th_colliders[i].isEnabled == colliderAtIdx.isEnabled);
 				Assert::IsTrue(th_colliders[i].isSensor == colliderAtIdx.isSensor);
 				Assert::IsTrue(th_colliders[i].position == colliderAtIdx.position);
 				Assert::IsTrue(th_colliders[i].boxWidth == colliderAtIdx.boxWidth);
@@ -313,6 +309,22 @@ namespace UnitTests
 			Assert::IsFalse(AABB{ -10.5, 22.3, 11, 6.599 }.intersect(AABB{ 20, -6, 50, 50 }));
 			Assert::IsTrue(AABB{ -10.5, 22.3, 11, 6.6 }.intersect(AABB{ 20, -6, 50, 50 }));
 			Assert::IsTrue(AABB{ -10.5, 22.3, 11.0001, 6.6001 }.intersect(AABB{ 20, -6, 50, 50 }));
+		}
+
+		TEST_METHOD(UserDataManagement)
+		{
+			SpacePartitionBody body;
+			Assert::IsTrue(body.getUserData() == nullptr);
+			SpacePartitionBody* body2ptrobject = new SpacePartitionBody;
+			body.setUserData(body2ptrobject);
+			Assert::IsTrue(body.getUserData() == body2ptrobject);
+			SpacePartitionBody body3;
+			body.setUserData(&body3);
+			Assert::IsFalse(body.getUserData() == body2ptrobject);
+			Assert::IsTrue(body.getUserData() == &body3);
+			body.setUserData(nullptr);
+			Assert::IsTrue(body.getUserData() == nullptr);
+			delete body2ptrobject;
 		}
 	};
 }

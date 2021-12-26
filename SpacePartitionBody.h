@@ -4,6 +4,8 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20211218 - add userData ptr
+ *                  Add attribut mUserData
  * @date 20211215 - Generic method to catch elapsed time for dynamic bodies
  *                  Add attribut mWorldID
  * @date 20211128 - Algo for Min collision detection 
@@ -113,6 +115,10 @@ namespace Generics
 		void setWorldID(int id);
 		int getWorldID() const { return mWorldID; }
 
+		// Getters and Setter for userData
+		void setUserData(void* userData) { mUserData = userData; }
+		void* getUserData() const { return mUserData; }
+
 	private:
 		BodyType mType = BodyType::STATIC;
 		// time relative properties associated to the body in World coordinates
@@ -132,6 +138,9 @@ namespace Generics
 		// When the body is added to a world container it will be assigned to 
 		// an unique positive ID that identifies it in the world objects pool.
 		int mWorldID = -1;
+
+		// void ptr to attach any user object
+		void* mUserData = nullptr;
 
 		/**
 		* checkMagnitude will check and correct the provided <vector> 

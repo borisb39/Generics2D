@@ -31,7 +31,8 @@ namespace Generics
 		collision.isTouching = collidersIntersect(a, b);
 		if (collision.isTouching)
 		{
-			if (a.type == ColliderType::BOX && b.type == ColliderType::EDGE)
+			if (a.isSensor || b.isSensor) {}
+			else if (a.type == ColliderType::BOX && b.type == ColliderType::EDGE)
 				collision.response = BoxEdgeDisplacementResponse(a, b);
 			else if (a.type == ColliderType::EDGE && b.type == ColliderType::BOX)
 				collision.response = BoxEdgeDisplacementResponse(b, a) * -1;

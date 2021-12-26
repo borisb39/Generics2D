@@ -547,7 +547,29 @@ namespace UnitTests
 			expectedCollision = { true,  { 0, 2} };
 			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
 			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
-
+			// sensor -> collision but no response
+			expectedCollision = { true,  { 0, 0} };
+			collider1.isSensor = true;
+			collider2.isSensor = false;
+			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
+			collider1.isSensor = false;
+			collider2.isSensor = true;
+			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
+			collider1.isSensor = true;
+			collider2.isSensor = true;
+			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
+			expectedCollision = { true,  { 0, 2} };
+			collider1.isSensor = false;
+			collider2.isSensor = false;
+			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
+			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
+			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
 		}
 	};
 }

@@ -4,6 +4,7 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20211226 - Remove isEnabled attribut, consider isSensor attibut
  * @date 20211214 - Edge collider : consider restitution vector
  *                  Update methods BoxEdgeDisplacementResponse, Remove method projectionPointToLineSegment
  * @date 20210529 - Generic collision between two colliders
@@ -34,7 +35,6 @@ namespace Generics
         //collider properties
         ColliderType type = ColliderType::BOX;
         typeColliderTag tag = "None";
-        bool isEnabled = false;
         bool isSensor = false;
         Vect2d position{ 0, 0 };//relative to the associated body center
         float boxWidth = 0;//center at position
