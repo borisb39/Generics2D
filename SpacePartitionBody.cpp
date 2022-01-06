@@ -5,6 +5,13 @@
 
 namespace Generics
 {
+	SpacePartitionBody::SpacePartitionBody(Vect2d position, BodyType type)
+	{
+		mPosition = position;
+		mType = type;
+		mColliders[mCurrentConfig] = {};
+	}
+
 	void SpacePartitionBody::setPosition(Vect2d position)
 	{
 		mPosition = position;
@@ -43,19 +50,26 @@ namespace Generics
 		updateFromVelocity(dt);
 	}
 
+	void SpacePartitionBody::setCurrentConfig(typeBodyconfigID config)
+	{
+		if (mColliders.find(config) == mColliders.end())
+			mColliders[config] = {};
+		mCurrentConfig = config;
+	}
+
 	void SpacePartitionBody::appendCollider(SpacePartitionCollider collider)
 	{
 		collider.boxHeight = fmax(0, collider.boxHeight);
 		collider.boxWidth = fmax(0, collider.boxWidth);
-		mColliders.push_back(collider);
+		mColliders.at(mCurrentConfig).push_back(collider);
 		updateAABB(collider);
 	}
 
 	SpacePartitionCollider SpacePartitionBody::getColliderAt(int idx) const
 	{
 		SpacePartitionCollider collider;
-		if (idx < mColliders.size())
-			collider = mColliders[idx];
+		if (idx < getNumberOfColliders())
+			collider = mColliders.at(mCurrentConfig)[idx];
 		return collider;
 	}
 
@@ -69,7 +83,7 @@ namespace Generics
 
 	int SpacePartitionBody::getNumberOfColliders() const
 	{
-		return mColliders.size();
+		return mColliders.at(mCurrentConfig).size();
 	}
 
 	Vect2d SpacePartitionBody::checkMagnitude(Vect2d vector, float maxMagnitude)

@@ -326,5 +326,60 @@ namespace UnitTests
 			Assert::IsTrue(body.getUserData() == nullptr);
 			delete body2ptrobject;
 		}
+
+		TEST_METHOD(BodyConfigsManagement)
+		{
+			SpacePartitionBody body;
+			// correct initialisation of bodyconfig
+			Assert::IsTrue(body.getCurrentConfig() == "default");
+			Assert::IsTrue(body.getNumberOfColliders() == 0);
+			SpacePartitionCollider collider;
+			// append collider to "default" config
+			collider.tag = "DefaultCollider1";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
+			collider.position = { 0, 0 };
+			body.appendCollider(collider);
+			collider.tag = "DefaultCollider2";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
+			collider.position = { 2, 0 };
+			body.appendCollider(collider);
+			Assert::IsTrue(body.getNumberOfColliders() == 2);
+			// switch config
+			body.setCurrentConfig("config1");
+			Assert::IsFalse(body.getCurrentConfig() == "default");
+			Assert::IsTrue(body.getCurrentConfig() == "config1");
+			Assert::IsTrue(body.getNumberOfColliders() == 0);
+			// append collider tp "config1"
+			collider.tag = "Config1Collider1";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
+			collider.position = { 2, 0 };
+			body.appendCollider(collider);
+			Assert::IsTrue(body.getNumberOfColliders() == 1);
+			collider.tag = "Config1Collider2";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
+			collider.position = { 2, 0 };
+			body.appendCollider(collider);
+			Assert::IsTrue(body.getNumberOfColliders() == 2);
+			collider.tag = "Config1Collider2";
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
+			collider.position = { 2, 0 };
+			body.appendCollider(collider);
+			Assert::IsTrue(body.getNumberOfColliders() == 3);
+			//swtich back to default config and test if it is ok
+			// switch config
+			body.setCurrentConfig("default");
+			Assert::IsTrue(body.getNumberOfColliders() == 2);
+			Assert::IsTrue(body.getCurrentConfig() == "default");
+		}
 	};
 }

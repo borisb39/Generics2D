@@ -528,6 +528,41 @@ namespace UnitTests
 				world.updateDynamicBodies(dt);
 
 		}
+		TEST_METHOD(collisionResolutionDynamicStatic_multiconfig)
+		{
+			SpacePartitionCollider collider;
+			// create the dynamic body with 2 configs
+			SpacePartitionBody body1{ { 0, 0 }, BodyType::DYNAMIC };
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 6;
+			collider.boxWidth = 6;
+			body1.appendCollider(collider);
+			// create the second config 
+			body1.setCurrentConfig("config1");
+			collider.type = ColliderType::BOX;
+			collider.boxHeight = 3;
+			collider.boxWidth = 3;
+			body1.appendCollider(collider);
+			//create the static body with 1 default config
+			SpacePartitionBody body2{ { 0, 0 }, BodyType::STATIC };
+			collider.type = ColliderType::EDGE;
+			collider.vertice0 = { -1, 0 };
+			collider.vertice1 = { 1, 0 };
+			body2.appendCollider(collider);
+			// test the collision scenarios
+			body1.setCurrentConfig("default");
+			Collision collision{ true, {0 ,3 } };
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies(body1, body2)));
+			body1.setCurrentConfig("config1");
+			collision = { true, {0 ,1.5 } };
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies(body1, body2)));
+			body1.setCurrentConfig("config2"); // new config created with no colliders  -> no collision
+			collision = { false, {0 ,0 } };
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies(body1, body2)));
+			body1.setCurrentConfig("default");
+			collision = { true, {0 ,3 } };
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionWorld::collisionResolutionDynamicVSstaticBodies(body1, body2)));
+		}
 
 	};
 }

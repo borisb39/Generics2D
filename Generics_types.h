@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20220106 - Add body multiconfig
+ *                  Add typedef typeBodyconfigID
  * @date 20211214 - Edge collider : consider restitution vector
  *                  Add operator^ to Vect2d, Add method pi
  * @date 20211128 - Algo for Min collision detection
@@ -133,7 +135,7 @@ namespace Generics
     };
 
     ////SpacePartitionCollider
-
+    
     enum class ColliderType
     {
         BOX,
@@ -148,6 +150,10 @@ namespace Generics
     };
 
     ////SpacePartitionBody
+
+    // Bodies can have several configs for colliders association
+    typedef std::string typeBodyconfigID;
+
     enum class BodyType
     {
         STATIC,

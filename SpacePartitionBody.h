@@ -4,7 +4,11 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
- * @date 20211218 - add userData ptr
+ * @date 20220106 - Add body multiconfig
+ *                  Update SpacePartitionBody constructor, 
+ *                  Add methods get/set CurrentConfig + mCurrentConfig attribut
+ *                  Update  appendCollider and getColliderAt methods, mColliders attribut
+ * @date 20211218 - Add userData ptr
  *                  Add attribut mUserData
  * @date 20211215 - Generic method to catch elapsed time for dynamic bodies
  *                  Add attribut mWorldID
@@ -37,8 +41,8 @@ namespace Generics
 		/**
 		* SpacePartionBody constructor
 		*/
-		SpacePartitionBody(Vect2d position = { 0, 0 }, BodyType type = BodyType::STATIC) :
-			mPosition(position), mType(type) {};
+		SpacePartitionBody(Vect2d position = { 0, 0 }, BodyType type = BodyType::STATIC);
+
 		/**
 		* SpacePartionBody destructor
 		*/
@@ -84,21 +88,33 @@ namespace Generics
 		AABB getAABB() const { return mAABB; }
 
 		/**
-		* appendCollider will append to the internal colliders container
-		* a copy of the provided collider
+		* set the current config to the provided <config> flag.
+		* A config is associated to a list of colliders used to deal with collision detection.
+		* If the <config> is not already registered internally it is created and assigned to an empty list of colliders.
+		**/
+		void setCurrentConfig(typeBodyconfigID config);
+
+		/**
+		* getter for bodyconfig
+		**/
+		typeBodyconfigID getCurrentConfig() const { return mCurrentConfig; }
+
+		/**
+		* appendCollider will append to the internal colliders container for the current bodyconfig,
+		* a copy of the provided collider .
 		*/
 		void appendCollider(SpacePartitionCollider);
 
 		/**
 		* getColliderAt will get a copy of 
-		* the collider situated at indice <idx> in the collider container. 
+		* the collider situated at indice <idx> in the collider container for the current bodyconfig. 
 		* In case of out of bound indice a default collider is returned.
 		*/
 		SpacePartitionCollider getColliderAt(int idx) const;
 
 		/**
 		* getColliderAt_globalFrame will get a copy of
-		* the collider situated at indice <idx> in the collider container
+		* the collider situated at indice <idx> in the collider container for the current bodyconfig
 		* and return it in global (body) frame coordinate.
 		* In case of out of bound indice a default collider is returned.
 		*/
@@ -130,7 +146,12 @@ namespace Generics
 		float mMaxAccelerationMagnitude = 0;
 
 		//Container for associated colliders
-		std::vector<SpacePartitionCollider> mColliders;
+		//For each bodyconfig a specific list of colliders is defined
+		//to deal with collision detection.
+		std::map<typeBodyconfigID, std::vector<SpacePartitionCollider>> mColliders;
+
+		// current config (= list of colliders) associated to the collision detection of the body
+		typeBodyconfigID mCurrentConfig = "default";
 
 		//Body AABB included all associated colliders
 		AABB mAABB;
