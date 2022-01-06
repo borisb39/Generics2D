@@ -4,6 +4,9 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220106 - Check AABB first for body collision detection
+ *                  Add method getAABB_globalFrame
+ *                  Add method collisionResolutionDynamicVSstatic (from SpacePartitioWorld)
  * @date 20220106 - Add body multiconfig
  *                  Update SpacePartitionBody constructor, 
  *                  Add methods get/set CurrentConfig + mCurrentConfig attribut
@@ -88,6 +91,11 @@ namespace Generics
 		AABB getAABB() const { return mAABB; }
 
 		/**
+		* getter for Body AABB in global e coordinate
+		*/
+		AABB getAABB_globalFrame() const;
+
+		/**
 		* set the current config to the provided <config> flag.
 		* A config is associated to a list of colliders used to deal with collision detection.
 		* If the <config> is not already registered internally it is created and assigned to an empty list of colliders.
@@ -115,7 +123,7 @@ namespace Generics
 		/**
 		* getColliderAt_globalFrame will get a copy of
 		* the collider situated at indice <idx> in the collider container for the current bodyconfig
-		* and return it in global (body) frame coordinate.
+		* and return it in global frame coordinate.
 		* In case of out of bound indice a default collider is returned.
 		*/
 		SpacePartitionCollider getColliderAt_globalFrame(int idx) const;
@@ -134,6 +142,14 @@ namespace Generics
 		// Getters and Setter for userData
 		void setUserData(void* userData) { mUserData = userData; }
 		void* getUserData() const { return mUserData; }
+
+		/**
+		* collisionResolutionDynamicVSstatic will resolve the collision between the provided dynamic <body1> and static <body2>
+		* and return the Collision state.
+		* The resolution search for the minimal displacement of body1 that removes the intersection between the two bodies.
+		*/
+		static Collision collisionResolutionDynamicVSstatic(SpacePartitionBody& body1, SpacePartitionBody& body2);
+
 
 	private:
 		BodyType mType = BodyType::STATIC;

@@ -4,6 +4,7 @@
 *
 * @file SpacePartionWorld.h
 * @author Boris Burdin
+* @date 20220106 - Move collisionResolutionDynamicVSstaticBodies in SpacePartitionBody
 * @date 20211215 - Generic method to catch elapsed time for dynamic bodies 
 *                  Add method updateDynamicBodies, getters for number of bodies
 *                  Update methods addBody,collisionResolutionDynamicVSstaticBodies
@@ -50,14 +51,6 @@ namespace Generics
 		*/
 		void updateDynamicBodies(double dt);
 
-
-		/**
-		* collisionResolutionDynamicVSstaticBodies will resolve the collision between the provided dynamic <body1> and static <body2>
-		* and return the Collision state.
-		* The resolution search for the minimal displacement of body1 that removes the intersection between the two bodies.
-		*/
-		static Collision collisionResolutionDynamicVSstaticBodies(SpacePartitionBody& body1, SpacePartitionBody& body2);
-		
 		// Getters for number of bodies
 		int totalBodiesNumber() const { return mStaticBodies.size() + mDynamicBodies.size(); }
 		int dynamicBodiesNumber() const { return mDynamicBodies.size(); }
