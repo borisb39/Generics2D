@@ -1,34 +1,62 @@
+
 #include "SpacePartitionWorld.h"
+
+#include "SpacePartitionGrid.h"
+#include "SpacePartitionBody.h"
+#include "SpacePartitionCollider.h"
 
 namespace Generics
 {
 	SpacePartitionWorld::SpacePartitionWorld(int nx, int ny, float width, float height)
-		: mGrid( nx,  ny,  width,  height)
 	{
+		mGrid = new SpacePartitionGrid(nx, ny, width, height);
 	}
 
-
-	SpacePartitionBody* SpacePartitionWorld::addBody(SpacePartitionBody& bodyTemplate)
+	SpacePartitionWorld::~SpacePartitionWorld()
 	{
-		bodyTemplate.setWorldID(totalBodiesNumber());
+		delete mGrid;
+	}
 
-		SpacePartitionBody* body = nullptr;
+	SpacePartitionBody* SpacePartitionWorld::addBody(SpacePartitionBodyTemplate bodyTemplate)
+	{
+		SpacePartitionBody body{  bodyTemplate.position, bodyTemplate.type};
 
-		if (BodyType::STATIC == bodyTemplate.getType())
+		//append colliders to world factory and reference it into body container
+		std::vector<SpacePartitionCollider*> newColliders;
+		for (auto config : bodyTemplate.colliders)
 		{
-			mStaticBodies.push_back(bodyTemplate);
-			body = &mStaticBodies.back();
-			mGrid.setBody(body);
-		}
-
-		else if (BodyType::DYNAMIC == bodyTemplate.getType())
-		{
-			mDynamicBodies.push_back(bodyTemplate);
-			body = &mDynamicBodies.back();
-			mGrid.setBody(body);
+			body.setCurrentConfig(config.first);
+			for (auto collider : config.second)
+			{
+				mColliders.push_back(collider);
+				body.appendCollider(&mColliders.back());
+				newColliders.push_back(&mColliders.back());
+			}
 		}
 		
-		return body;
+		//assign world id to the body
+		body.setWorldID(totalBodiesNumber());
+
+		//append the body to world factory and reference it into the grid
+		SpacePartitionBody* body_ptr = nullptr;
+		if (BodyType::STATIC == body.getType())
+		{
+			mStaticBodies.push_back(body);
+			body_ptr = &mStaticBodies.back();
+			mGrid->setBody(body_ptr);
+		}
+		else if (BodyType::DYNAMIC == body.getType())
+		{
+			mDynamicBodies.push_back(body);
+			body_ptr = &mDynamicBodies.back();
+			mGrid->setBody(body_ptr);
+		}
+		
+		//register the parent body ptr to each new collider appended into world factory
+		for (auto collider : newColliders)
+			collider->p_body = body_ptr;
+
+		return body_ptr;
 	}
 
 
@@ -38,7 +66,7 @@ namespace Generics
 		for (auto& body : mDynamicBodies)
 		{
 			body.updateFromAcceleration(dt);
-			mGrid.setBody(&body);
+			mGrid->setBody(&body);
 		}
 
 		// each dynamic body will be tested once against each other body
@@ -56,10 +84,10 @@ namespace Generics
 			float positive_dispy = 0.f;
 			float negative_dispy = 0.f;
 			// iterate in the grid to fetch the dynamic body neighborhood
-			for (auto const& gid : mGrid.getBodygIDs(&body))
+			for (auto const& gid : mGrid->getBodygIDs(&body))
 			{
-				if (gid == mGrid.OOBgID()) continue; // skip out of bounds bodies
-				for (auto const& neighbor : mGrid.getBodiesAtgID(gid))
+				if (gid == mGrid->OOBgID()) continue; // skip out of bounds bodies
+				for (auto const& neighbor : mGrid->getBodiesAtgID(gid))
 				{
 					int nID = neighbor->getWorldID();
 					if (!isDone[nrk][nID])
@@ -85,7 +113,7 @@ namespace Generics
 			Vect2d correction = { correction_x, correction_y };
 			Vect2d correctedPosition = body.getPosition() + correction;
 			body.setPosition(correctedPosition);
-			mGrid.setBody(&body);
+			mGrid->setBody(&body);
 		}
 	}
 }

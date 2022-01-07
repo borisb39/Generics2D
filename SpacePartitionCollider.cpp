@@ -1,5 +1,8 @@
+
 #include "SpacePartitionCollider.h"
+
 #include "ToolsLineSegmentsIntersect.hpp"
+#include "SpacePartitionBody.h"
 
 namespace Generics
 {
@@ -8,13 +11,13 @@ namespace Generics
 		AABB aabb;
 		if (type == ColliderType::BOX)
 		{
-			aabb.position = position;
+			aabb.position = getPosition_globalFrame();
 			aabb.height = fmax(0, boxHeight);
 			aabb.width = fmax(0, boxWidth);
 		}
 		else if (type == ColliderType::EDGE)
 		{
-			aabb.position = position
+			aabb.position = getPosition_globalFrame()
 				+ Vect2d{
 				(vertice0.x + vertice1.x) / 2,
 				(vertice0.y + vertice1.y) / 2
@@ -24,6 +27,14 @@ namespace Generics
 		}
         return aabb;
     }
+
+	Vect2d SpacePartitionCollider::getPosition_globalFrame() const
+	{
+		Vect2d position_globalFrame = position;
+		if (p_body != nullptr)
+			position_globalFrame += p_body->getPosition();
+		return position_globalFrame;
+	}
 
 	Collision SpacePartitionCollider::collisionResolution(const SpacePartitionCollider& a, const SpacePartitionCollider& b)
 	{
@@ -54,29 +65,29 @@ namespace Generics
 
 	bool BoxBoxIntersect(const SpacePartitionCollider& a, const SpacePartitionCollider& b)
 	{
-		return (abs(a.position.x - b.position.x) * 2 <= (a.boxWidth + b.boxWidth)) &&
-			(abs(a.position.y - b.position.y) * 2 <= (a.boxHeight + b.boxHeight));
+		return (abs(a.getPosition_globalFrame().x - b.getPosition_globalFrame().x) * 2 <= (a.boxWidth + b.boxWidth)) &&
+			(abs(a.getPosition_globalFrame().y - b.getPosition_globalFrame().y) * 2 <= (a.boxHeight + b.boxHeight));
 	}
 
 	bool BoxEdgeIntersect(const SpacePartitionCollider& box, const SpacePartitionCollider& edge)
 	{
 		// Box corners
 		Vect2d boxCorners[5] = {
-			{ box.position.x - box.boxWidth / 2, //topleft
-			box.position.y + box.boxHeight / 2 },
-			{ box.position.x + box.boxWidth / 2, //topright
-			box.position.y + box.boxHeight / 2 },
-			{ box.position.x + box.boxWidth / 2, //bottomright
-			box.position.y - box.boxHeight / 2 },
-			{ box.position.x - box.boxWidth / 2, //bottomleft
-			box.position.y - box.boxHeight / 2 },
-			{ box.position.x - box.boxWidth / 2, //topleft
-			box.position.y + box.boxHeight / 2 }
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //topleft
+			box.getPosition_globalFrame().y + box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x + box.boxWidth / 2, //topright
+			box.getPosition_globalFrame().y + box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x + box.boxWidth / 2, //bottomright
+			box.getPosition_globalFrame().y - box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //bottomleft
+			box.getPosition_globalFrame().y - box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //topleft
+			box.getPosition_globalFrame().y + box.boxHeight / 2 }
 		};
 ;
 		// Edge bounds
-		Vect2d edgesBounds[2] = { edge.position + edge.vertice0,
-			edge.position + edge.vertice1 };
+		Vect2d edgesBounds[2] = { edge.getPosition_globalFrame() + edge.vertice0,
+			edge.getPosition_globalFrame() + edge.vertice1 };
 
 		// test if one of the edge bound is inside the box
 		for (int i = 0; i < 2; i++)
@@ -113,14 +124,14 @@ namespace Generics
 
 		// box corners
 		Vect2d corners[4] = {
-			{ box.position.x - box.boxWidth / 2, //topleft
-			box.position.y + box.boxHeight / 2 },
-			{ box.position.x + box.boxWidth / 2, //topright
-			box.position.y + box.boxHeight / 2 },
-			{ box.position.x - box.boxWidth / 2, //bottomleft
-			box.position.y - box.boxHeight / 2 },
-			{ box.position.x + box.boxWidth / 2, //bottomright
-			box.position.y - box.boxHeight / 2 }
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //topleft
+			box.getPosition_globalFrame().y + box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x + box.boxWidth / 2, //topright
+			box.getPosition_globalFrame().y + box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //bottomleft
+			box.getPosition_globalFrame().y - box.boxHeight / 2 },
+			{ box.getPosition_globalFrame().x + box.boxWidth / 2, //bottomright
+			box.getPosition_globalFrame().y - box.boxHeight / 2 }
 		};
 
 		// default edge restitution vector is replaced by normal vector
@@ -133,15 +144,15 @@ namespace Generics
 
 		// min and max displacement allowed for the box collider
 		// to keep the edge and box bounding box touching each other
-		float max_dispx = fmax(0, edge.getAABB().right() + box.boxWidth / 2 - box.position.x);
-		float min_dispx = fmin(0, edge.getAABB().left() - box.boxWidth / 2 - box.position.x);
-		float max_dispy = fmax(0, edge.getAABB().top() + box.boxHeight / 2 - box.position.y);
-		float min_dispy = fmin(0, edge.getAABB().bottom() - box.boxHeight / 2 - box.position.y);
+		float max_dispx = fmax(0, edge.getAABB().right() + box.boxWidth / 2 - box.getPosition_globalFrame().x);
+		float min_dispx = fmin(0, edge.getAABB().left() - box.boxWidth / 2 - box.getPosition_globalFrame().x);
+		float max_dispy = fmax(0, edge.getAABB().top() + box.boxHeight / 2 - box.getPosition_globalFrame().y);
+		float min_dispy = fmin(0, edge.getAABB().bottom() - box.boxHeight / 2 - box.getPosition_globalFrame().y);
 
 		//the response calculation is based on vector cross product to find the intersection
 		//between the restitution vector and edge segment vector for each corner of box collider
 	    //https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-		Vect2d p = { edge.position + edge.vertice0 };
+		Vect2d p = { edge.getPosition_globalFrame() + edge.vertice0 };
 		Vect2d r = { edge.vertice1 - edge.vertice0 };
 		Vect2d s = { restitutionVector };
 

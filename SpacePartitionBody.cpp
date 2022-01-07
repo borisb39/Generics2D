@@ -1,7 +1,8 @@
 
-#include <cassert>
 #include "SpacePartitionBody.h"
 
+#include "SpacePartitionCollider.h"
+#include <cassert>
 
 namespace Generics
 {
@@ -64,10 +65,10 @@ namespace Generics
 		mCurrentConfig = config;
 	}
 
-	void SpacePartitionBody::appendCollider(SpacePartitionCollider collider)
+	void SpacePartitionBody::appendCollider(SpacePartitionCollider* collider)
 	{
-		collider.boxHeight = fmax(0, collider.boxHeight);
-		collider.boxWidth = fmax(0, collider.boxWidth);
+		collider->boxHeight = fmax(0, collider->boxHeight);
+		collider->boxWidth = fmax(0, collider->boxWidth);
 		mColliders.at(mCurrentConfig).push_back(collider);
 		updateAABB(collider);
 	}
@@ -76,17 +77,9 @@ namespace Generics
 	{
 		SpacePartitionCollider collider;
 		if (idx < getNumberOfColliders())
-			collider = mColliders.at(mCurrentConfig)[idx];
+			collider = *(mColliders.at(mCurrentConfig)[idx]);
 		return collider;
 	}
-
-	SpacePartitionCollider SpacePartitionBody::getColliderAt_globalFrame(int idx) const
-	{
-		SpacePartitionCollider collider = getColliderAt(idx);
-		collider.position += mPosition;
-		return collider;
-	}
-
 
 	int SpacePartitionBody::getNumberOfColliders() const
 	{
@@ -111,9 +104,9 @@ namespace Generics
 		mWorldID = id;
 	}
 
-	void SpacePartitionBody::updateAABB(SpacePartitionCollider collider)
+	void SpacePartitionBody::updateAABB(SpacePartitionCollider* collider)
 	{
-		AABB cAABB = collider.getAABB();
+		AABB cAABB = collider->getAABB();
 		// if the collider has no shape we do not consider it
 		if (cAABB.width == 0 && cAABB.height == 0)
 			return;
@@ -161,10 +154,8 @@ namespace Generics
 		bool isTouching = false;
 
 		// for each collider of static body
-		for (int i = 0; i < body2.getNumberOfColliders(); i++)
+		for (auto staticCollider : body2.mColliders.at(body2.mCurrentConfig))
 		{
-			SpacePartitionCollider staticCollider = body2.getColliderAt_globalFrame(i);
-
 			// we want to consider the collider of dynamic body 
 			// the deepest 'inside' the static collider -> it represents
 			// the displacement that removes the intersection between the bodies
@@ -188,10 +179,9 @@ namespace Generics
 
 			Collision deepestCollision;
 			// for each collider of dynamic body
-			for (int j = 0; j < body1.getNumberOfColliders(); j++)
+			for (auto dynamicCollider : body1.mColliders.at(body1.mCurrentConfig))
 			{
-				SpacePartitionCollider dynamicCollider = body1.getColliderAt_globalFrame(j);
-				Collision collision = SpacePartitionCollider::collisionResolution(dynamicCollider, staticCollider);
+				Collision collision = SpacePartitionCollider::collisionResolution(*dynamicCollider, *staticCollider);
 				// the maximum magnitude represent the deepest collision
 				if (collision.response.norm() > deepestCollision.response.norm())
 					deepestCollision = collision;
@@ -216,5 +206,12 @@ namespace Generics
 		finalCollision.isTouching = isTouching;
 
 		return finalCollision;
+	}
+
+	void SpacePartitionBodyTemplate::appendCollider(SpacePartitionCollider collider, typeBodyconfigID config)
+	{
+		if (colliders.find(config) == colliders.end())
+			colliders[config] = {};
+		colliders.at(config).push_back(collider);
 	}
 }

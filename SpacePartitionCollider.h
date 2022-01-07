@@ -4,6 +4,9 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220107 - Code refactoring to manage colliders as world factory objects
+ *                  Add getPosition_globalFrame method, p_body attribut
+ *                  Replace position -> getPosition_globalFrame()
  * @date 20211226 - Remove isEnabled attribut, consider isSensor attibut
  * @date 20211214 - Edge collider : consider restitution vector
  *                  Update methods BoxEdgeDisplacementResponse, Remove method projectionPointToLineSegment
@@ -27,6 +30,7 @@
 
 #include "Generics_types.h"
 
+
 namespace Generics
 {
     /// The SpacePartitionCollider base class 
@@ -43,11 +47,19 @@ namespace Generics
         Vect2d vertice1{ 0, 0 };// relative to position
         Vect2d restitutionVector{ 0, 0 }; 
 
+        SpacePartitionBody* p_body = nullptr; // parent body
+
         /**
         * getAABB will extrapolate the collider AABB from its internal properties
         * and return it.
         */
         AABB getAABB() const;
+
+        /**
+        * getPosition_globalFrame will get the position of the collider in global frame
+        * (frame associated to the p_body).
+        */
+        Vect2d getPosition_globalFrame() const;
 
         /**
         * collisionResolution will compute the collision between the two provided colliders

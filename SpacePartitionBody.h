@@ -4,6 +4,11 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220107 - Code refactoring to manage colliders as world factory objects
+ *                  Add appendCollider, getColliderAt, collisionResolutionDynamicVSstatic methods
+ *                  Update mColliders : SpacePartitionCollider -> SpacePartitionCollider*
+ *                  Remove getColliderAt_globalFrame
+ *                  Create new struct SpacePartitionBodyTemplate
  * @date 20220106 - Check AABB first for body collision detection
  *                  Add method getAABB_globalFrame
  *                  Add method collisionResolutionDynamicVSstatic (from SpacePartitioWorld)
@@ -32,8 +37,6 @@
 #pragma once
 
 #include "Generics_types.h"
-
-#include "SpacePartitionCollider.h"
 
 namespace Generics
 {
@@ -85,6 +88,13 @@ namespace Generics
 		*/
 		void updateFromAcceleration(double dt);
 
+	    /**
+		* getColliderAt will get a copy of
+		* the collider refered at indice <idx> in the collider container for the current bodyconfig.
+		* In case of out of bound indice a default collider is returned.
+		*/
+		SpacePartitionCollider getColliderAt(int idx) const;
+
 		/**
 		* getter for Body AABB
 		*/
@@ -109,27 +119,12 @@ namespace Generics
 
 		/**
 		* appendCollider will append to the internal colliders container for the current bodyconfig,
-		* a copy of the provided collider .
+		* the provided collider ptr.
 		*/
-		void appendCollider(SpacePartitionCollider);
+		void appendCollider(SpacePartitionCollider*);
 
 		/**
-		* getColliderAt will get a copy of 
-		* the collider situated at indice <idx> in the collider container for the current bodyconfig. 
-		* In case of out of bound indice a default collider is returned.
-		*/
-		SpacePartitionCollider getColliderAt(int idx) const;
-
-		/**
-		* getColliderAt_globalFrame will get a copy of
-		* the collider situated at indice <idx> in the collider container for the current bodyconfig
-		* and return it in global frame coordinate.
-		* In case of out of bound indice a default collider is returned.
-		*/
-		SpacePartitionCollider getColliderAt_globalFrame(int idx) const;
-
-		/**
-		* getNumberOfColliders will get the number of colliders stored in the container.
+		* getNumberOfColliders will get the number of colliders stored in the container for the current config.
 		*/
 		int getNumberOfColliders() const;
 
@@ -164,7 +159,7 @@ namespace Generics
 		//Container for associated colliders
 		//For each bodyconfig a specific list of colliders is defined
 		//to deal with collision detection.
-		std::map<typeBodyconfigID, std::vector<SpacePartitionCollider>> mColliders;
+		std::unordered_map<typeBodyconfigID, std::vector<SpacePartitionCollider*>> mColliders;
 
 		// current config (= list of colliders) associated to the collision detection of the body
 		typeBodyconfigID mCurrentConfig = "default";
@@ -190,6 +185,17 @@ namespace Generics
 		* updateAABB will update (increase the size of) the Body AABB according to 
 		* the provided collider if the collider AABB is out of Body AABB bounds
 		*/
-		void updateAABB(SpacePartitionCollider);
+		void updateAABB(SpacePartitionCollider*);
 	};
+
+
+	/// The SpacePartionBodyTemplate struct used to add new bodies in SpacePartitionWorld
+	struct SpacePartitionBodyTemplate
+	{
+		Vect2d position{ 0, 0 };
+		BodyType type = BodyType::STATIC;
+		std::unordered_map<typeBodyconfigID, std::vector<SpacePartitionCollider>> colliders;
+		void appendCollider(SpacePartitionCollider, typeBodyconfigID = "default");
+	};
+
 }

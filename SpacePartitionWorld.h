@@ -4,6 +4,8 @@
 *
 * @file SpacePartionWorld.h
 * @author Boris Burdin
+* @date 20220107 - Code refactoring to manage colliders as world factory objects
+*                  Update addBody method, create mCollidersattribut
 * @date 20220106 - Move collisionResolutionDynamicVSstaticBodies in SpacePartitionBody
 * @date 20211215 - Generic method to catch elapsed time for dynamic bodies 
 *                  Add method updateDynamicBodies, getters for number of bodies
@@ -19,11 +21,9 @@
 
 #include "Generics_types.h"
 
-#include "SpacePartitionBody.h"
-#include "SpacePartitionGrid.h"
-
 namespace Generics
 {
+	/// The SpacePartitionWorld base class 
 	class SpacePartitionWorld
 	{
 	public:
@@ -31,7 +31,7 @@ namespace Generics
 
 		/**
 		* Constructor. Used to create a container (world) for the management
-		* of bodies. The bodies are referenced in a Grid where the collision detection
+		* of bodies and colliders. The bodies are referenced in a Grid where the collision detection
 		* is done in an efficiant way. 
 		* @Parameters 
 		*	int nx : nb of cells along x in the Grid 
@@ -41,9 +41,14 @@ namespace Generics
 		SpacePartitionWorld(int nx, int ny, float width, float height);
 
 		/**
-		* addBody will add a copy of the provided body in the World container, and reference it in the Grid.
+		* Destructor
 		*/
-		SpacePartitionBody* addBody(SpacePartitionBody& bodyTemplate);
+		~SpacePartitionWorld();
+
+		/**
+		* addBody will  add in the World container a new body based on the provided <bodyTemplate>, and reference it in the Grid.
+		*/
+		SpacePartitionBody* addBody(SpacePartitionBodyTemplate bodyTemplate);
 
 		/**
 		* updateDynamicBodies will update the dynamic bodies state to catch the elasped time <dt> with respect of
@@ -62,8 +67,10 @@ namespace Generics
 		std::list<SpacePartitionBody> mStaticBodies;
 		// Container of Dynamic bodies 
 		std::list<SpacePartitionBody> mDynamicBodies;
+		// Container of colliders
+		std::list<SpacePartitionCollider> mColliders;
 		// 2D partition Grid where mStaticBodies and mDynamicBodies are referenced.
-		SpacePartitionGrid mGrid;
+		SpacePartitionGrid* mGrid;
 	};
 
 }

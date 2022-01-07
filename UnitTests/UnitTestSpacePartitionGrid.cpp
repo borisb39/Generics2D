@@ -1,6 +1,8 @@
 #include "CppUnitTest.h"
 
 #include "../SpacePartitionGrid.h"
+#include "../SpacePartitionBody.h"
+#include "../SpacePartitionCollider.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -71,6 +73,7 @@ namespace UnitTests
 		}
 		TEST_METHOD(SetBodyWithCollider)
 		{
+			std::vector<SpacePartitionCollider > colliderContainer;
 			SpacePartitionGrid Grid(10, 11, 25.0, 44.0);
 			int OOB = Grid.OOBgID();
 			SpacePartitionBody body;
@@ -79,7 +82,8 @@ namespace UnitTests
 			collider.boxWidth = 2;
 			collider.boxHeight = 3;
 			collider.position = Vect2d{ 0, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			//body not registered in the Grid return an empty gIDs
 			body.setPosition({ 0, 0 });
 			Assert::IsTrue(std::vector<int>{} == Grid.getBodygIDs(&body));
@@ -161,7 +165,8 @@ namespace UnitTests
 			//body covering ceveral cells is correctly handled 1
 			collider.boxWidth = 4;
 			collider.boxHeight = 6;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			body.setPosition({ 12.5, 22 });
 			Grid.setBody(&body);
 			Assert::IsTrue(std::vector<int>{44, 54, 64, 45, 55, 65} == Grid.getBodygIDs(&body));
@@ -295,6 +300,7 @@ namespace UnitTests
 
 		TEST_METHOD(SetMultiBodies)
 		{
+			std::vector<SpacePartitionCollider > colliderContainer;
 			SpacePartitionGrid Grid(10, 11, 25.0, 44.0);
 			int OOB = Grid.OOBgID();
 			SpacePartitionCollider collider;
@@ -303,13 +309,16 @@ namespace UnitTests
 			collider.boxHeight = 6;
 			collider.position = Vect2d{ 0, 0 };
 			SpacePartitionBody body1;
-			body1.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			body1.setPosition({ 2, 3 });
 			SpacePartitionBody body2;
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			body2.setPosition({ 2, 3 });
 			SpacePartitionBody body3;
-			body3.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body3.appendCollider(&colliderContainer.back());
 			body3.setPosition({ 13.75, 22 });
 			//Initial state : bodies not added into the Grid
 			Assert::IsTrue(std::vector<int>{} == Grid.getBodygIDs(&body1));

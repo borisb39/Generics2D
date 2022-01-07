@@ -12,10 +12,7 @@
 
 #pragma once
 
-#include <unordered_map>
-
 #include "Generics_types.h"
-#include "SpacePartitionBody.h"
 
 namespace Generics
 {

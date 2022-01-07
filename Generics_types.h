@@ -3,6 +3,7 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20220107 - Forward declaration of all Generics classes
  * @date 20220106 - Add body multiconfig
  *                  Add typedef typeBodyconfigID
  * @date 20211214 - Edge collider : consider restitution vector
@@ -25,10 +26,16 @@
 #include <cmath>
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 namespace Generics
 {
+    ///Forward declarations
+    class SpacePartitionGrid;
+    class SpacePartitionBody;
+    class SpacePartitionBodyTemplate;
+    class SpacePartitionCollider;
+    
     //StateMachine
 
 	typedef std::string typeStateID;

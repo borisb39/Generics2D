@@ -1,5 +1,7 @@
 
 #include "SpacePartitionGrid.h"
+
+#include "SpacePartitionBody.h"
 #include <cassert>
 
 namespace Generics

@@ -1,6 +1,7 @@
 
-#include <cassert>
 #include "StateMachine.h"
+
+#include <cassert>
 
 namespace Generics
 {

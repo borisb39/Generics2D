@@ -1,6 +1,7 @@
 #include "CppUnitTest.h"
 
 #include "../SpacePartitionBody.h"
+#include "../SpacePartitionCollider.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -132,12 +133,14 @@ namespace UnitTests
 		TEST_METHOD(CollidersManagement)
 		{
 			// create Colliders, append to and get from a body
+			std::list<SpacePartitionCollider > colliderContainer;
 			std::vector< SpacePartitionCollider > th_colliders; // what we expect 
 			SpacePartitionBody body; // body where the colliders will be added
 			SpacePartitionCollider defaultCollider;
 			//first collider : default
 			SpacePartitionCollider collider;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_colliders.push_back(collider);
 			//2st collider : Box
 			collider.tag = "BoxCollider";
@@ -146,7 +149,8 @@ namespace UnitTests
 			collider.boxHeight = 10;
 			collider.position = Vect2d{ 3, 2 };
 			collider.isSensor = true;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_colliders.push_back(collider);
 			//3rd collider : Box
 			collider.tag = "BoxCollider";
@@ -155,7 +159,8 @@ namespace UnitTests
 			collider.boxHeight = 12.6;
 			collider.position = Vect2d{ -1, 0 };
 			collider.isSensor = true;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_colliders.push_back(collider);
 			//4th collider : Edge
 			collider.tag = "EdgeCollider";
@@ -164,7 +169,8 @@ namespace UnitTests
 			collider.vertice1 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, 4 };
 			collider.isSensor = false;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_colliders.push_back(collider);
 			//we will iterate out of colliders container bounds 
 			//to check if default colliders are correctly returned in this case
@@ -190,34 +196,42 @@ namespace UnitTests
 			SpacePartitionBody body2;
 			collider.boxWidth = -5.3;
 			collider.boxHeight = -12.6;
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
+			colliderContainer.back().p_body = &body2;
 			Assert::IsTrue(0 == body2.getColliderAt(0).boxWidth);
 			Assert::IsTrue(0 == body2.getColliderAt(0).boxHeight);
 			// test body displacement and collider position in global frame
 			collider.boxWidth = 6;
 			collider.boxHeight = 6;
 			collider.position = Vect2d{ 0, 0 };
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
+			colliderContainer.back().p_body = &body2;
 			Assert::IsTrue(Vect2d{ 0, 0 } == body2.getColliderAt(1).position);
 			body2.setPosition({ 5, 6 });
 			Assert::IsFalse(Vect2d{ 5, 6 } == body2.getColliderAt(1).position);
-			Assert::IsTrue(Vect2d{ 5, 6 } == body2.getColliderAt_globalFrame(1).position);
+			Assert::IsTrue(Vect2d{ 5, 6 } == body2.getColliderAt(1).getPosition_globalFrame());
 			collider.position = { 1, -2.5 };
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
+			colliderContainer.back().p_body = &body2;
 			Assert::IsFalse(Vect2d{ 5, 6 } == body2.getColliderAt(1).position);
-			Assert::IsTrue(Vect2d{ 5, 6 } == body2.getColliderAt_globalFrame(1).position);
+			Assert::IsTrue(Vect2d{ 5, 6 } == body2.getColliderAt(1).getPosition_globalFrame());
 			Assert::IsTrue(Vect2d{ 1, -2.5 } == body2.getColliderAt(2).position);
-			Assert::IsTrue(Vect2d{ 6, 3.5 } == body2.getColliderAt_globalFrame(2).position);
+			Assert::IsTrue(Vect2d{ 6, 3.5 } == body2.getColliderAt(2).getPosition_globalFrame());
 		}
 
 		TEST_METHOD(BodyAndColliderAxisAlignedBoundingBox)
 		{
 			// Test Body and Colliders AABB
+			std::list<SpacePartitionCollider > colliderContainer;
 			SpacePartitionBody body;
 			std::vector< AABB > th_cAABB; // expected colliders AABB
 			//first collider : default
 			SpacePartitionCollider collider;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ 0, 0, 0, 0 });
 			Assert::IsTrue(AABB{ 0, 0, 0, 0 } == body.getAABB());
 			//2st collider : Collider with no shape
@@ -226,7 +240,8 @@ namespace UnitTests
 			collider.boxWidth = 0.;
 			collider.boxHeight = 0.;
 			collider.position = Vect2d{ 3, 2 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ 3, 2, 0, 0 });
 			Assert::IsTrue(AABB{ 0, 0, 0, 0 } == body.getAABB()); // no impact on Body AABB
 			//3rd collider : Box
@@ -235,7 +250,8 @@ namespace UnitTests
 			collider.boxWidth = 5.3;
 			collider.boxHeight = 12.6;
 			collider.position = Vect2d{ -1, -2.6 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ -1, -2.6, 5.3, 12.6 });
 			Assert::IsTrue(AABB{ -1, -2.6, 5.3, 12.6 } == body.getAABB()); // the Body AABB is initialized with the collider AABB
 			//4th collider : Edge
@@ -244,7 +260,8 @@ namespace UnitTests
 			collider.vertice0 = Vect2d{ 0, -10 };
 			collider.vertice1 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, -5 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ -0.9, -7.5, 6, 15 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7} == body.getAABB()); // the Body AABB is updated with the collider AABB
 			//5th collider : Edge identical as previous one
@@ -253,7 +270,8 @@ namespace UnitTests
 			collider.vertice0 = Vect2d{ 0, -10 };
 			collider.vertice1 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, -5 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ -0.9, -7.5, 6, 15 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7 } == body.getAABB()); // no impact on Body AABB
 			//6th collider : Circle already inside body
@@ -262,7 +280,8 @@ namespace UnitTests
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			collider.position = Vect2d{ 1, 2 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ 1, 2, 2, 2 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 6,  18.7 } == body.getAABB()); // no impact on Body AABB
 			//7th collider : Box
@@ -271,7 +290,8 @@ namespace UnitTests
 			collider.boxHeight = 10;
 			collider.boxWidth = 10;
 			collider.position = Vect2d{ -0.9, -7. };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ -0.9, -7, 10, 10 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 10,  18.7 } == body.getAABB()); // the Body AABB is updated with the collider AABB
 			//8rd collider : Collider with negative properties
@@ -280,7 +300,8 @@ namespace UnitTests
 			collider.boxWidth = -100;
 			collider.boxHeight = -100;
 			collider.position = Vect2d{ 100, 200 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ 100, 200, 0, 0 });
 			Assert::IsTrue(AABB{ -0.9, -5.65, 10,  18.7 } == body.getAABB()); // no impact on Body AABB
 			//9rd collider : Collider with one negative property
@@ -289,7 +310,8 @@ namespace UnitTests
 			collider.boxWidth = -100;
 			collider.boxHeight = 100;
 			collider.position = Vect2d{ -100, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			th_cAABB.push_back({ -100, 0, 0, 100 });
 			Assert::IsTrue(AABB{ -47.95, 0, 104.1, 100 } == body.getAABB()); // the Body AABB is updated with the collider AABB
 			for (int i = 0; i < th_cAABB.size(); i++)
@@ -334,6 +356,7 @@ namespace UnitTests
 
 		TEST_METHOD(BodyConfigsManagement)
 		{
+			std::list<SpacePartitionCollider > colliderContainer;
 			SpacePartitionBody body;
 			// correct initialisation of bodyconfig
 			Assert::IsTrue(body.getCurrentConfig() == "default");
@@ -345,13 +368,15 @@ namespace UnitTests
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			collider.position = { 0, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			collider.tag = "DefaultCollider2";
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			collider.position = { 2, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(body.getNumberOfColliders() == 2);
 			// switch config
 			body.setCurrentConfig("config1");
@@ -364,21 +389,24 @@ namespace UnitTests
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			collider.position = { 2, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(body.getNumberOfColliders() == 1);
 			collider.tag = "Config1Collider2";
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			collider.position = { 2, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(body.getNumberOfColliders() == 2);
 			collider.tag = "Config1Collider2";
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			collider.position = { 2, 0 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(body.getNumberOfColliders() == 3);
 			//swtich back to default config and test if it is ok
 			// switch config
@@ -389,15 +417,18 @@ namespace UnitTests
 
 		TEST_METHOD(collisionResolutionDynamicStatic)
 		{
+			std::list<SpacePartitionCollider > colliderContainer;
 			// create 2 identical static bodies with basic box collider 
 			SpacePartitionCollider collider;
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 6;
 			collider.boxWidth = 6;
 			SpacePartitionBody body1{ { 0, 0 }, BodyType::STATIC };
-			body1.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			SpacePartitionBody body2{ { 0, 0 }, BodyType::STATIC };
-			body1.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			// default collision (no intersection)
 			Collision defaultCollision;
 			//2 static bodies don't intersect
@@ -409,52 +440,68 @@ namespace UnitTests
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::DYNAMIC };
 			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			//add collider to body2 : no intersection. The collision only considers collision between a dynamic first body and static second body
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			//Switch body1 to dynamic with no collider and body2 to static with box collider : no intersection
 			body1 = SpacePartitionBody{ { 0, 0 }, BodyType::DYNAMIC };
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::STATIC };
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// append a box collider to body1 : intersection with no displacement (boxes colliders do not respond)
 			Collision collisionWithNoDisplacement{ true, {0,0 } };
-			body1.appendCollider(collider);
+			collider.p_body = &body1;
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(AreCollisionsEqual(collisionWithNoDisplacement, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
-			// create a body1 with edge collider : intersection with displacement
+			// create a body2 with edge collider : intersection with displacement
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::STATIC };
 			collider.type = ColliderType::EDGE;
 			collider.vertice0 = { -3, 0 };
 			collider.vertice1 = { 3, 0 };
-			body2.appendCollider(collider);
+			collider.p_body = &body2;
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			Collision collision{ true, {0, 3} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #1
 			collider.vertice0 = { 1, 3 };
 			collider.vertice1 = { 1, -3 };
-			body2.appendCollider(collider);
+			collider.p_body = &body2;
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {0, 3} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #2
 			collider.vertice0 = { -1, 3 };
 			collider.vertice1 = { -1, -3 };
-			body2.appendCollider(collider);
+			collider.p_body = &body2;
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {2, 0} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #3
 			collider.vertice0 = { -2, -3 };
 			collider.vertice1 = { -3, -2 };
-			body2.appendCollider(collider);
+			collider.p_body = &body2;
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {2, 0} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #4
 			collider.vertice0 = { -3, -2 };
 			collider.vertice1 = { -2, -3 };
-			body2.appendCollider(collider);
+			collider.p_body = &body2;
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {0.5, 0.5} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #5
 			collider.vertice0 = { 2.5, -3 };
 			collider.vertice1 = { 3, -2.5 };
-			body2.appendCollider(collider);
+			collider.p_body = &body2;
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {-0.25, 0.25} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// add several colliders to body1 and check that the whole body is considered for min displacement calculation
@@ -462,7 +509,9 @@ namespace UnitTests
 			collider.boxHeight = 6;
 			collider.boxWidth = 6;
 			collider.position = { 2, 0 };
-			body1.appendCollider(collider);
+			collider.p_body = &body1;
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			collision = { true, {0.5, 0.5} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
 			// modify body position and check that the collision detection is correctly handled #1 : update body1 position
@@ -478,25 +527,29 @@ namespace UnitTests
 
 		TEST_METHOD(collisionResolutionDynamicStatic_multiconfig)
 		{
+			std::list<SpacePartitionCollider > colliderContainer;
 			SpacePartitionCollider collider;
 			// create the dynamic body with 2 configs
 			SpacePartitionBody body1{ { 0, 0 }, BodyType::DYNAMIC };
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 6;
 			collider.boxWidth = 6;
-			body1.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			// create the second config 
 			body1.setCurrentConfig("config1");
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 3;
 			collider.boxWidth = 3;
-			body1.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body1.appendCollider(&colliderContainer.back());
 			//create the static body with 1 default config
 			SpacePartitionBody body2{ { 0, 0 }, BodyType::STATIC };
 			collider.type = ColliderType::EDGE;
 			collider.vertice0 = { -1, 0 };
 			collider.vertice1 = { 1, 0 };
-			body2.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body2.appendCollider(&colliderContainer.back());
 			// test the collision scenarios
 			body1.setCurrentConfig("default");
 			Collision collision{ true, {0 ,3 } };
@@ -514,14 +567,17 @@ namespace UnitTests
 
 		TEST_METHOD(AABB_globalFrame)
 		{
+			std::list<SpacePartitionCollider > colliderContainer;
 			SpacePartitionBody body;
 			SpacePartitionCollider collider;
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 6;
 			collider.boxWidth = 6;
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			collider.position = { 5, 5 };
-			body.appendCollider(collider);
+			colliderContainer.push_back(collider);
+			body.appendCollider(&colliderContainer.back());
 			Assert::IsTrue(AABB{ 2.5, 2.5, 11, 11 } == body.getAABB_globalFrame());
 			// move body
 			body.setPosition({ 2.96, -6.9 });
