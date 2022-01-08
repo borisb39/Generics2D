@@ -43,10 +43,26 @@ namespace Generics
 
 	void SpacePartitionGrid::setBody(SpacePartitionBody* body)
 	{
+		//compute the new corners position (gridIDranks) of the body's AABB
+		AABB aabb = body->getAABB();
+		aabb.position += body->getPosition();
+		int jl = floor(aabb.left() / mSizeX);
+		int jr = floor(aabb.right() / mSizeX);
+		int ib = floor(aabb.bottom() / mSizeY);
+		int it = floor(aabb.top() / mSizeY);
+
+		//if no change in the position of the corners in the grid -> no update required
+		std::array<int, 4> gridIDranks = { jl , jr , ib, it };
+		if (gridIDranks == body->getgridIDranks())
+			return;
+		//else we update the body's gridIDranks with new corners position
+		body->setgridIDs(gridIDranks);
+
 		//if the body is already in the Grid we remove it
-		if (mBodiesGridIDs.find(body) != mBodiesGridIDs.end())
+		auto it0 = mBodiesGridIDs.find(body);
+		if (it0 != mBodiesGridIDs.end())
 		{
-			for (auto it1 = mBodiesGridIDs[body].begin(); it1 != mBodiesGridIDs[body].end(); it1++)
+			for (auto it1 = it0->second.begin(); it1 != it0->second.end(); it1++)
 			{
 				int gID = *it1;
 				for (auto it2 = mGrid[gID].begin(); it2 != mGrid[gID].end();)
@@ -57,15 +73,14 @@ namespace Generics
 						it2++;
 				}
 			}
-			mBodiesGridIDs.erase(body);
+			mBodiesGridIDs.erase(it0);
 		}
 
-		//we add the body in the cells of the Grid where the body AABB is overlaping
-		AABB aabb = body->getAABB();
-		aabb.position += body->getPosition();
-		for (int j = floor(aabb.left() / mSizeX); j <= floor(aabb.right() / mSizeX); j++)
+		//and we add the body in the cells of the Grid 
+		//where the body AABB is overlaping
+		for (int j = jl; j <= jr; j++)
 		{
-			for (int i = floor(aabb.bottom() / mSizeY); i <= floor(aabb.top() / mSizeY); i++)
+			for (int i = ib; i <= it; i++)
 			{
 				int gID = gridID(i, j);
 				mGrid[gID].push_back(body);

@@ -394,46 +394,47 @@ namespace UnitTests
 
 			for (int i = 0; i < 100; ++i)
 			{
+				int ncol = 10;
+
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i)+0.5f, 1.0f }, BodyType::STATIC };
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderTopTemplate);
 				world.addBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 10.0f }, BodyType::STATIC };
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderDownTemplate);
 				world.addBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 20.0f }, BodyType::STATIC };
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderTopTemplate);
 				world.addBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 30.0f }, BodyType::STATIC };
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderDownTemplate);
 				world.addBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 40.0f }, BodyType::STATIC };
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderTopTemplate);
 				world.addBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 45.0f }, BodyType::STATIC };
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderDownTemplate);
 				world.addBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 3. }, BodyType::DYNAMIC };
-				for(int c=0; c<10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderBoxTemplate);
 				SpacePartitionBody* body1 = world.addBody(bodyTemplate);
 				body1->setMaxVelocityMagnitude(999999999999.9);
 				body1->setVelocity({ 10., 0 });
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 6. }, BodyType::DYNAMIC };
-				
-				for (int c = 0; c < 10; c++)
+				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderBoxTemplate);
 				SpacePartitionBody* body2 = world.addBody(bodyTemplate);
 				body2->setMaxVelocityMagnitude(999999999999.9);

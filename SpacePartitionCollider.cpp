@@ -144,10 +144,11 @@ namespace Generics
 
 		// min and max displacement allowed for the box collider
 		// to keep the edge and box bounding box touching each other
-		float max_dispx = fmax(0, edge.getAABB().right() + box.boxWidth / 2 - box.getPosition_globalFrame().x);
-		float min_dispx = fmin(0, edge.getAABB().left() - box.boxWidth / 2 - box.getPosition_globalFrame().x);
-		float max_dispy = fmax(0, edge.getAABB().top() + box.boxHeight / 2 - box.getPosition_globalFrame().y);
-		float min_dispy = fmin(0, edge.getAABB().bottom() - box.boxHeight / 2 - box.getPosition_globalFrame().y);
+		AABB edgeAABB = edge.getAABB();
+		float max_dispx = fmax(0, edgeAABB.right() - corners[0].x) ;
+		float min_dispx = fmin(0, edgeAABB.left() - corners[1].x) ;
+		float max_dispy = fmax(0, edgeAABB.top() - corners[2].y) ;
+		float min_dispy = fmin(0, edgeAABB.bottom() - corners[0].y) ;
 
 		//the response calculation is based on vector cross product to find the intersection
 		//between the restitution vector and edge segment vector for each corner of box collider

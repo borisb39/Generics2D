@@ -4,6 +4,8 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220108 - Improve Grid efficiency 
+ *                  Add gridIDranks attribut
  * @date 20220107 - Code refactoring to manage colliders as world factory objects
  *                  Add appendCollider, getColliderAt, collisionResolutionDynamicVSstatic methods
  *                  Update mColliders : SpacePartitionCollider -> SpacePartitionCollider*
@@ -130,13 +132,17 @@ namespace Generics
 
 		BodyType getType() const { return mType; }
 
-		// Getters and Setter for worldID 
+		// Getter and Setter for worldID 
 		void setWorldID(int id);
 		int getWorldID() const { return mWorldID; }
 
-		// Getters and Setter for userData
+		// Getter and Setter for userData
 		void setUserData(void* userData) { mUserData = userData; }
 		void* getUserData() const { return mUserData; }
+
+		// Getter and Setter for gridIDranks
+		void setgridIDs(std::array<int, 4> gridIDranks) { mgridIDranks = gridIDranks; }
+		std::array<int, 4> getgridIDranks() const { return mgridIDranks; };
 
 		/**
 		* collisionResolutionDynamicVSstatic will resolve the collision between the provided dynamic <body1> and static <body2>
@@ -171,8 +177,15 @@ namespace Generics
 		// an unique positive ID that identifies it in the world objects pool.
 		int mWorldID = -1;
 
+		// ranks of the GridIDs where the 4 corners of the body's AABB are situated
+		// { left column, right column, bottom line, top line}.
+		// -1 if the body is not associated to a SpacePartitionGrid.
+		std::array<int, 4> mgridIDranks = { -1, -1, -1, -1 };
+
 		// void ptr to attach any user object
 		void* mUserData = nullptr;
+
+		
 
 		/**
 		* checkMagnitude will check and correct the provided <vector> 

@@ -44,6 +44,7 @@ namespace UnitTests
 		{
 			SpacePartitionGrid Grid(10, 11, 25.0, 44.0);
 			SpacePartitionBody body;
+			body.setWorldID(0);
 			//body not registered in the Grid return an empty gIDs
 			body.setPosition({ 0, 0 });
 			Assert::IsTrue(std::vector<int>{} == Grid.getBodygIDs(&body));
@@ -77,6 +78,7 @@ namespace UnitTests
 			SpacePartitionGrid Grid(10, 11, 25.0, 44.0);
 			int OOB = Grid.OOBgID();
 			SpacePartitionBody body;
+			body.setWorldID(0);
 			SpacePartitionCollider collider;
 			collider.type = ColliderType::BOX;
 			collider.boxWidth = 2;
@@ -309,14 +311,17 @@ namespace UnitTests
 			collider.boxHeight = 6;
 			collider.position = Vect2d{ 0, 0 };
 			SpacePartitionBody body1;
+			body1.setWorldID(0);
 			colliderContainer.push_back(collider);
 			body1.appendCollider(&colliderContainer.back());
 			body1.setPosition({ 2, 3 });
 			SpacePartitionBody body2;
+			body2.setWorldID(1);
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			body2.setPosition({ 2, 3 });
 			SpacePartitionBody body3;
+			body3.setWorldID(2);
 			colliderContainer.push_back(collider);
 			body3.appendCollider(&colliderContainer.back());
 			body3.setPosition({ 13.75, 22 });

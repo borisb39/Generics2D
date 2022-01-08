@@ -4,6 +4,8 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220108 - Improve Grid efficiency
+ *                  Update  BoxEdgeDisplacementResponse mehod
  * @date 20220107 - Code refactoring to manage colliders as world factory objects
  *                  Add getPosition_globalFrame method, p_body attribut
  *                  Replace position -> getPosition_globalFrame()

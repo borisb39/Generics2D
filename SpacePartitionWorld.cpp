@@ -79,6 +79,7 @@ namespace Generics
 		int nrk = 0;
 		for (auto& body : mDynamicBodies)
 		{
+			int bID = body.getWorldID();
 			float positive_dispx = 0.f;
 			float negative_dispx = 0.f;
 			float positive_dispy = 0.f;
@@ -87,10 +88,10 @@ namespace Generics
 			for (auto const& gid : mGrid->getBodygIDs(&body))
 			{
 				if (gid == mGrid->OOBgID()) continue; // skip out of bounds bodies
-				for (auto const& neighbor : mGrid->getBodiesAtgID(gid))
+				for (auto neighbor : mGrid->getBodiesAtgID(gid))
 				{
 					int nID = neighbor->getWorldID();
-					if (!isDone[nrk][nID])
+					if (!(bID==nID) && !isDone[nrk][nID])
 					{
 						// test collision for each neighbor
 						Collision collision = SpacePartitionBody::collisionResolutionDynamicVSstatic(body, *neighbor);
