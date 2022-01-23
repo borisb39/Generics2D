@@ -3,6 +3,7 @@
 #include "../SpacePartitionWorld.h"
 #include "../SpacePartitionBody.h"
 #include "../SpacePartitionCollider.h"
+#include "../SpacePartitionContactListener.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -390,6 +391,9 @@ namespace UnitTests
 			//SpacePartitionWorld world(70, 5, 700, 50);
 			SpacePartitionWorld world(350, 25, 700, 50);
 
+			SpacePartitionContactListener listener;
+			world.setContactListener(&listener);
+
 			double dt = 0.01;
 
 			for (int i = 0; i < 100; ++i)
@@ -426,7 +430,7 @@ namespace UnitTests
 					bodyTemplate.appendCollider(colliderDownTemplate);
 				world.addBody(bodyTemplate);
 
-				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 3. }, BodyType::DYNAMIC };
+				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 1. }, BodyType::DYNAMIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderBoxTemplate);
 				SpacePartitionBody* body1 = world.addBody(bodyTemplate);
@@ -442,9 +446,8 @@ namespace UnitTests
 
 			}
 			
-
-			for (int i = 0; i < 120; ++i)
-				world.updateDynamicBodies(dt);
+			for (int i = 0; i < 100; ++i)
+				world.Step(dt);
 
 		}
 	};

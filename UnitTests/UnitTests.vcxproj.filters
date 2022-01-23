@@ -36,5 +36,8 @@
     <ClCompile Include="UnitTestSpacePartitionWorld.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTestSpacePartitionContactListener.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

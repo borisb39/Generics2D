@@ -4,6 +4,9 @@
 *
 * @file SpacePartionWorld.h
 * @author Boris Burdin
+* @date 20220116 - Add Contact Listener
+*                  AAdd Step metod, contactListener attribut
+*                  Update methods addBody,  updateDynamicBodies
 * @date 20220107 - Code refactoring to manage colliders as world factory objects
 *                  Update addBody method, create mCollidersattribut
 * @date 20220106 - Move collisionResolutionDynamicVSstaticBodies in SpacePartitionBody
@@ -51,8 +54,14 @@ namespace Generics
 		SpacePartitionBody* addBody(SpacePartitionBodyTemplate bodyTemplate);
 
 		/**
+		* Step is called at each solver step loop and lists all the operations performed during a step of calculation.
+		*/
+		void Step(double dt);
+
+		/**
 		* updateDynamicBodies will update the dynamic bodies state to catch the elasped time <dt> with respect of
-		* the static bodies limitations.
+		* the static bodies limitations. If a contact listener is associated to the world the contacts state between bodies 
+		* will be tracked.
 		*/
 		void updateDynamicBodies(double dt);
 
@@ -60,6 +69,10 @@ namespace Generics
 		int totalBodiesNumber() const { return mStaticBodies.size() + mDynamicBodies.size(); }
 		int dynamicBodiesNumber() const { return mDynamicBodies.size(); }
 		int staticBodiesNumber() const { return mStaticBodies.size(); }
+
+		// Getter and Setter for contact listener
+		SpacePartitionContactListener* getContactListener() const { return mContactListener; };
+		void setContactListener(SpacePartitionContactListener * contactListener);
 
 	private:
 
@@ -71,6 +84,9 @@ namespace Generics
 		std::list<SpacePartitionCollider> mColliders;
 		// 2D partition Grid where mStaticBodies and mDynamicBodies are referenced.
 		SpacePartitionGrid* mGrid;
+
+		// track contacts between bodies
+		SpacePartitionContactListener* mContactListener = nullptr;
 	};
 
 }

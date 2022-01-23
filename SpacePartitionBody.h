@@ -4,6 +4,9 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220116 - Add Contact Listener
+ *                  add mWorldDynamicID, p_world attribus
+ *                  Update methods collisionResolutionDynamicVSstatic -> collisionResolution
  * @date 20220108 - Improve Grid efficiency 
  *                  Add gridIDranks attribut
  * @date 20220107 - Code refactoring to manage colliders as world factory objects
@@ -136,6 +139,11 @@ namespace Generics
 		void setWorldID(int id);
 		int getWorldID() const { return mWorldID; }
 
+		// Getter and Setter for worldDynamicID 
+		void setWorldDynamicID(int id);
+		int getWorldDynamicID() const { return mWorldDynamicID; }
+
+
 		// Getter and Setter for userData
 		void setUserData(void* userData) { mUserData = userData; }
 		void* getUserData() const { return mUserData; }
@@ -144,13 +152,16 @@ namespace Generics
 		void setgridIDs(std::array<int, 4> gridIDranks) { mgridIDranks = gridIDranks; }
 		std::array<int, 4> getgridIDranks() const { return mgridIDranks; };
 
-		/**
-		* collisionResolutionDynamicVSstatic will resolve the collision between the provided dynamic <body1> and static <body2>
-		* and return the Collision state.
-		* The resolution search for the minimal displacement of body1 that removes the intersection between the two bodies.
-		*/
-		static Collision collisionResolutionDynamicVSstatic(SpacePartitionBody& body1, SpacePartitionBody& body2);
+		// Getter and Setter for p_world ptr
+		void setWorld(SpacePartitionWorld* world) { p_world = world; };
+		SpacePartitionWorld* getWorld() const { return p_world; };
 
+		/**
+		* collisionResolution will resolve the collision between the provided dynamic <body1> and static <body2> and return the Collision state. 
+		* The resolution search for the minimal displacement of body1 that removes the intersection between the two bodies.
+	    * If the <body2> is also dynamic, collisionResolution will only check for contact between the two bodies and register it.
+		*/
+		static Collision collisionResolution(SpacePartitionBody& body1, SpacePartitionBody& body2);
 
 	private:
 		BodyType mType = BodyType::STATIC;
@@ -165,7 +176,7 @@ namespace Generics
 		//Container for associated colliders
 		//For each bodyconfig a specific list of colliders is defined
 		//to deal with collision detection.
-		std::unordered_map<typeBodyconfigID, std::vector<SpacePartitionCollider*>> mColliders;
+		std::unordered_map<typeBodyconfigID, std::vector<SpacePartitionCollider*>> mColliders = {};
 
 		// current config (= list of colliders) associated to the collision detection of the body
 		typeBodyconfigID mCurrentConfig = "default";
@@ -177,6 +188,13 @@ namespace Generics
 		// an unique positive ID that identifies it in the world objects pool.
 		int mWorldID = -1;
 
+		// When the body is added to a world container it will be assigned to 
+		// an unique positive ID that identifies it in the world dynamic objects pool.
+		int mWorldDynamicID = -1;
+
+		// parent world
+		SpacePartitionWorld* p_world = nullptr;
+
 		// ranks of the GridIDs where the 4 corners of the body's AABB are situated
 		// { left column, right column, bottom line, top line}.
 		// -1 if the body is not associated to a SpacePartitionGrid.
@@ -184,8 +202,6 @@ namespace Generics
 
 		// void ptr to attach any user object
 		void* mUserData = nullptr;
-
-		
 
 		/**
 		* checkMagnitude will check and correct the provided <vector> 
@@ -207,7 +223,7 @@ namespace Generics
 	{
 		Vect2d position{ 0, 0 };
 		BodyType type = BodyType::STATIC;
-		std::unordered_map<typeBodyconfigID, std::vector<SpacePartitionCollider>> colliders;
+		std::unordered_map<typeBodyconfigID, std::vector<SpacePartitionCollider>> colliders = {};
 		void appendCollider(SpacePartitionCollider, typeBodyconfigID = "default");
 	};
 

@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20220116 - Add Contact Listener
+ *                  add enum ContactState
  * @date 20220107 - Forward declaration of all Generics classes
  * @date 20220106 - Add body multiconfig
  *                  Add typedef typeBodyconfigID
@@ -36,6 +38,9 @@ namespace Generics
     class SpacePartitionBody;
     class SpacePartitionBodyTemplate;
     class SpacePartitionCollider;
+    class SpacePartitionWorld;
+    class SpacePartitionContactListener;
+    class SpacePartitionContact;
     
     //StateMachine
 
@@ -166,5 +171,14 @@ namespace Generics
     {
         STATIC,
         DYNAMIC
+    };
+
+    ////SpacePartitionContactListener
+
+    enum class ContactState
+    {
+        PENDING,
+        NEW,
+        UPDATED
     };
 }

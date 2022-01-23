@@ -151,12 +151,14 @@
   <ItemGroup>
     <ClCompile Include="SpacePartitionBody.cpp" />
     <ClCompile Include="SpacePartitionCollider.cpp" />
+    <ClCompile Include="SpacePartitionContactListener.cpp" />
     <ClCompile Include="SpacePartitionGrid.cpp" />
     <ClCompile Include="SpacePartitionWorld.cpp" />
     <ClCompile Include="StateMachine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Generics_types.h" />
+    <ClInclude Include="SpacePartitionContactListener.h" />
     <ClInclude Include="ToolsJson.hpp" />
     <ClInclude Include="ToolsLineSegmentsIntersect.hpp" />
     <ClInclude Include="SpacePartitionBody.h" />

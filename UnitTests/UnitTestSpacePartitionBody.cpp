@@ -2,6 +2,7 @@
 
 #include "../SpacePartitionBody.h"
 #include "../SpacePartitionCollider.h"
+#include "../SpacePartitionWorld.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -417,6 +418,7 @@ namespace UnitTests
 
 		TEST_METHOD(collisionResolutionDynamicStatic)
 		{
+			SpacePartitionWorld world{1,1,1,1};
 			std::list<SpacePartitionCollider > colliderContainer;
 			// create 2 identical static bodies with basic box collider 
 			SpacePartitionCollider collider;
@@ -424,6 +426,7 @@ namespace UnitTests
 			collider.boxHeight = 6;
 			collider.boxWidth = 6;
 			SpacePartitionBody body1{ { 0, 0 }, BodyType::STATIC };
+			body1.setWorld(&world);
 			colliderContainer.push_back(collider);
 			body1.appendCollider(&colliderContainer.back());
 			SpacePartitionBody body2{ { 0, 0 }, BodyType::STATIC };
@@ -432,30 +435,35 @@ namespace UnitTests
 			// default collision (no intersection)
 			Collision defaultCollision;
 			//2 static bodies don't intersect
-			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolution(body1, body2)));
 			//Switch body1 to dynamic with no collider : no intersection
 			body1 = SpacePartitionBody{ { 0, 0 }, BodyType::DYNAMIC };
-			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			body1.setWorld(&world);
+			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolution(body1, body2)));
 			//Switch body2 to dynamic with no collider : no intersection
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::DYNAMIC };
-			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			body2.setWorld(&world);
+			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolution(body1, body2)));
 			//add collider to body2 : no intersection. The collision only considers collision between a dynamic first body and static second body
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			//Switch body1 to dynamic with no collider and body2 to static with box collider : no intersection
 			body1 = SpacePartitionBody{ { 0, 0 }, BodyType::DYNAMIC };
+			body1.setWorld(&world);
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::STATIC };
+			body2.setWorld(&world);
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(defaultCollision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// append a box collider to body1 : intersection with no displacement (boxes colliders do not respond)
 			Collision collisionWithNoDisplacement{ true, {0,0 } };
 			collider.p_body = &body1;
 			colliderContainer.push_back(collider);
 			body1.appendCollider(&colliderContainer.back());
-			Assert::IsTrue(AreCollisionsEqual(collisionWithNoDisplacement, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collisionWithNoDisplacement, SpacePartitionBody::collisionResolution(body1, body2)));
 			// create a body2 with edge collider : intersection with displacement
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::STATIC };
+			body2.setWorld(&world);
 			collider.type = ColliderType::EDGE;
 			collider.vertice0 = { -3, 0 };
 			collider.vertice1 = { 3, 0 };
@@ -463,7 +471,8 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			Collision collision{ true, {0, 3} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Collision cl = SpacePartitionBody::collisionResolution(body1, body2);
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #1
 			collider.vertice0 = { 1, 3 };
 			collider.vertice1 = { 1, -3 };
@@ -471,7 +480,7 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {0, 3} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #2
 			collider.vertice0 = { -1, 3 };
 			collider.vertice1 = { -1, -3 };
@@ -479,7 +488,7 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {2, 0} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #3
 			collider.vertice0 = { -2, -3 };
 			collider.vertice1 = { -3, -2 };
@@ -487,7 +496,7 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {2, 0} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #4
 			collider.vertice0 = { -3, -2 };
 			collider.vertice1 = { -2, -3 };
@@ -495,7 +504,7 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {0.5, 0.5} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #5
 			collider.vertice0 = { 2.5, -3 };
 			collider.vertice1 = { 3, -2.5 };
@@ -503,7 +512,7 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {-0.25, 0.25} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body1 and check that the whole body is considered for min displacement calculation
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 6;
@@ -513,24 +522,26 @@ namespace UnitTests
 			colliderContainer.push_back(collider);
 			body1.appendCollider(&colliderContainer.back());
 			collision = { true, {0.5, 0.5} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// modify body position and check that the collision detection is correctly handled #1 : update body1 position
 			body1.setPosition({ -2, 0 });
 			collision = { true, {-0.25, 0.25} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// modify body position and check that the collision detection is correctly handled #2 : update body2 position
 			body2.setPosition({ 0, -1.1 });
 			collision = { true, {0, 1.9} };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 
 		}
 
 		TEST_METHOD(collisionResolutionDynamicStatic_multiconfig)
 		{
+			SpacePartitionWorld world{ 1,1,1,1 };
 			std::list<SpacePartitionCollider > colliderContainer;
 			SpacePartitionCollider collider;
 			// create the dynamic body with 2 configs
 			SpacePartitionBody body1{ { 0, 0 }, BodyType::DYNAMIC };
+			body1.setWorld(&world);
 			collider.type = ColliderType::BOX;
 			collider.boxHeight = 6;
 			collider.boxWidth = 6;
@@ -545,6 +556,7 @@ namespace UnitTests
 			body1.appendCollider(&colliderContainer.back());
 			//create the static body with 1 default config
 			SpacePartitionBody body2{ { 0, 0 }, BodyType::STATIC };
+			body2.setWorld(&world);
 			collider.type = ColliderType::EDGE;
 			collider.vertice0 = { -1, 0 };
 			collider.vertice1 = { 1, 0 };
@@ -553,16 +565,16 @@ namespace UnitTests
 			// test the collision scenarios
 			body1.setCurrentConfig("default");
 			Collision collision{ true, {0 ,3 } };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			body1.setCurrentConfig("config1");
 			collision = { true, {0 ,1.5 } };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			body1.setCurrentConfig("config2"); // new config created with no colliders  -> no collision
 			collision = { false, {0 ,0 } };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			body1.setCurrentConfig("default");
 			collision = { true, {0 ,3 } };
-			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolutionDynamicVSstatic(body1, body2)));
+			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 		}
 
 		TEST_METHOD(AABB_globalFrame)

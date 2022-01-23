@@ -167,6 +167,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="UnitTestSpacePartitionContactListener.cpp" />
     <ClCompile Include="UnitTestSpacePartitionWorld.cpp" />
     <ClCompile Include="UnitTestGenericsTypes.cpp" />
     <ClCompile Include="UnitTestSpacePartitionBody.cpp" />

@@ -2,6 +2,8 @@
 #include "SpacePartitionBody.h"
 
 #include "SpacePartitionCollider.h"
+#include "SpacePartitionWorld.h"
+#include "SpacePartitionContactListener.h"
 #include <cassert>
 
 namespace Generics
@@ -104,23 +106,30 @@ namespace Generics
 		mWorldID = id;
 	}
 
+	void SpacePartitionBody::setWorldDynamicID(int id)
+	{
+		assert(mWorldDynamicID == -1 && "mWorldDynamicID can't be assigned twice");
+		assert(id >= 0 && "mWorldDynamicID must be >= 0");
+		mWorldDynamicID = id;
+	}
+
 	void SpacePartitionBody::updateAABB(SpacePartitionCollider* collider)
 	{
-		AABB cAABB = collider->getAABB();
+		AABB caabb = collider->getAABB();
 		// if the collider has no shape we do not consider it
-		if (cAABB.width == 0 && cAABB.height == 0)
+		if (caabb.width == 0 && caabb.height == 0)
 			return;
 
 		//if the body has no shape we initialize the body AABB with le collider AABB
 		if (mAABB.width == 0 && mAABB.height == 0)
-			mAABB = cAABB;
+			mAABB = caabb;
 		else
 		{
 			//else we include the collider AABB inside the body AABB
-			float top = fmax(cAABB.top(), mAABB.top());
-			float bottom = fmin(cAABB.bottom(), mAABB.bottom());
-			float right = fmax(cAABB.right(), mAABB.right());
-			float left = fmin(cAABB.left(), mAABB.left());
+			float top = fmax(caabb.top(), mAABB.top());
+			float bottom = fmin(caabb.bottom(), mAABB.bottom());
+			float right = fmax(caabb.right(), mAABB.right());
+			float left = fmin(caabb.left(), mAABB.left());
 			mAABB.position.y = (top + bottom) / 2;
 			mAABB.position.x = (right + left) / 2;
 			mAABB.height = top - bottom;
@@ -128,24 +137,29 @@ namespace Generics
 		}
 	}
 
-	Collision SpacePartitionBody::collisionResolutionDynamicVSstatic(SpacePartitionBody& body1, SpacePartitionBody& body2)
+	Collision SpacePartitionBody::collisionResolution(SpacePartitionBody& body1, SpacePartitionBody& body2)
 	{
-
-		// finalCollision decribes the final collision state between the dynamic body1 
-		// and static body2 
+		// finalCollision decribes the final collision state between the two bodies
 		Collision finalCollision;
 
-		//We want to test the collision only between a dynamic body1 and a static body2. 
-		//This test also covers the case of identical bodies (they don't collide).
-		if (!(BodyType::DYNAMIC == body1.getType()) || !(BodyType::STATIC == body2.getType()))
+		// both bodies must belong to the same world
+		SpacePartitionWorld* world = body1.getWorld();
+		if (world == nullptr || world != body2.getWorld())
+			return finalCollision;
+
+		// world's contact listener to register colliders contacts if any
+		SpacePartitionContactListener* contactListener = world->getContactListener();
+		
+		//We want to test the collision only between a dynamic body1 and another body
+		if (BodyType::DYNAMIC != body1.getType())
 			return finalCollision;
 
 		//We test first rought collisison detection via bodies AABB
 		if (!body1.getAABB_globalFrame().intersect(body2.getAABB_globalFrame()))
 			return finalCollision;
 
-		// The purpose is to find the collider of static body where
-		// the displacement of dynamic body that removes the intersection
+		// The purpose is to find the collider of static body2 where
+		// the displacement of dynamic body1 that removes the intersection
 		// is minimum. For comparison purpose we initialize the finalCollision.response at +infinite.
 		finalCollision.response = { 999999999999.9, 999999999999.9 };
 		// during the resolution, finalCollision.isTouching is set to true only when
@@ -153,14 +167,14 @@ namespace Generics
 		// with no response (intersection of 2 boxes) that must be tracked
 		bool isTouching = false;
 
-		// for each collider of static body
-		for (auto staticCollider : body2.mColliders.at(body2.mCurrentConfig))
+		// for each collider of other body
+		for (auto otherCollider : body2.mColliders.at(body2.mCurrentConfig))
 		{
 			// we want to consider the collider of dynamic body 
 			// the deepest 'inside' the static collider -> it represents
 			// the displacement that removes the intersection between the bodies
 
-// !! WARNING : if a dynamic collider is 'inside' a static collider but is not touching it it will not be considered
+// !! WARNING : if a dynamic collider is 'inside' a collider but is not touching it it will not be considered
 // !! in the algorithm.
 // !!     
 // !!                 OUTSIDE
@@ -181,13 +195,25 @@ namespace Generics
 			// for each collider of dynamic body
 			for (auto dynamicCollider : body1.mColliders.at(body1.mCurrentConfig))
 			{
-				Collision collision = SpacePartitionCollider::collisionResolution(*dynamicCollider, *staticCollider);
-				// the maximum magnitude represent the deepest collision
-				if (collision.response.norm() > deepestCollision.response.norm())
-					deepestCollision = collision;
-				// track intersection with no response
-				if (collision.isTouching)
-					isTouching = true;
+				// if the body2 is static -> we test for collision
+				if (BodyType::STATIC == body2.getType())
+				{
+					Collision collision = SpacePartitionCollider::collisionResolution(*dynamicCollider, *otherCollider);
+					// the maximum magnitude represent the deepest collision
+					if (collision.response.norm() > deepestCollision.response.norm())
+						deepestCollision = collision;
+					// track intersection with no response
+					if (collision.isTouching)
+						isTouching = true;
+				}
+				// else we test for contact
+				else
+				{
+					isTouching = collidersIntersect(*dynamicCollider, *otherCollider);
+				}
+				// if a contact occurs we register it
+				if (isTouching && contactListener != nullptr)
+					contactListener->updateContactState(dynamicCollider, otherCollider);
 			}
 
 			// We finalize the iteration on static collider 

@@ -39,6 +39,9 @@
     <ClInclude Include="ToolsJson.hpp">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="SpacePartitionContactListener.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="StateMachine.cpp">
@@ -54,6 +57,9 @@
       <Filter>Fichiers sources</Filter>
     </ClCompile>
     <ClCompile Include="SpacePartitionGrid.cpp">
+      <Filter>Fichiers sources</Filter>
+    </ClCompile>
+    <ClCompile Include="SpacePartitionContactListener.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
   </ItemGroup>

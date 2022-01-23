@@ -4,6 +4,7 @@
 #include "SpacePartitionGrid.h"
 #include "SpacePartitionBody.h"
 #include "SpacePartitionCollider.h"
+#include "SpacePartitionContactListener.h"
 
 namespace Generics
 {
@@ -34,8 +35,11 @@ namespace Generics
 			}
 		}
 		
-		//assign world id to the body
+		//assign world id and ptr to the body
 		body.setWorldID(totalBodiesNumber());
+		if (BodyType::DYNAMIC == body.getType())
+			body.setWorldDynamicID(dynamicBodiesNumber());
+		body.setWorld(this);
 
 		//append the body to world factory and reference it into the grid
 		SpacePartitionBody* body_ptr = nullptr;
@@ -52,13 +56,22 @@ namespace Generics
 			mGrid->setBody(body_ptr);
 		}
 		
-		//register the parent body ptr to each new collider appended into world factory
+		//register the parent body ptr to each 
+		//new collider appenned into world factory
 		for (auto collider : newColliders)
 			collider->p_body = body_ptr;
 
 		return body_ptr;
 	}
 
+
+	void SpacePartitionWorld::Step(double dt)
+	{
+		updateDynamicBodies(dt);
+		// Raise contact begin/end
+		if (mContactListener != nullptr)
+			mContactListener->endSolverStep();
+	}
 
 	void SpacePartitionWorld::updateDynamicBodies(double dt)
 	{
@@ -75,8 +88,9 @@ namespace Generics
 			std::vector<bool>(totalBodiesNumber(), false));
 
 		// For each dynamic body we test if 
-		// collisions with static bodies occur
-		int nrk = 0;
+		// collisions with static bodies 
+		// or interference with dynamic bodies occur
+		int brk = 0;
 		for (auto& body : mDynamicBodies)
 		{
 			int bID = body.getWorldID();
@@ -91,20 +105,22 @@ namespace Generics
 				for (auto neighbor : mGrid->getBodiesAtgID(gid))
 				{
 					int nID = neighbor->getWorldID();
-					if (!(bID==nID) && !isDone[nrk][nID])
+					int nrk = neighbor->getWorldDynamicID();
+					if (!(bID==nID) && !isDone[brk][nID])
 					{
 						// test collision for each neighbor
-						Collision collision = SpacePartitionBody::collisionResolutionDynamicVSstatic(body, *neighbor);
+						Collision collision = SpacePartitionBody::collisionResolution(body, *neighbor);
 						// we store the maximum positive/negative collision displacement values
 						positive_dispx = fmax(positive_dispx, collision.response.x);
 						negative_dispx = fmin(negative_dispx, collision.response.x);
 						positive_dispy = fmax(positive_dispy, collision.response.y);
 						negative_dispy = fmin(negative_dispy, collision.response.y);
-						isDone[nrk][nID] = true;
+						isDone[brk][nID] = true;
+						if (nrk != -1) isDone[nrk][bID] = true;
 					}
 				}
 			}
-			nrk += 1;
+			brk += 1;
 
 			// if collisions occur we update the body position according the maximum displacement values
 			float divx = (positive_dispx != 0 && negative_dispx != 0) ? 2.f : 1.f;
@@ -117,4 +133,17 @@ namespace Generics
 			mGrid->setBody(&body);
 		}
 	}
+
+	void SpacePartitionWorld::setContactListener(SpacePartitionContactListener* contactListener)
+	{
+		//old listener must be reset
+		if (mContactListener != nullptr)
+		{
+			mContactListener->setWorld(nullptr);
+			mContactListener->resetContactList();
+		}
+		mContactListener = contactListener;
+		contactListener->setWorld(this);
+	}
+
 }

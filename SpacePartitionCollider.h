@@ -4,6 +4,8 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220116 - Add Contact Listener
+ *                  add contatsList attribut
  * @date 20220108 - Improve Grid efficiency
  *                  Update  BoxEdgeDisplacementResponse mehod
  * @date 20220107 - Code refactoring to manage colliders as world factory objects
@@ -50,6 +52,9 @@ namespace Generics
         Vect2d restitutionVector{ 0, 0 }; 
 
         SpacePartitionBody* p_body = nullptr; // parent body
+
+        // List of contacts where the collider is involved
+        std::list<SpacePartitionContact*> contatsList;
 
         /**
         * getAABB will extrapolate the collider AABB from its internal properties
