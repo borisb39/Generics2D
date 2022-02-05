@@ -470,7 +470,7 @@ namespace UnitTests
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			Collision collision{ true, {0, 3} };
+			Collision collision{ true, {0, 2.999} };
 			Collision cl = SpacePartitionBody::collisionResolution(body1, body2);
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #1
@@ -479,7 +479,7 @@ namespace UnitTests
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			collision = { true, {0, 3} };
+			collision = { true, {0, 2.999} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #2
 			collider.vertice0 = { -1, 3 };
@@ -487,7 +487,7 @@ namespace UnitTests
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			collision = { true, {2, 0} };
+			collision = { true, {1.999, 0} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #3
 			collider.vertice0 = { -2, -3 };
@@ -495,7 +495,7 @@ namespace UnitTests
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			collision = { true, {2, 0} };
+			collision = { true, {1.999, 0} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #4
 			collider.vertice0 = { -3, -2 };
@@ -503,7 +503,7 @@ namespace UnitTests
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			collision = { true, {0.5, 0.5} };
+			collision = { true, {0.499, 0.499} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #5
 			collider.vertice0 = { 2.5, -3 };
@@ -511,7 +511,7 @@ namespace UnitTests
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
-			collision = { true, {-0.25, 0.25} };
+			collision = { true, {-0.249, 0.249} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body1 and check that the whole body is considered for min displacement calculation
 			collider.type = ColliderType::BOX;
@@ -521,15 +521,15 @@ namespace UnitTests
 			collider.p_body = &body1;
 			colliderContainer.push_back(collider);
 			body1.appendCollider(&colliderContainer.back());
-			collision = { true, {0.5, 0.5} };
+			collision = { true, {0.499, 0.499} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// modify body position and check that the collision detection is correctly handled #1 : update body1 position
 			body1.setPosition({ -2, 0 });
-			collision = { true, {-0.25, 0.25} };
+			collision = { true, {-0.249, 0.249} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// modify body position and check that the collision detection is correctly handled #2 : update body2 position
 			body2.setPosition({ 0, -1.1 });
-			collision = { true, {0, 1.9} };
+			collision = { true, {0, 1.899} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 
 		}
@@ -564,16 +564,16 @@ namespace UnitTests
 			body2.appendCollider(&colliderContainer.back());
 			// test the collision scenarios
 			body1.setCurrentConfig("default");
-			Collision collision{ true, {0 ,3 } };
+			Collision collision{ true, {0 ,2.999 } };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			body1.setCurrentConfig("config1");
-			collision = { true, {0 ,1.5 } };
+			collision = { true, {0 ,1.499 } };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			body1.setCurrentConfig("config2"); // new config created with no colliders  -> no collision
 			collision = { false, {0 ,0 } };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			body1.setCurrentConfig("default");
-			collision = { true, {0 ,3 } };
+			collision = { true, {0 ,2.999 } };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 		}
 

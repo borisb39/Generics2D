@@ -4,6 +4,8 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220125 - Consider box collider skin
+ *                  Update BoxEdgeDisplacementResponse
  * @date 20220116 - Add Contact Listener
  *                  add contatsList attribut
  * @date 20220108 - Improve Grid efficiency

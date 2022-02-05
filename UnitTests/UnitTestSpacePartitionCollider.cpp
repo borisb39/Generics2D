@@ -259,7 +259,7 @@ namespace UnitTests
 			collider2.position = { 0, 0 };
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ 1, 0 };  //outside on the top
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 5 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 4.999 });
 			// box partly inside the edge 1
 			collider1.position = { 0, -3 };
 			collider1.boxWidth = 4;
@@ -267,7 +267,7 @@ namespace UnitTests
 			collider2.position = { 0, -3 };
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ 1, 0 }; //outside on the top
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 1.999 });
 			// box partly inside the edge 2
 			collider1.position = { 0, -3 };
 			collider1.boxWidth = 4;
@@ -275,7 +275,7 @@ namespace UnitTests
 			collider2.position = { 0, -3 };
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ -1, 0 }; //outside on the bottom
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, -2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, -1.999 });
 			// box partly inside the edge 3
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -283,7 +283,7 @@ namespace UnitTests
 			collider2.position = { 3, 0 };
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ 0, 1 }; //outside on the left
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2, 0 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.999, 0 });
 			// box partly inside the edge 4
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -291,7 +291,7 @@ namespace UnitTests
 			collider2.position = { 3, 0 };
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ 0, -1 }; //outside on the right
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 2, 0 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 1.999, 0 });
 			// box partly inside the edge 5
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -299,7 +299,7 @@ namespace UnitTests
 			collider2.position = { 3, 0 };
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 }; //outside on the top left
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2, 2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.999, 1.999 });
 			// box partly inside the edge 6
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -307,7 +307,7 @@ namespace UnitTests
 			collider2.position = { 2, 0 };
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 }; //outside on the top left
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2.5, 2.5 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2.499, 2.499 });
 			// box partly inside the edge 7
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -316,7 +316,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, 1 };
 			collider2.vertice1 = Vect2d{ 1, -1 }; //outside on the top right
 			Vect2d reponse = BoxEdgeDisplacementResponse(collider1, collider2);
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 2, 2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 1.999, 1.999 });
 			// box partly inside the edge 8
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -324,7 +324,7 @@ namespace UnitTests
 			collider2.position = { 3, 0 };
 			collider2.vertice0 = Vect2d{ 1, 1 };
 			collider2.vertice1 = Vect2d{ -1, -1 }; //outside on the bottom right
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 2, -2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 1.999, -1.999 });
 			// box partly inside the edge 9
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -332,7 +332,7 @@ namespace UnitTests
 			collider2.position = { 3, 0 };
 			collider2.vertice0 = Vect2d{ 1, -1 };
 			collider2.vertice1 = Vect2d{ -1, 1 }; //outside on the bottom left
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2, -2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.999, -1.999 });
 			// box partly inside the edge 10
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -340,7 +340,7 @@ namespace UnitTests
 			collider2.position = { 3, 0 };
 			collider2.vertice0 = Vect2d{ -2, 2 };
 			collider2.vertice1 = Vect2d{ 0, -2 }; //outside on the top right
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 1.6, 0.8 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 1.5988, 0.7994 });
 			// box partly inside the edge 11
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -348,7 +348,7 @@ namespace UnitTests
 			collider2.position = { 4, 0 };
 			collider2.vertice0 = Vect2d{ -2, 2 };
 			collider2.vertice1 = Vect2d{ 0, -2 }; //outside on the top right
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 2.4, 1.2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 2.3988, 1.1994 });
 			// box totaly inside the edge
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -356,7 +356,7 @@ namespace UnitTests
 			collider2.position = { 11, 0 };
 			collider2.vertice0 = Vect2d{ -2, 2 };
 			collider2.vertice1 = Vect2d{ 0, -2 }; //outside on the top right
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 8, 4 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 7.998, 3.999 });
 			// box totaly outside the edge
 			collider1.position = { 3, 0 };
 			collider1.boxWidth = 4;
@@ -372,7 +372,7 @@ namespace UnitTests
 			collider2.position = { 0, 0 };
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ 1, 0 }; //outside on the top
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 1.999 });
 			// unusual case 2 : edge is a point -> no impact on box displacement
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 4;
@@ -424,7 +424,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { -1, 1 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1, 1 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -0.999, 0.999 });
 			// restitution vector : normal vector 2
 			collider1.position = { 0.5, 0 };
 			collider1.boxWidth = 2;
@@ -433,7 +433,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { -1, 1 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.25, 1.25 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.249, 1.249 });
 			// restitution vector : vertical vector 
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -442,7 +442,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { 0, 1 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0, 1.998 });
 			// restitution vector : horizontal vector 
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -451,7 +451,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { -1, 0 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2, 0 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.998, 0 });
 			// restitution vector : specific angle 1 
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -460,7 +460,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { -1, 3 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -0.5, 1.5 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -0.4995, 1.4985 });
 			// restitution vector : specific angle 2
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -469,7 +469,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { -3, 1 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.5, 0.5 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.4985, 0.4995 });
 			// restitution vector : specific angle 3 -> reach edge top bounding box
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -478,7 +478,8 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { 1, 3 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0.66666, 2 });
+			Vect2d disp = BoxEdgeDisplacementResponse(collider1, collider2);
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 0.66633, 1.999 });
 			// restitution vector : specific angle 4 -> reach edge left bounding box
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -487,7 +488,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ -1, -1 };
 			collider2.vertice1 = Vect2d{ 1, 1 };
 			collider2.restitutionVector = { -3, -1 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -2, -0.66666 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -1.999, -0.66633 });
 			// restitution vector : specific angle 5 -> reach edge bottom bounding box
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -496,7 +497,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ 1, 1 };
 			collider2.vertice1 = Vect2d{ -1, -1 };
 			collider2.restitutionVector = { -1, -3 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -0.66666, -2 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ -0.66633, -1.999 });
 			// restitution vector : specific angle 6 -> reach edge right bounding box
 			collider1.position = { 0, 0 };
 			collider1.boxWidth = 2;
@@ -505,7 +506,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ 1, 1 };
 			collider2.vertice1 = Vect2d{ -1, -1 };
 			collider2.restitutionVector = { 3, 1 };
-			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 2, 0.66666 });
+			Assert::IsTrue(BoxEdgeDisplacementResponse(collider1, collider2) == Vect2d{ 1.999, 0.66633 });
 		}
 
 		TEST_METHOD(GenericCollisionRespone)
@@ -544,7 +545,7 @@ namespace UnitTests
 			collider2.vertice0 = Vect2d{ 0, 0 };
 			collider2.vertice1 = Vect2d{ 1, 0 }; //outside on the top
 			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
-			expectedCollision = { true,  { 0, 2} };
+			expectedCollision = { true,  { 0, 1.999} };
 			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
 			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
 			// sensor -> collision but no response
@@ -564,7 +565,7 @@ namespace UnitTests
 			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);
 			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
 			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
-			expectedCollision = { true,  { 0, 2} };
+			expectedCollision = { true,  { 0, 1.999} };
 			collider1.isSensor = false;
 			collider2.isSensor = false;
 			calculatedCollision = SpacePartitionCollider::collisionResolution(collider1, collider2);

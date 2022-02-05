@@ -122,16 +122,20 @@ namespace Generics
 		//final displacement of the box
 		Vect2d response = { 0, 0 };
 
+		// box collider skin thickness
+		// a skin is used to avoid numerical precision issues
+		float skin = 0.001;
+
 		// box corners
 		Vect2d corners[4] = {
-			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //topleft
-			box.getPosition_globalFrame().y + box.boxHeight / 2 },
-			{ box.getPosition_globalFrame().x + box.boxWidth / 2, //topright
-			box.getPosition_globalFrame().y + box.boxHeight / 2 },
-			{ box.getPosition_globalFrame().x - box.boxWidth / 2, //bottomleft
-			box.getPosition_globalFrame().y - box.boxHeight / 2 },
-			{ box.getPosition_globalFrame().x + box.boxWidth / 2, //bottomright
-			box.getPosition_globalFrame().y - box.boxHeight / 2 }
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2 + skin, //topleft
+			box.getPosition_globalFrame().y + box.boxHeight / 2 - skin },
+			{ box.getPosition_globalFrame().x + box.boxWidth / 2 - skin, //topright
+			box.getPosition_globalFrame().y + box.boxHeight / 2 - skin },
+			{ box.getPosition_globalFrame().x - box.boxWidth / 2 + skin, //bottomleft
+			box.getPosition_globalFrame().y - box.boxHeight / 2 + skin },
+			{ box.getPosition_globalFrame().x + box.boxWidth / 2 - skin, //bottomright
+			box.getPosition_globalFrame().y - box.boxHeight / 2 + skin }
 		};
 
 		// default edge restitution vector is replaced by normal vector
