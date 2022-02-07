@@ -4,6 +4,8 @@
  * @file SpacePartionBody.h
  * @author Boris Burdin
 
+ * @date 20220207 - Fix bug on listener delete
+ *                  Update methods ~SpacePartitionContactListener
  * @date 20220109 - Initial Release
  */
 
@@ -35,7 +37,7 @@ namespace Generics
         /**
         * SpacePartitionContactListener constructor
         */
-        ~SpacePartitionContactListener() { resetContactList(); };
+        ~SpacePartitionContactListener();
 
         /**
         * updateContactState will check if a contact between the two rpovided colliders is already tracked.

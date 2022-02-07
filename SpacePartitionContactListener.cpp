@@ -2,9 +2,17 @@
 
 #include "SpacePartitionCollider.h"
 #include "SpacePartitionBody.h"
+#include "SpacePartitionWorld.h"
+
 
 namespace Generics
 {
+   SpacePartitionContactListener::~SpacePartitionContactListener()
+    {
+        if (p_world != nullptr)
+           p_world->setContactListener(nullptr);
+    };
+
     void SpacePartitionContactListener::updateContactState(SpacePartitionCollider* collider1, SpacePartitionCollider* collider2)
     {
         // both collider must belong to the same world

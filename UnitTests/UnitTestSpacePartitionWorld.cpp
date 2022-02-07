@@ -450,5 +450,142 @@ namespace UnitTests
 				world.Step(dt);
 
 		}
+
+		TEST_METHOD(GetDynamicBodyAt)
+		{
+			SpacePartitionWorld world(1, 1, 1, 1);
+			SpacePartitionBodyTemplate bodyTemplate;
+			world.addBody(bodyTemplate);
+			//nodynamic body -> nullptr is returned
+			Assert::IsTrue(world.getDynamicBodyAt(0) == nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(10) == nullptr);
+			bodyTemplate.type = BodyType::DYNAMIC;
+			//1 dynamic body -> nullptr is returned for index >= 1
+			world.addBody(bodyTemplate);
+			Assert::IsTrue(world.getDynamicBodyAt(0) != nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(1) == nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(10) == nullptr);
+			//4 dynamic body -> nullptr is returned for index >= 3
+			world.addBody(bodyTemplate);
+			world.addBody(bodyTemplate);
+			world.addBody(bodyTemplate);
+			bodyTemplate.type = BodyType::STATIC;
+			world.addBody(bodyTemplate);
+			Assert::IsTrue(world.getDynamicBodyAt(0) != nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(1) != nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(2) != nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(3) != nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(4) == nullptr);
+			Assert::IsTrue(world.getDynamicBodyAt(10) == nullptr);
+		}
+
+		TEST_METHOD(ContactListenerCreationDelete)
+		{
+			//// check that creation / delete of world and contact listener do not raise memory access errors
+			///Test case 1 : add listener to world delete listener delete world
+			SpacePartitionWorld* world = new SpacePartitionWorld(1, 1, 1, 1);
+			//create contacts
+			SpacePartitionBodyTemplate bodyTemplate;
+			bodyTemplate.type = BodyType::DYNAMIC;
+			SpacePartitionCollider collider;
+			collider.boxHeight = 2;
+			collider.boxWidth = 2;
+			bodyTemplate.appendCollider(collider);
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			SpacePartitionContactListener* listener = new SpacePartitionContactListener;
+			world->setContactListener(listener);
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			world->Step(0.1);
+			Assert::IsTrue(listener->getNumberOfContacts() == 3);
+			//remove listener
+			delete listener;
+			Assert::IsTrue(world->getContactListener() == nullptr);
+			//delete world
+			delete world;
+			///Test case 2 : add listener to world delete world delete listener
+			world = new SpacePartitionWorld(1, 1, 1, 1);
+			//create contacts
+			bodyTemplate.type = BodyType::DYNAMIC;
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			listener = new SpacePartitionContactListener;
+			world->setContactListener(listener);
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			world->Step(0.1);
+			Assert::IsTrue(listener->getNumberOfContacts() == 3);
+			//remove world
+			delete world;
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			//delete listener
+			delete listener;
+			///Test case 3 : do not add listener to world delete listener delete world
+			world = new SpacePartitionWorld(1, 1, 1, 1);
+			//create contacts
+			bodyTemplate.type = BodyType::DYNAMIC;
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			listener = new SpacePartitionContactListener;
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			world->Step(0.1);
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			Assert::IsTrue(world->getContactListener() == nullptr);
+			//remove listener
+			delete listener;
+			Assert::IsTrue(world->getContactListener() == nullptr);
+			//delete world
+			delete world;
+			///Test case 4 : do not add listener to world delete world delete listener
+			world = new SpacePartitionWorld(1, 1, 1, 1);
+			//create contacts
+			bodyTemplate.type = BodyType::DYNAMIC;
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			listener = new SpacePartitionContactListener;
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			world->Step(0.1);
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			Assert::IsTrue(world->getContactListener() == nullptr);
+			//remove world
+			delete world;
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			//delete listener
+			delete listener;
+			///Test case 5 :  add listener to world switch listener delete listener delete listener2 delete world
+			world = new SpacePartitionWorld(1, 1, 1, 1);
+			//create contacts
+			bodyTemplate.type = BodyType::DYNAMIC;
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			world->addBody(bodyTemplate);
+			listener = new SpacePartitionContactListener;
+			world->setContactListener(listener);
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			world->Step(0.1);
+			Assert::IsTrue(listener->getNumberOfContacts() == 3);
+			Assert::IsTrue(world->getContactListener() == listener);
+			// switch listener
+			SpacePartitionContactListener* listener2 = new SpacePartitionContactListener;
+			world->setContactListener(listener2);
+			Assert::IsTrue(world->getContactListener() == listener2);
+			Assert::IsTrue(listener->getNumberOfContacts() == 0);
+			Assert::IsTrue(listener2->getNumberOfContacts() == 0);
+			world->Step(0.1);
+			Assert::IsTrue(listener2->getNumberOfContacts() == 3);
+			//delete listener
+			delete listener;
+			Assert::IsTrue(listener2->getNumberOfContacts() == 3);
+			Assert::IsTrue(world->getContactListener() == listener2);
+			//delete listener2
+			delete listener2;
+			Assert::IsTrue(world->getContactListener() == nullptr);
+			//remove world
+			delete world;
+		}
+
 	};
 }

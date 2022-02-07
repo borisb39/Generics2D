@@ -16,6 +16,11 @@ namespace Generics
 	SpacePartitionWorld::~SpacePartitionWorld()
 	{
 		delete mGrid;
+		if (mContactListener != nullptr)
+		{
+			mContactListener->resetContactList();
+			mContactListener->setWorld(nullptr);
+		}
 	}
 
 	SpacePartitionBody* SpacePartitionWorld::addBody(SpacePartitionBodyTemplate bodyTemplate)
@@ -54,6 +59,7 @@ namespace Generics
 			mDynamicBodies.push_back(body);
 			body_ptr = &mDynamicBodies.back();
 			mGrid->setBody(body_ptr);
+			mDynamicBodiesExternalAccess.push_back(body_ptr);
 		}
 		
 		//register the parent body ptr to each 
@@ -64,6 +70,13 @@ namespace Generics
 		return body_ptr;
 	}
 
+	SpacePartitionBody* SpacePartitionWorld::getDynamicBodyAt(int idx)
+	{
+		SpacePartitionBody* body = nullptr;
+		if (idx < dynamicBodiesNumber())
+			body = mDynamicBodiesExternalAccess[idx];
+		return body;
+	}
 
 	void SpacePartitionWorld::Step(double dt)
 	{
@@ -139,11 +152,12 @@ namespace Generics
 		//old listener must be reset
 		if (mContactListener != nullptr)
 		{
-			mContactListener->setWorld(nullptr);
 			mContactListener->resetContactList();
+			mContactListener->setWorld(nullptr);
 		}
 		mContactListener = contactListener;
-		contactListener->setWorld(this);
+		if (mContactListener != nullptr)
+			mContactListener->setWorld(this);
 	}
 
 }

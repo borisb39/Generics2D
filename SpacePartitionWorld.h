@@ -4,6 +4,9 @@
 *
 * @file SpacePartionWorld.h
 * @author Boris Burdin
+* @date 20220207 - External Access dynamic bodies + bugfixes delete listener/world
+*                  Update methods ~SpacePartitionWorld, addBody,setContactListener
+*                  Add method getDynamicBodyAt, attribut mDynamicBodiesExternalAccess
 * @date 20220116 - Add Contact Listener
 *                  AAdd Step metod, contactListener attribut
 *                  Update methods addBody,  updateDynamicBodies
@@ -54,6 +57,13 @@ namespace Generics
 		SpacePartitionBody* addBody(SpacePartitionBodyTemplate bodyTemplate);
 
 		/**
+	    * getDynamicBodyAt will get a ptr of
+	    * the body refered at indice <idx> in the world dynamicBodies container.
+	    * In case of out of bound indice a nullptr is returned.
+	    */
+		SpacePartitionBody* getDynamicBodyAt(int idx);
+
+		/**
 		* Step is called at each solver step loop and lists all the operations performed during a step of calculation.
 		*/
 		void Step(double dt);
@@ -80,6 +90,7 @@ namespace Generics
 		std::list<SpacePartitionBody> mStaticBodies;
 		// Container of Dynamic bodies 
 		std::list<SpacePartitionBody> mDynamicBodies;
+		std::vector< SpacePartitionBody*> mDynamicBodiesExternalAccess;
 		// Container of colliders
 		std::list<SpacePartitionCollider> mColliders;
 		// 2D partition Grid where mStaticBodies and mDynamicBodies are referenced.
