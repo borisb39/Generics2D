@@ -162,9 +162,8 @@ namespace Generics
 		// the displacement of dynamic body1 that removes the intersection
 		// is minimum. For comparison purpose we initialize the finalCollision.response at +infinite.
 		finalCollision.response = { 999999999999.9, 999999999999.9 };
-		// during the resolution, finalCollision.isTouching is set to true only when
-		// a collision response occured. In some cases there may be an intersection
-		// with no response (intersection of 2 boxes) that must be tracked
+		// finalCollision.isTouching is set to true only when a collision resolution (collision with static body) 
+		// occured. Intersection with dynamic bodies must also be tracked
 		bool isTouching = false;
 
 		// for each collider of other body
@@ -202,9 +201,12 @@ namespace Generics
 					// the maximum magnitude represent the deepest collision
 					if (collision.response.norm() > deepestCollision.response.norm())
 						deepestCollision = collision;
-					// track intersection with no response
+					// track intersection with no displacement
 					if (collision.isTouching)
+					{
+						deepestCollision.isTouching = true;
 						isTouching = true;
+					}
 				}
 				// else we test for contact
 				else
@@ -218,17 +220,17 @@ namespace Generics
 
 			// We finalize the iteration on static collider 
 			// by saving its collision state if the associated displacement is minimum
-			if (deepestCollision.isTouching && // at this step isTouching is true only if a collision response occured
+			if (deepestCollision.isTouching && 
 				deepestCollision.response.norm() < finalCollision.response.norm())
 				finalCollision = deepestCollision;
 		}
 
 		// if no collision response between the bodies have been found, the final collision state
 		// must be reset (+infinite -> 0)
-		if (!finalCollision.isTouching) // at this step isTouching is true only if a collision response occured
+		if (!finalCollision.isTouching)
 			finalCollision.response = { 0, 0 };
 
-		// track intersection with no response
+		// track intersection with dynamic bodies
 		finalCollision.isTouching = isTouching;
 
 		return finalCollision;

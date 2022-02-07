@@ -4,6 +4,8 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220207 - Fix bug collision resolution contact with no displacement
+ *                  Update method collisionResolution
  * @date 20220116 - Add Contact Listener
  *                  add mWorldDynamicID, p_world attribus
  *                  Update methods collisionResolutionDynamicVSstatic -> collisionResolution
