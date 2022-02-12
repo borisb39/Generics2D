@@ -48,9 +48,9 @@ namespace UnitTests
 			bodyTemplate.type = BodyType::DYNAMIC;
 			bodyTemplate.appendCollider(collider);
 			// create one contact between two dynamic bodies with 1 collider / body
-			SpacePartitionBody* body1 = world.addBody(bodyTemplate);
+			SpacePartitionBody* body1 = world.createBody(bodyTemplate);
 			bodyTemplate.position = { 1, 0 };
-			SpacePartitionBody* body2 = world.addBody(bodyTemplate);
+			SpacePartitionBody* body2 = world.createBody(bodyTemplate);
 			float dt = 0.1;
 			world.Step(dt);
 			// test contact begin/end callback
@@ -69,7 +69,7 @@ namespace UnitTests
 			collider.vertice0 = { 0, 0 };
 			collider.vertice1 = { 1, 0 };
 			bodyTemplate.appendCollider(collider);
-			SpacePartitionBody* body3 = world.addBody(bodyTemplate);
+			SpacePartitionBody* body3 = world.createBody(bodyTemplate);
 			world.Step(dt);
 			// test contact begin/end callback
 			Assert::IsTrue(listener.numberBegin == 3);
@@ -92,7 +92,7 @@ namespace UnitTests
 			collider.vertice0 = { 2, 1 };
 			collider.vertice1 = { 2, 2 };
 			bodyTemplate.appendCollider(collider);
-			SpacePartitionBody* body4 = world.addBody(bodyTemplate);
+			SpacePartitionBody* body4 = world.createBody(bodyTemplate);
 			world.Step(dt);
 			// test contact begin/end callback
 			Assert::IsTrue(listener.numberBegin == 5);

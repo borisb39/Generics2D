@@ -23,7 +23,7 @@ namespace Generics
         {
             // if the contact already exist -> set status to UPDATED
             if ((collider1 == contact->collider1 && collider2 == contact->collider2)
-                || (collider1 == contact->collider2 && collider2 == contact->collider1))
+             || (collider1 == contact->collider2 && collider2 == contact->collider1))
             {
                 contact->state = ContactState::UPDATED;
                 return;

@@ -23,49 +23,55 @@ namespace Generics
 		}
 	}
 
-	SpacePartitionBody* SpacePartitionWorld::addBody(SpacePartitionBodyTemplate bodyTemplate)
+	SpacePartitionBody* SpacePartitionWorld::createBody(SpacePartitionBodyTemplate bodyTemplate)
 	{
-		SpacePartitionBody body{  bodyTemplate.position, bodyTemplate.type};
+		SpacePartitionBody body { 
+			bodyTemplate.position, 
+			bodyTemplate.type
+		};
+		body.setWorldID(totalBodiesNumber());
+		body.setWorld(this);
 
-		//append colliders to the world factory and reference it into body container
-		std::vector<SpacePartitionCollider*> newColliders;
-		for (auto config : bodyTemplate.colliders)
+		// Add colliders to the world factory 
+		// and reference them into body container
+		int numberOfColliders = 0;
+		for (auto it = bodyTemplate.colliders.begin(); it != bodyTemplate.colliders.end() ; it++)
 		{
-			body.setCurrentConfig(config.first);
-			for (auto collider : config.second)
+			body.setCurrentConfig(it->first);
+			for (auto collider : it->second)
 			{
 				mColliders.push_back(collider);
 				body.appendCollider(&mColliders.back());
-				newColliders.push_back(&mColliders.back());
+				numberOfColliders += 1;
 			}
 		}
 		
-		//assign world id and ptr to the body
-		body.setWorldID(totalBodiesNumber());
-		if (BodyType::DYNAMIC == body.getType())
-			body.setWorldDynamicID(dynamicBodiesNumber());
-		body.setWorld(this);
-
-		//append the body to the world factory and reference it into the grid
+		//append the body to the world factory
 		SpacePartitionBody* body_ptr = nullptr;
 		if (BodyType::STATIC == body.getType())
 		{
 			mStaticBodies.push_back(body);
 			body_ptr = &mStaticBodies.back();
-			mGrid->setBody(body_ptr);
 		}
 		else if (BodyType::DYNAMIC == body.getType())
 		{
+			body.setWorldDynamicID(dynamicBodiesNumber());
 			mDynamicBodies.push_back(body);
 			body_ptr = &mDynamicBodies.back();
-			mGrid->setBody(body_ptr);
 			mDynamicBodiesExternalAccess.push_back(body_ptr);
 		}
+
+		// reference the body in the grid
+		mGrid->setBody(body_ptr);
 		
 		//register the parent body ptr to each 
 		//new collider added into world factory
-		for (auto collider : newColliders)
-			collider->p_body = body_ptr;
+		auto it = mColliders.rbegin();
+		for (int i = 0; i < numberOfColliders; i++)
+		{
+			it->p_body = body_ptr;
+			it++;
+		}
 
 		return body_ptr;
 	}
@@ -106,11 +112,8 @@ namespace Generics
 		int brk = 0;
 		for (auto& body : mDynamicBodies)
 		{
+			Boundaries boundaries;
 			int bID = body.getWorldID();
-			float positive_dispx = 0.f;
-			float negative_dispx = 0.f;
-			float positive_dispy = 0.f;
-			float negative_dispy = 0.f;
 			// iterate in the grid to fetch the dynamic body neighborhood
 			for (auto const& gid : mGrid->getBodygIDs(&body))
 			{
@@ -123,11 +126,7 @@ namespace Generics
 					{
 						// test collision for each neighbor
 						Collision collision = SpacePartitionBody::collisionResolution(body, *neighbor);
-						// we store the maximum positive/negative collision displacement values
-						positive_dispx = fmax(positive_dispx, collision.response.x);
-						negative_dispx = fmin(negative_dispx, collision.response.x);
-						positive_dispy = fmax(positive_dispy, collision.response.y);
-						negative_dispy = fmin(negative_dispy, collision.response.y);
+						boundaries.update(collision); 
 						isDone[brk][nID] = true;
 						if (nrk != -1) isDone[nrk][bID] = true;
 					}
@@ -135,15 +134,10 @@ namespace Generics
 			}
 			brk += 1;
 
-			// if collisions occur we update the body position according the maximum displacement values
-			float divx = (positive_dispx != 0 && negative_dispx != 0) ? 2.f : 1.f;
-			float divy = (positive_dispy != 0 && negative_dispy != 0) ? 2.f : 1.f;
-			float correction_x = (positive_dispx + negative_dispx)/ divx;
-			float correction_y = (positive_dispy + negative_dispy)/ divy;
-			Vect2d correction = { correction_x, correction_y };
-			Vect2d correctedPosition = body.getPosition() + correction;
-			body.setPosition(correctedPosition, false);
-			body.backwardUpdate(dt);
+			// If collisions occur we update the body position according to the maximum collision
+			// displacement values calculated (consider mean displacement in each direction)
+			body.setPosition(body.getPosition() + boundaries.correction(), false);
+			body.backwardUpdate(dt); // compute velocity from corrected position
 			mGrid->setBody(&body);
 		}
 	}

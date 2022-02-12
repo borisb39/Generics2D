@@ -57,52 +57,52 @@ namespace UnitTests
 			// create static body1
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body2
 			bodyTemplate = SpacePartitionBodyTemplate{ { 1.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body3
 			bodyTemplate = SpacePartitionBodyTemplate{ { 2.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body4
 			bodyTemplate = SpacePartitionBodyTemplate{ { 3.5, 1.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body5
 			bodyTemplate = SpacePartitionBodyTemplate{ { 4.5, 2.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body6
 			bodyTemplate = SpacePartitionBodyTemplate{ { 5.5, 3.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body7
 			bodyTemplate = SpacePartitionBodyTemplate{ { 6.5, 3.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body8
 			bodyTemplate = SpacePartitionBodyTemplate{ { 7.5, 3.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body9
 			bodyTemplate = SpacePartitionBodyTemplate{ { 8.5, 4.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body10
 			bodyTemplate = SpacePartitionBodyTemplate{ { -0.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body11
 			bodyTemplate = SpacePartitionBodyTemplate{ { -1.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderRightTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 
 			// create dynamic body
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0.75, 1. }, BodyType::DYNAMIC };
 			bodyTemplate.appendCollider(colliderBoxTemplate);
-			SpacePartitionBody* player = world.addBody(bodyTemplate);
+			SpacePartitionBody* player = world.createBody(bodyTemplate);
 
 			// body is moved on the ground 
 			world.updateDynamicBodies(dt);
@@ -158,7 +158,7 @@ namespace UnitTests
 			// create dynamic body 2
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0.75, 1. }, BodyType::DYNAMIC };
 			bodyTemplate.appendCollider(colliderBoxTemplate);
-			SpacePartitionBody* player2 = world.addBody(bodyTemplate);
+			SpacePartitionBody* player2 = world.createBody(bodyTemplate);
 			player2->setMaxVelocityMagnitude(999999999999.9);
 			
 			// body 2 is moving left
@@ -222,52 +222,52 @@ namespace UnitTests
 			// create static body1
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body2
 			bodyTemplate = SpacePartitionBodyTemplate{ { 1.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body3
 			bodyTemplate = SpacePartitionBodyTemplate{ { 2.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body4
 			bodyTemplate = SpacePartitionBodyTemplate{ { 3.5, 1.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body5
 			bodyTemplate = SpacePartitionBodyTemplate{ { 4.5, 2.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body6
 			bodyTemplate = SpacePartitionBodyTemplate{ { 5.5, 3.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body7
 			bodyTemplate = SpacePartitionBodyTemplate{ { 6.5, 3.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body8
 			bodyTemplate = SpacePartitionBodyTemplate{ { 7.5, 3.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body9
 			bodyTemplate = SpacePartitionBodyTemplate{ { 8.5, 4.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body10
 			bodyTemplate = SpacePartitionBodyTemplate{ { -0.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body11
 			bodyTemplate = SpacePartitionBodyTemplate{ { -1.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderRightTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 
 			// create dynamic body
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0.75, 1. }, BodyType::DYNAMIC };
 			bodyTemplate.appendCollider(colliderBoxTemplate);
-			SpacePartitionBody* player = world.addBody(bodyTemplate);
+			SpacePartitionBody* player = world.createBody(bodyTemplate);
 
 			// body is moved on the ground 
 			world.updateDynamicBodies(dt);
@@ -352,16 +352,16 @@ namespace UnitTests
 			// create static body1
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopRightTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			// create static body2
 			bodyTemplate = SpacePartitionBodyTemplate{ { 1.5, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 
 			// create dynamic body1
 			bodyTemplate = SpacePartitionBodyTemplate{ { 0, 0.5 }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderBoxTemplate);
-			SpacePartitionBody* player = world.addBody(bodyTemplate);
+			SpacePartitionBody* player = world.createBody(bodyTemplate);
 
 			// the dynamic body collides with the two segemnts and is moving up
 			world.updateDynamicBodies(dt);
@@ -422,44 +422,44 @@ namespace UnitTests
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i)+0.5f, 1.0f }, BodyType::STATIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderTopTemplate);
-				world.addBody(bodyTemplate);
+				world.createBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 10.0f }, BodyType::STATIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderDownTemplate);
-				world.addBody(bodyTemplate);
+				world.createBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 20.0f }, BodyType::STATIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderTopTemplate);
-				world.addBody(bodyTemplate);
+				world.createBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 30.0f }, BodyType::STATIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderDownTemplate);
-				world.addBody(bodyTemplate);
+				world.createBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 40.0f }, BodyType::STATIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderTopTemplate);
-				world.addBody(bodyTemplate);
+				world.createBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 45.0f }, BodyType::STATIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderDownTemplate);
-				world.addBody(bodyTemplate);
+				world.createBody(bodyTemplate);
 
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 1. }, BodyType::DYNAMIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderBoxTemplate);
-				SpacePartitionBody* body1 = world.addBody(bodyTemplate);
+				SpacePartitionBody* body1 = world.createBody(bodyTemplate);
 				body1->setMaxVelocityMagnitude(999999999999.9);
 				body1->setVelocity({ 10., 0 });
 				
 				bodyTemplate = SpacePartitionBodyTemplate{ { float(i) + 0.5f, 6. }, BodyType::DYNAMIC };
 				for (int c = 0; c < ncol; c++)
 					bodyTemplate.appendCollider(colliderBoxTemplate);
-				SpacePartitionBody* body2 = world.addBody(bodyTemplate);
+				SpacePartitionBody* body2 = world.createBody(bodyTemplate);
 				body2->setMaxVelocityMagnitude(999999999999.9);
 				body2->setVelocity({ 10., 0 });
 
@@ -474,22 +474,22 @@ namespace UnitTests
 		{
 			SpacePartitionWorld world(1, 1, 1, 1);
 			SpacePartitionBodyTemplate bodyTemplate;
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			//nodynamic body -> nullptr is returned
 			Assert::IsTrue(world.getDynamicBodyAt(0) == nullptr);
 			Assert::IsTrue(world.getDynamicBodyAt(10) == nullptr);
 			bodyTemplate.type = BodyType::DYNAMIC;
 			//1 dynamic body -> nullptr is returned for index >= 1
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			Assert::IsTrue(world.getDynamicBodyAt(0) != nullptr);
 			Assert::IsTrue(world.getDynamicBodyAt(1) == nullptr);
 			Assert::IsTrue(world.getDynamicBodyAt(10) == nullptr);
 			//4 dynamic body -> nullptr is returned for index >= 3
-			world.addBody(bodyTemplate);
-			world.addBody(bodyTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
+			world.createBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			bodyTemplate.type = BodyType::STATIC;
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			Assert::IsTrue(world.getDynamicBodyAt(0) != nullptr);
 			Assert::IsTrue(world.getDynamicBodyAt(1) != nullptr);
 			Assert::IsTrue(world.getDynamicBodyAt(2) != nullptr);
@@ -510,9 +510,9 @@ namespace UnitTests
 			collider.boxHeight = 2;
 			collider.boxWidth = 2;
 			bodyTemplate.appendCollider(collider);
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
 			SpacePartitionContactListener* listener = new SpacePartitionContactListener;
 			world->setContactListener(listener);
 			Assert::IsTrue(listener->getNumberOfContacts() == 0);
@@ -527,9 +527,9 @@ namespace UnitTests
 			world = new SpacePartitionWorld(1, 1, 1, 1);
 			//create contacts
 			bodyTemplate.type = BodyType::DYNAMIC;
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
 			listener = new SpacePartitionContactListener;
 			world->setContactListener(listener);
 			Assert::IsTrue(listener->getNumberOfContacts() == 0);
@@ -544,9 +544,9 @@ namespace UnitTests
 			world = new SpacePartitionWorld(1, 1, 1, 1);
 			//create contacts
 			bodyTemplate.type = BodyType::DYNAMIC;
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
 			listener = new SpacePartitionContactListener;
 			Assert::IsTrue(listener->getNumberOfContacts() == 0);
 			world->Step(0.1);
@@ -561,9 +561,9 @@ namespace UnitTests
 			world = new SpacePartitionWorld(1, 1, 1, 1);
 			//create contacts
 			bodyTemplate.type = BodyType::DYNAMIC;
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
 			listener = new SpacePartitionContactListener;
 			Assert::IsTrue(listener->getNumberOfContacts() == 0);
 			world->Step(0.1);
@@ -578,9 +578,9 @@ namespace UnitTests
 			world = new SpacePartitionWorld(1, 1, 1, 1);
 			//create contacts
 			bodyTemplate.type = BodyType::DYNAMIC;
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
-			world->addBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
+			world->createBody(bodyTemplate);
 			listener = new SpacePartitionContactListener;
 			world->setContactListener(listener);
 			Assert::IsTrue(listener->getNumberOfContacts() == 0);
@@ -628,20 +628,20 @@ namespace UnitTests
 
 			bodyTemplate = SpacePartitionBodyTemplate{ {  0.5f, 1. }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			bodyTemplate = SpacePartitionBodyTemplate{ {  1.5f, 1. }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			bodyTemplate = SpacePartitionBodyTemplate{ {  2.5f, 1. }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderTopTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 			bodyTemplate = SpacePartitionBodyTemplate{ {  3.5f, 2. }, BodyType::STATIC };
 			bodyTemplate.appendCollider(colliderLeftTemplate);
-			world.addBody(bodyTemplate);
+			world.createBody(bodyTemplate);
 
 			bodyTemplate = SpacePartitionBodyTemplate{ {  0.5f, 1. }, BodyType::DYNAMIC };
 			bodyTemplate.appendCollider(colliderBoxTemplate);
-			SpacePartitionBody* body = world.addBody(bodyTemplate);
+			SpacePartitionBody* body = world.createBody(bodyTemplate);
 			body->setMaxVelocityMagnitude(999);
 			
 
