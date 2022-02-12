@@ -15,8 +15,9 @@ namespace Generics
 		mColliders[mCurrentConfig] = {};
 	}
 
-	void SpacePartitionBody::setPosition(Vect2d position)
+	void SpacePartitionBody::setPosition(Vect2d position, bool registerPrev)
 	{
+		if (registerPrev) mPrevPosition = mPosition;
 		mPosition = position;
 	};
 
@@ -51,6 +52,11 @@ namespace Generics
 		Vect2d velocity = mVelocity + mAcceleration * dt;
 		setVelocity(velocity);
 		updateFromVelocity(dt);
+	}
+
+	void SpacePartitionBody::backwardUpdate(double dt)
+	{
+		mVelocity = (mPosition - mPrevPosition) / dt;
 	}
 
 	AABB SpacePartitionBody::getAABB_globalFrame() const
@@ -200,7 +206,7 @@ namespace Generics
 					Collision collision = SpacePartitionCollider::collisionResolution(*dynamicCollider, *otherCollider);
 					// the maximum magnitude represent the deepest collision
 					if (collision.response.norm() > deepestCollision.response.norm())
-						deepestCollision = collision;
+						deepestCollision = collision;				
 					// track intersection with no displacement
 					if (collision.isTouching)
 					{

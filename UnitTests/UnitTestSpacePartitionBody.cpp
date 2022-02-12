@@ -595,5 +595,27 @@ namespace UnitTests
 			body.setPosition({ 2.96, -6.9 });
 			Assert::IsTrue(AABB{ 5.46, -4.4, 11, 11 } == body.getAABB_globalFrame());
 		}
+
+		TEST_METHOD(UpdateBackward)
+		{
+			SpacePartitionBody body;
+			body.setPosition({ 5, 6 });
+			Assert::IsTrue(Vect2d{ 0, 0 } == body.getVelocity());
+			// test backward update time step 1 s
+			body.backwardUpdate(1);
+			Assert::IsTrue(Vect2d{ 5, 6 } == body.getVelocity());
+			// test backward update time step 0.1 s
+			body.backwardUpdate(0.1);
+			Assert::IsTrue(Vect2d{ 50, 60 } == body.getVelocity());
+			// test with new position 
+			body.setPosition({ 4.9, 7 });
+			body.backwardUpdate(1);
+			Assert::IsTrue(Vect2d{ -0.1, 1 } == body.getVelocity());
+			// test new position without rewrite old one
+			body.setPosition({ 4., 8. }, false);
+			body.backwardUpdate(1);
+			Assert::IsFalse(Vect2d{ -0.8, 1 } == body.getVelocity());
+			Assert::IsTrue(Vect2d{ -1, 2 } == body.getVelocity());
+		}
 	};
 }

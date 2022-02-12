@@ -4,6 +4,8 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220212 - Backward update
+ *                  Add method getPrevPosition_globalFrame
  * @date 20220125 - Consider box collider skin
  *                  Update BoxEdgeDisplacementResponse
  * @date 20220116 - Add Contact Listener
@@ -69,6 +71,12 @@ namespace Generics
         * (frame associated to the p_body).
         */
         Vect2d getPosition_globalFrame() const;
+
+        /**
+       * getPrevPosition_globalFrame will get the previous position (previous time step) of the collider in global frame
+       * (frame associated to the p_body).
+       */
+        Vect2d getPrevPosition_globalFrame() const;
 
         /**
         * collisionResolution will compute the collision between the two provided colliders

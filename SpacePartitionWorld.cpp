@@ -27,7 +27,7 @@ namespace Generics
 	{
 		SpacePartitionBody body{  bodyTemplate.position, bodyTemplate.type};
 
-		//append colliders to world factory and reference it into body container
+		//append colliders to the world factory and reference it into body container
 		std::vector<SpacePartitionCollider*> newColliders;
 		for (auto config : bodyTemplate.colliders)
 		{
@@ -46,7 +46,7 @@ namespace Generics
 			body.setWorldDynamicID(dynamicBodiesNumber());
 		body.setWorld(this);
 
-		//append the body to world factory and reference it into the grid
+		//append the body to the world factory and reference it into the grid
 		SpacePartitionBody* body_ptr = nullptr;
 		if (BodyType::STATIC == body.getType())
 		{
@@ -63,7 +63,7 @@ namespace Generics
 		}
 		
 		//register the parent body ptr to each 
-		//new collider appenned into world factory
+		//new collider added into world factory
 		for (auto collider : newColliders)
 			collider->p_body = body_ptr;
 
@@ -142,7 +142,8 @@ namespace Generics
 			float correction_y = (positive_dispy + negative_dispy)/ divy;
 			Vect2d correction = { correction_x, correction_y };
 			Vect2d correctedPosition = body.getPosition() + correction;
-			body.setPosition(correctedPosition);
+			body.setPosition(correctedPosition, false);
+			body.backwardUpdate(dt);
 			mGrid->setBody(&body);
 		}
 	}

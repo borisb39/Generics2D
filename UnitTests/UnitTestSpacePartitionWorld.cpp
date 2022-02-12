@@ -108,40 +108,50 @@ namespace UnitTests
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 0.75, 1.599 });
 
-			// body velocity to move right
+			// body max velocity to move right
 			player->setMaxVelocityMagnitude(999999999999.9);
-			player->setVelocity({ 10, 0 });
-
+			
 			// start going right
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 1.75, 1.599 });
 
 			// start going up
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsFalse(player->getPosition() == Vect2d{ 2.75, 1.599 });
 			Assert::IsTrue(player->getPosition() == Vect2d{ 2.5755, 1.7735 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 3.0755, 2.2735 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 3.5755, 2.7735 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 4.0755, 3.2735 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 4.5755, 3.7735 });
 
 			//finish moving up and continue moving right
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsFalse(player->getPosition() == Vect2d{ 5.0755, 4.2735 });
 			Assert::IsTrue(player->getPosition() == Vect2d{ 5.0755, 4.599 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 6.0755, 4.599 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.0755, 4.599 });
 
 			//blocked with contact of wall at right side
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Vect2d pos = player->getPosition();
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
 
@@ -150,16 +160,18 @@ namespace UnitTests
 			bodyTemplate.appendCollider(colliderBoxTemplate);
 			SpacePartitionBody* player2 = world.addBody(bodyTemplate);
 			player2->setMaxVelocityMagnitude(999999999999.9);
-			player2->setVelocity({ -10, 0 });
-
+			
 			// body 2 is moving left
+			player2->setVelocity({ -10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
 			Assert::IsTrue(player2->getPosition() == Vect2d{ -0.25, 1.599 });
 			// out of bound bodies do not collides
+			player2->setVelocity({ -10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
 			Assert::IsTrue(player2->getPosition() == Vect2d{ -1.25, 1.599 });
+			player2->setVelocity({ -10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
 			Assert::IsTrue(player2->getPosition() == Vect2d{ -2.25, 1.599 });
@@ -261,31 +273,38 @@ namespace UnitTests
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 0.75, 1.599 });
 
-			// body velocity to move right
+			// body max velocity to move right
 			player->setMaxVelocityMagnitude(999999999999.9);
-			player->setVelocity({ 10, 0 });
 
 			// start going right
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 1.75, 1.599 });
 
 			// start going up
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 2.75, 1.948 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 3.75, 2.948 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 4.75, 3.948 });
 
 			//finish moving up and continue moving right
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 5.75, 4.599 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 6.75, 4.599 });
 
 			//blocked with contact of wall at right side
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
+			player->setVelocity({ 10, 0 });
 			world.updateDynamicBodies(dt);
 			Assert::IsTrue(player->getPosition() == Vect2d{ 7.401, 4.599 });
 		}
@@ -585,6 +604,71 @@ namespace UnitTests
 			Assert::IsTrue(world->getContactListener() == nullptr);
 			//remove world
 			delete world;
+		}
+
+		TEST_METHOD(WorldUpdateDynamicBodies_updateBackward)
+		{
+			SpacePartitionBodyTemplate bodyTemplate;
+			SpacePartitionCollider colliderLeftTemplate;
+			colliderLeftTemplate.type = ColliderType::EDGE;
+			colliderLeftTemplate.vertice0 = { -0.5, -0.5 };
+			colliderLeftTemplate.vertice1 = { -0.5, 0.5 };
+			SpacePartitionCollider colliderTopTemplate;
+			colliderTopTemplate.type = ColliderType::EDGE;
+			colliderTopTemplate.vertice0 = { -0.5, 0.5 };
+			colliderTopTemplate.vertice1 = { 0.5, 0.5 };
+			SpacePartitionCollider colliderBoxTemplate;
+			colliderBoxTemplate.type = ColliderType::BOX;
+			colliderBoxTemplate.boxHeight = 1.2;
+			colliderBoxTemplate.boxWidth = 1.2;
+
+			// create world
+			SpacePartitionWorld world(10, 10, 10, 10);
+			double dt = 0.1;
+
+			bodyTemplate = SpacePartitionBodyTemplate{ {  0.5f, 1. }, BodyType::STATIC };
+			bodyTemplate.appendCollider(colliderTopTemplate);
+			world.addBody(bodyTemplate);
+			bodyTemplate = SpacePartitionBodyTemplate{ {  1.5f, 1. }, BodyType::STATIC };
+			bodyTemplate.appendCollider(colliderTopTemplate);
+			world.addBody(bodyTemplate);
+			bodyTemplate = SpacePartitionBodyTemplate{ {  2.5f, 1. }, BodyType::STATIC };
+			bodyTemplate.appendCollider(colliderTopTemplate);
+			world.addBody(bodyTemplate);
+			bodyTemplate = SpacePartitionBodyTemplate{ {  3.5f, 2. }, BodyType::STATIC };
+			bodyTemplate.appendCollider(colliderLeftTemplate);
+			world.addBody(bodyTemplate);
+
+			bodyTemplate = SpacePartitionBodyTemplate{ {  0.5f, 1. }, BodyType::DYNAMIC };
+			bodyTemplate.appendCollider(colliderBoxTemplate);
+			SpacePartitionBody* body = world.addBody(bodyTemplate);
+			body->setMaxVelocityMagnitude(999);
+			
+
+			//test initial properties
+			Assert::IsTrue(Vect2d{ 0.5, 1. } == body->getPosition());
+			Assert::IsTrue(Vect2d{ 0., 0. } == body->getVelocity());
+
+			// body is moved on the ground
+			world.Step(dt);
+			Assert::IsTrue(Vect2d{ 0.5, 2.099 } == body->getPosition());
+			Assert::IsTrue(Vect2d{ 0., 10.99 } == body->getVelocity());
+
+			// body is moved on the right and fixed on the ground
+			body->setVelocity({ 10, -1 });
+			world.Step(dt);
+			Assert::IsTrue(Vect2d{ 1.5, 2.099 } == body->getPosition());
+			Assert::IsTrue(Vect2d{ 10., 0 } == body->getVelocity());
+			// body is moved on the right, fixed on the ground but blocked by right wall
+			body->setVelocity({ 10, -1 });
+			world.Step(dt);
+			Assert::IsTrue(Vect2d{ 2.401, 2.099 } == body->getPosition());
+			Assert::IsTrue(Vect2d{ 9.0099999, 0 } == body->getVelocity());
+			// body is moved on the right, fixed on the ground but blocked by right wall
+			body->setVelocity({ 10, -1 });
+			world.Step(dt);
+			Assert::IsTrue(Vect2d{ 2.401, 2.099 } == body->getPosition());
+			Assert::IsTrue(Vect2d{ 0, 0 } == body->getVelocity());
 		}
 
 	};

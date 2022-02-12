@@ -36,6 +36,14 @@ namespace Generics
 		return position_globalFrame;
 	}
 
+	Vect2d SpacePartitionCollider::getPrevPosition_globalFrame() const
+	{
+		Vect2d prev_position_globalFrame = position;
+		if (p_body != nullptr)
+			prev_position_globalFrame += p_body->getPrevPosition();
+		return prev_position_globalFrame;
+	}
+
 	Collision SpacePartitionCollider::collisionResolution(const SpacePartitionCollider& a, const SpacePartitionCollider& b)
 	{
 		Collision collision;
@@ -156,7 +164,7 @@ namespace Generics
 
 		//the response calculation is based on vector cross product to find the intersection
 		//between the restitution vector and edge segment vector for each corner of box collider
-	    //https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
+		//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
 		Vect2d p = { edge.getPosition_globalFrame() + edge.vertice0 };
 		Vect2d r = { edge.vertice1 - edge.vertice0 };
 		Vect2d s = { restitutionVector };

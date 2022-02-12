@@ -4,6 +4,8 @@
 *
 * @file SpacePartionWorld.h
 * @author Boris Burdin
+* @date 20220212 - Backward update
+*                  Update method updateDynamicBodies
 * @date 20220207 - External Access dynamic bodies + bugfixes delete listener/world
 *                  Update methods ~SpacePartitionWorld, addBody,setContactListener
 *                  Add method getDynamicBodyAt, attribut mDynamicBodiesExternalAccess

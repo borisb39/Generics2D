@@ -4,6 +4,9 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220212 - Backward update
+ *                  Update methods setPosition
+ *                  Add mPrevPosition attribut, getPrevPosition, backwardUpdate methods
  * @date 20220207 - Fix bug collision resolution contact with no displacement
  *                  Update method collisionResolution
  * @date 20220116 - Add Contact Listener
@@ -65,13 +68,14 @@ namespace Generics
 		* Setters for time relative properties with respect to the
 		* max magnitude associated to each property if any
 		*/
-		void setPosition(Vect2d position);
+		void setPosition(Vect2d position, bool registerPrev = true);
 		void setVelocity(Vect2d velocity);
 		void setAcceleration(Vect2d acceleration);
 		/**
 		* Getters for time relative properties 
 		*/
 		Vect2d getPosition() const { return mPosition; };
+		Vect2d getPrevPosition() const{ return mPrevPosition; };
 		Vect2d getVelocity() const { return mVelocity; };
 		Vect2d getAcceleration() const { return mAcceleration; };
 
@@ -94,6 +98,12 @@ namespace Generics
 		* elapsed time since last update <dt>
 		*/
 		void updateFromAcceleration(double dt);
+
+		/**
+		* backwardUpdate woth update the body velocity accoring to 
+		* the current and previous position registered
+		*/
+		void backwardUpdate(double dt);
 
 	    /**
 		* getColliderAt will get a copy of
@@ -169,6 +179,7 @@ namespace Generics
 		BodyType mType = BodyType::STATIC;
 		// time relative properties associated to the body in World coordinates
 		Vect2d mPosition{ 0, 0 };
+		Vect2d mPrevPosition{ 0, 0 };
 		Vect2d mVelocity{ 0, 0 };
 		Vect2d mAcceleration{ 0, 0 };
 		// max magnitude allowed for time relative properties
