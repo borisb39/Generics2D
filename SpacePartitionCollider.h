@@ -4,6 +4,9 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220215 - One way plateform : check for active collision
+ *                  Update method collisionResolution
+ *                  Add method BoxEdgeIsActiveCollision
  * @date 20220212 - Backward update
  *                  Add method getPrevPosition_globalFrame
  * @date 20220125 - Consider box collider skin
@@ -112,4 +115,13 @@ namespace Generics
     * restitution vector, in order the move the box "outside" of the edge
     */
     Vect2d BoxEdgeDisplacementResponse(const SpacePartitionCollider& box, const SpacePartitionCollider& edge);
+
+    /**
+    * BoxEdgeIsActiveCollision will check if the previously calculated collision response between
+    * the two provided colliders is active
+    * @param box, edge : the two colliders to test
+    * @param response : the previously calculated collision response
+    * @return bool : true if the collisison response is active, false otherwise
+    */
+    bool BoxEdgeIsActiveCollision(const SpacePartitionCollider& box, const SpacePartitionCollider& edge, Vect2d response);
 }

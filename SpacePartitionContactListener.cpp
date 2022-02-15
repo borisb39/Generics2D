@@ -13,11 +13,11 @@ namespace Generics
            p_world->setContactListener(nullptr);
     };
 
-    void SpacePartitionContactListener::updateContactState(SpacePartitionCollider* collider1, SpacePartitionCollider* collider2)
+    SpacePartitionContact* SpacePartitionContactListener::updateContactState(SpacePartitionCollider* collider1, SpacePartitionCollider* collider2)
     {
         // both collider must belong to the same world
         if (!isBodyInListenerWorld(collider1->p_body) || !isBodyInListenerWorld(collider2->p_body))
-            return;
+            return nullptr;
 
         for (auto contact : collider1->contatsList)
         {
@@ -26,7 +26,7 @@ namespace Generics
              || (collider1 == contact->collider2 && collider2 == contact->collider1))
             {
                 contact->state = ContactState::UPDATED;
-                return;
+                return contact;
             }
         }
 
@@ -48,6 +48,8 @@ namespace Generics
         auto iter2 = collider2->contatsList.end();
         std::advance(iter2, -1);
         contact_ptr->iterCollider2 = iter2;
+
+        return contact_ptr;
     }
 
     bool SpacePartitionContactListener::isBodyInListenerWorld(SpacePartitionBody* body)

@@ -4,6 +4,9 @@
  * @file SpacePartionBody.h
  * @author Boris Burdin
 
+ * @date 20220215 - One way plateform : check for active collision
+ *                  struct SpacePartitionContact add isActive attribut
+ *                  Update updateContactState method
  * @date 20220207 - Fix bug on listener delete
  *                  Update methods ~SpacePartitionContactListener
  * @date 20220109 - Initial Release
@@ -27,6 +30,8 @@ namespace Generics
         std::list<SpacePartitionContact*>::iterator iterCollider2;
 
         ContactState state = ContactState::NEW;
+
+        bool isActive;
     };
 
     /// The SpacePartitionContactListener base class 
@@ -43,7 +48,7 @@ namespace Generics
         * updateContactState will check if a contact between the two rpovided colliders is already tracked.
         * if yes the contact state is set to UPDATED. If new a NEW contact is created.
         */
-        void updateContactState(SpacePartitionCollider*, SpacePartitionCollider*);
+        SpacePartitionContact* updateContactState(SpacePartitionCollider*, SpacePartitionCollider*);
 
         /**
         * isBodyInListenerWorld will check if the provided body belongs to the same word than the Contact Listener.

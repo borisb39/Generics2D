@@ -46,7 +46,7 @@ namespace Generics
 			}
 		}
 		
-		//append the body to the world factory
+		//add the body to the world factory
 		SpacePartitionBody* body_ptr = nullptr;
 		if (BodyType::STATIC == body.getType())
 		{
@@ -61,11 +61,12 @@ namespace Generics
 			mDynamicBodiesExternalAccess.push_back(body_ptr);
 		}
 
+
 		// reference the body in the grid
 		mGrid->setBody(body_ptr);
 		
 		//register the parent body ptr to each 
-		//new collider added into world factory
+		//new collider added to the world factory
 		auto it = mColliders.rbegin();
 		for (int i = 0; i < numberOfColliders; i++)
 		{

@@ -1,6 +1,7 @@
 #include "CppUnitTest.h"
 
 #include "../SpacePartitionCollider.h"
+#include "../SpacePartitionBody.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -572,5 +573,55 @@ namespace UnitTests
 			Assert::IsTrue(calculatedCollision.isTouching == expectedCollision.isTouching);
 			Assert::IsTrue(calculatedCollision.response == expectedCollision.response);
 		}
+
+		TEST_METHOD(BoxEdgeActiveCollision)
+		{
+			SpacePartitionBody player{ {5, 5}, BodyType::DYNAMIC };
+			SpacePartitionCollider collider1;
+			collider1.p_body = &player;
+			collider1.type = ColliderType::BOX;
+			collider1.position = { 0, 0 };
+			collider1.boxWidth = 4;
+			collider1.boxHeight = 4;
+			SpacePartitionCollider collider2;
+			collider2.type = ColliderType::EDGE;
+			collider2.position = { 0, 0 };
+			collider2.vertice0 = Vect2d{ -1, 1 };
+			collider2.vertice1 = Vect2d{ 1, -1 }; //outside on the top right
+			// box is moving inside of the edge -> active
+			player.setPosition({ 0,0 });
+			Assert::IsTrue(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is moving outside of the edge -> inactive
+			player.setPosition({ 5,5 });
+			Assert::IsFalse(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is moving inside but response moves it outside of the edge -> inactive
+			player.setPosition({ -5,-5 });
+			player.setPosition({ 0,0 });
+			Assert::IsFalse(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is moving inside but response moves it outside of the edge -> inactive
+			player.setPosition({ 3.1,-1 });
+			player.setPosition({ 0,0 });
+			Assert::IsFalse(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is moving inside, response moves it outside of the edge but final displacement still goes inside-> active
+			player.setPosition({ 10,-1 });
+			player.setPosition({ 0,0 });
+			Assert::IsTrue(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is placed in contact with the edge and movement is colinear to the edge -> active
+			player.setPosition({ 1,0 });
+			player.setPosition(player.getPosition() + BoxEdgeDisplacementResponse(collider1, collider2));
+			player.setPosition(player.getPosition() + Vect2d{ -0.5, 0 });
+			Assert::IsTrue(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is placed almost in contact with the edge but outside and movement is almost colinear to the edge and goes inside-> inactive
+			player.setPosition({ 1,0 });
+			player.setPosition(player.getPosition() + BoxEdgeDisplacementResponse(collider1, collider2) + Vect2d{ -0.0001, 0 });
+			player.setPosition(player.getPosition() + Vect2d{ -0.5, 0 });
+			Assert::IsFalse(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+			// box is placed almost in contact with the edge but inside and movement is almost colinear to the edge and goes outside-> active
+			player.setPosition({ 1,0 });
+			player.setPosition(player.getPosition() + BoxEdgeDisplacementResponse(collider1, collider2) + Vect2d{ 0.0001, 0 });
+			player.setPosition(player.getPosition() + Vect2d{ -0.5, 0 });
+			Assert::IsTrue(BoxEdgeIsActiveCollision(collider1, collider2, BoxEdgeDisplacementResponse(collider1, collider2)));
+		}
+
 	};
 }

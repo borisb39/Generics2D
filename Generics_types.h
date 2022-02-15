@@ -3,6 +3,8 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20220215 - One way plateform : check for active collision
+ *                  Collisison struct add isActive attribut
  * @date 20220116 - Add Contact Listener
  *                  add enum ContactState
  * @date 20220107 - Forward declaration of all Generics classes
@@ -160,6 +162,7 @@ namespace Generics
     {
         bool isTouching = false;
         Vect2d response = { 0, 0 };
+        bool isActive = true;
     };
 
     ////SpacePartitionBody

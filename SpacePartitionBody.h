@@ -4,6 +4,8 @@
  *
  * @file SpacePartionBody.h
  * @author Boris Burdin
+ * @date 20220215 - One way plateform : check for active collision
+ *                  Update method collisionResolution
  * @date 20220212 - Backward update
  *                  Update methods setPosition
  *                  Add mPrevPosition attribut, getPrevPosition, backwardUpdate methods

@@ -168,8 +168,8 @@ namespace Generics
 		// the displacement of dynamic body1 that removes the intersection
 		// is minimum. For comparison purpose we initialize the finalCollision.response at +infinite.
 		finalCollision.response = { 999999999999.9, 999999999999.9 };
-		// finalCollision.isTouching is set to true only when a collision resolution (collision with static body) 
-		// occured. Intersection with dynamic bodies must also be tracked
+		// finalCollision.isTouching is set to true only when a collision response has been considered.
+		// Intersection with no response must also be tracked
 		bool isTouching = false;
 
 		// for each collider of other body
@@ -203,25 +203,42 @@ namespace Generics
 				// if the body2 is static -> we test for collision
 				if (BodyType::STATIC == body2.getType())
 				{
-					Collision collision = SpacePartitionCollider::collisionResolution(*dynamicCollider, *otherCollider);
-					// the maximum magnitude represent the deepest collision
-					if (collision.response.norm() > deepestCollision.response.norm())
-						deepestCollision = collision;				
-					// track intersection with no displacement
+					Collision collision = SpacePartitionCollider::collisionResolution(*dynamicCollider, *otherCollider);			
 					if (collision.isTouching)
 					{
-						deepestCollision.isTouching = true;
+						bool considerCollisionResponse = true; 
+						// if a contact occurs we register it
+						if (contactListener != nullptr)
+						{
+							SpacePartitionContact* contact = contactListener->updateContactState(dynamicCollider, otherCollider);
+							if (contact->state == ContactState::NEW)
+								contact->isActive = collision.isActive;
+							considerCollisionResponse = contact->isActive;
+						}
+						// we update the static collider deepest collision state
+						if (considerCollisionResponse)
+						{
+							// the maximum magnitude represent the deepest collision
+							if (collision.response.norm() > deepestCollision.response.norm())
+								deepestCollision = collision;
+							deepestCollision.isTouching = true;
+						}
+						// track intersection even if no response is considered
 						isTouching = true;
 					}
 				}
-				// else we test for contact
+				// else 
+				// if the body2 is dynamic -> we test for contact
 				else
 				{
-					isTouching = collidersIntersect(*dynamicCollider, *otherCollider);
+					if (collidersIntersect(*dynamicCollider, *otherCollider))
+					{
+						// if a contact occurs we register it
+						if (contactListener != nullptr)
+							contactListener->updateContactState(dynamicCollider, otherCollider);
+						isTouching = true;
+					}
 				}
-				// if a contact occurs we register it
-				if (isTouching && contactListener != nullptr)
-					contactListener->updateContactState(dynamicCollider, otherCollider);
 			}
 
 			// We finalize the iteration on static collider 
@@ -236,7 +253,7 @@ namespace Generics
 		if (!finalCollision.isTouching)
 			finalCollision.response = { 0, 0 };
 
-		// track intersection with dynamic bodies
+		// track intersection even if no response is considered
 		finalCollision.isTouching = isTouching;
 
 		return finalCollision;

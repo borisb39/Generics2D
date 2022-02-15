@@ -52,9 +52,15 @@ namespace Generics
 		{
 			if (a.isSensor || b.isSensor) {}
 			else if (a.type == ColliderType::BOX && b.type == ColliderType::EDGE)
+			{
 				collision.response = BoxEdgeDisplacementResponse(a, b);
+				collision.isActive = BoxEdgeIsActiveCollision(a, b, collision.response);
+			}
 			else if (a.type == ColliderType::EDGE && b.type == ColliderType::BOX)
+			{
 				collision.response = BoxEdgeDisplacementResponse(b, a) * -1;
+				collision.isActive = BoxEdgeIsActiveCollision(b, a, collision.response);
+			}
 		}
 		return collision;
 	}
@@ -224,6 +230,23 @@ namespace Generics
 
 		return response;
 	}
+
+	bool BoxEdgeIsActiveCollision(const SpacePartitionCollider& box, const SpacePartitionCollider& edge, Vect2d response)
+	{
+		// box corrected displacement vector
+		Vect2d b = { box.getPosition_globalFrame() + response - box.getPrevPosition_globalFrame() };
+
+		// edge segment vector
+		Vect2d r = { edge.vertice1 - edge.vertice0 };
+
+		// box corrected displacement vector goes 'outside' edge segment vector -> collision is desactivated
+		if ((r ^ b) > 0.000001) // 0.000001 instead of 0 to avoid numerical precision issues
+			return false;
+
+		return true;
+
+	}
+
 }
 
 
