@@ -66,8 +66,8 @@ namespace UnitTests
 			bodyTemplate = SpacePartitionBodyTemplate{ {0, 0}, BodyType::STATIC };
 			collider = SpacePartitionCollider{};
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = { 0, 0 };
-			collider.vertice1 = { 1, 0 };
+			collider.vertice1 = { 0, 0 };
+			collider.vertice2 = { 1, 0 };
 			bodyTemplate.appendCollider(collider);
 			SpacePartitionBody* body3 = world.createBody(bodyTemplate);
 			world.Step(dt);
@@ -86,11 +86,11 @@ namespace UnitTests
 			bodyTemplate = SpacePartitionBodyTemplate{ {0, 0}, BodyType::STATIC };
 			collider = SpacePartitionCollider{};
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = { 2, 0 };
-			collider.vertice1 = { 2, 1 };
+			collider.vertice1 = { 2, 0 };
+			collider.vertice2 = { 2, 1 };
 			bodyTemplate.appendCollider(collider);
-			collider.vertice0 = { 2, 1 };
-			collider.vertice1 = { 2, 2 };
+			collider.vertice1 = { 2, 1 };
+			collider.vertice2 = { 2, 2 };
 			bodyTemplate.appendCollider(collider);
 			SpacePartitionBody* body4 = world.createBody(bodyTemplate);
 			world.Step(dt);

@@ -166,8 +166,8 @@ namespace UnitTests
 			//4th collider : Edge
 			collider.tag = "EdgeCollider";
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = Vect2d{ 0, -10 };
-			collider.vertice1 = Vect2d{ -6., 5 };
+			collider.vertice1 = Vect2d{ 0, -10 };
+			collider.vertice2 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, 4 };
 			collider.isSensor = false;
 			colliderContainer.push_back(collider);
@@ -189,8 +189,8 @@ namespace UnitTests
 				Assert::IsTrue(th_colliders[i].position == colliderAtIdx.position);
 				Assert::IsTrue(th_colliders[i].boxWidth == colliderAtIdx.boxWidth);
 				Assert::IsTrue(th_colliders[i].boxHeight == colliderAtIdx.boxHeight);
-				Assert::IsTrue(th_colliders[i].vertice0 == colliderAtIdx.vertice0);
 				Assert::IsTrue(th_colliders[i].vertice1 == colliderAtIdx.vertice1);
+				Assert::IsTrue(th_colliders[i].vertice2 == colliderAtIdx.vertice2);
 			}
 
 			// test non negative properties
@@ -258,8 +258,8 @@ namespace UnitTests
 			//4th collider : Edge
 			collider.tag = "EdgeCollider";
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = Vect2d{ 0, -10 };
-			collider.vertice1 = Vect2d{ -6., 5 };
+			collider.vertice1 = Vect2d{ 0, -10 };
+			collider.vertice2 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, -5 };
 			colliderContainer.push_back(collider);
 			body.appendCollider(&colliderContainer.back());
@@ -268,8 +268,8 @@ namespace UnitTests
 			//5th collider : Edge identical as previous one
 			collider.tag = "EdgeCollider";
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = Vect2d{ 0, -10 };
-			collider.vertice1 = Vect2d{ -6., 5 };
+			collider.vertice1 = Vect2d{ 0, -10 };
+			collider.vertice2 = Vect2d{ -6., 5 };
 			collider.position = Vect2d{ 2.1, -5 };
 			colliderContainer.push_back(collider);
 			body.appendCollider(&colliderContainer.back());
@@ -465,8 +465,8 @@ namespace UnitTests
 			body2 = SpacePartitionBody{ { 0, 0 }, BodyType::STATIC };
 			body2.setWorld(&world);
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = { -3, 0 };
-			collider.vertice1 = { 3, 0 };
+			collider.vertice1 = { -3, 0 };
+			collider.vertice2 = { 3, 0 };
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
@@ -474,40 +474,40 @@ namespace UnitTests
 			Collision cl = SpacePartitionBody::collisionResolution(body1, body2);
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #1
-			collider.vertice0 = { 1, 3 };
-			collider.vertice1 = { 1, -3 };
+			collider.vertice1 = { 1, 3 };
+			collider.vertice2 = { 1, -3 };
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {0, 2.999} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #2
-			collider.vertice0 = { -1, 3 };
-			collider.vertice1 = { -1, -3 };
+			collider.vertice1 = { -1, 3 };
+			collider.vertice2 = { -1, -3 };
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {1.999, 0} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #3
-			collider.vertice0 = { -2, -3 };
-			collider.vertice1 = { -3, -2 };
+			collider.vertice1 = { -2, -3 };
+			collider.vertice2 = { -3, -2 };
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {1.999, 0} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #4
-			collider.vertice0 = { -3, -2 };
-			collider.vertice1 = { -2, -3 };
+			collider.vertice1 = { -3, -2 };
+			collider.vertice2 = { -2, -3 };
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			collision = { true, {0.499, 0.499} };
 			Assert::IsTrue(AreCollisionsEqual(collision, SpacePartitionBody::collisionResolution(body1, body2)));
 			// add several colliders to body2 and check that min displacement response is retourned #5
-			collider.vertice0 = { 2.5, -3 };
-			collider.vertice1 = { 3, -2.5 };
+			collider.vertice1 = { 2.5, -3 };
+			collider.vertice2 = { 3, -2.5 };
 			collider.p_body = &body2;
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
@@ -558,8 +558,8 @@ namespace UnitTests
 			SpacePartitionBody body2{ { 0, 0 }, BodyType::STATIC };
 			body2.setWorld(&world);
 			collider.type = ColliderType::EDGE;
-			collider.vertice0 = { -1, 0 };
-			collider.vertice1 = { 1, 0 };
+			collider.vertice1 = { -1, 0 };
+			collider.vertice2 = { 1, 0 };
 			colliderContainer.push_back(collider);
 			body2.appendCollider(&colliderContainer.back());
 			// test the collision scenarios

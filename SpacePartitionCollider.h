@@ -4,6 +4,9 @@
  *
  * @file SpacePartitionCollider.h
  * @author Boris Burdin
+ * @date 20220216 - One way plateform : gosh vertices
+ *                  Add vertice2, vertice3, goshVertices attributs
+ *                  Update BoxEdgeIsActiveCollision method
  * @date 20220215 - One way plateform : check for active collision
  *                  Update method collisionResolution
  *                  Add method BoxEdgeIsActiveCollision
@@ -56,7 +59,10 @@ namespace Generics
         float boxHeight = 0;//center at position
         Vect2d vertice0{ 0, 0 };// relative to position
         Vect2d vertice1{ 0, 0 };// relative to position
+        Vect2d vertice2{ 0, 0 };// relative to position
+        Vect2d vertice3{ 0, 0 };// relative to position
         Vect2d restitutionVector{ 0, 0 }; 
+        bool goshVertices = false;
 
         SpacePartitionBody* p_body = nullptr; // parent body
 

@@ -19,11 +19,11 @@ namespace Generics
 		{
 			aabb.position = getPosition_globalFrame()
 				+ Vect2d{
-				(vertice0.x + vertice1.x) / 2,
-				(vertice0.y + vertice1.y) / 2
+				(vertice1.x + vertice2.x) / 2,
+				(vertice1.y + vertice2.y) / 2
 			};
-            aabb.height = abs(vertice0.y - vertice1.y);
-            aabb.width = abs(vertice0.x - vertice1.x);
+            aabb.height = abs(vertice1.y - vertice2.y);
+            aabb.width = abs(vertice1.x - vertice2.x);
 		}
         return aabb;
     }
@@ -100,8 +100,8 @@ namespace Generics
 		};
 ;
 		// Edge bounds
-		Vect2d edgesBounds[2] = { edge.getPosition_globalFrame() + edge.vertice0,
-			edge.getPosition_globalFrame() + edge.vertice1 };
+		Vect2d edgesBounds[2] = { edge.getPosition_globalFrame() + edge.vertice1,
+			edge.getPosition_globalFrame() + edge.vertice2 };
 
 		// test if one of the edge bound is inside the box
 		for (int i = 0; i < 2; i++)
@@ -156,8 +156,8 @@ namespace Generics
 		Vect2d restitutionVector = edge.restitutionVector;
 		if (restitutionVector == Vect2d{ 0, 0 })
 		{
-			restitutionVector.x = -(edge.vertice1.y - edge.vertice0.y);
-			restitutionVector.y = edge.vertice1.x - edge.vertice0.x;
+			restitutionVector.x = -(edge.vertice2.y - edge.vertice1.y);
+			restitutionVector.y = edge.vertice2.x - edge.vertice1.x;
 		}
 
 		// min and max displacement allowed for the box collider
@@ -171,8 +171,8 @@ namespace Generics
 		//the response calculation is based on vector cross product to find the intersection
 		//between the restitution vector and edge segment vector for each corner of box collider
 		//https://stackoverflow.com/questions/563198/how-do-you-detect-where-two-line-segments-intersect
-		Vect2d p = { edge.getPosition_globalFrame() + edge.vertice0 };
-		Vect2d r = { edge.vertice1 - edge.vertice0 };
+		Vect2d p = { edge.getPosition_globalFrame() + edge.vertice1 };
+		Vect2d r = { edge.vertice2 - edge.vertice1 };
 		Vect2d s = { restitutionVector };
 
 		// restition vector is parallel or goes 'inside' edge segment vector
@@ -233,17 +233,55 @@ namespace Generics
 
 	bool BoxEdgeIsActiveCollision(const SpacePartitionCollider& box, const SpacePartitionCollider& edge, Vect2d response)
 	{
+		// if gosh vertices are not considered -> collision is always active
+		if (!edge.goshVertices)
+			return true;
+
+		// edge vertices
+		Vect2d v0 = edge.getPosition_globalFrame() + edge.vertice0;
+		Vect2d v1 = edge.getPosition_globalFrame() + edge.vertice1;
+		Vect2d v2 = edge.getPosition_globalFrame() + edge.vertice2;
+		Vect2d v3 = edge.getPosition_globalFrame() + edge.vertice3;
+		
 		// box corrected displacement vector
 		Vect2d b = { box.getPosition_globalFrame() + response - box.getPrevPosition_globalFrame() };
 
-		// edge segment vector
-		Vect2d r = { edge.vertice1 - edge.vertice0 };
+		// box sides (x, x, y, y)
+		float sides[4] = {
+			  box.getPosition_globalFrame().x - box.boxWidth / 2, //left
+			  box.getPosition_globalFrame().x + box.boxWidth / 2, //right
+			  box.getPosition_globalFrame().y - box.boxHeight / 2, //bottom
+			  box.getPosition_globalFrame().y + box.boxHeight / 2 //top
+		};
 
-		// box corrected displacement vector goes 'outside' edge segment vector -> collision is desactivated
-		if ((r ^ b) > 0.000001) // 0.000001 instead of 0 to avoid numerical precision issues
-			return false;
+		// test if edge sement vertices are touching (or are inside) box collider
+		bool v1touching = sides[0] <= v1.x && v1.x <= sides[1] && sides[2] <= v1.y && v1.y <= sides[3];
+		bool v2touching = sides[0] <= v2.x && v2.x <= sides[1] && sides[2] <= v2.y && v2.y <= sides[3];
 
-		return true;
+		bool isActive = true;
+		if (v1touching && !v2touching)
+		{
+			// box corrected displacement vector goes 'outside' v0 gosht edge segment vector -> collision is desactivated
+			Vect2d r = { v1 - v0 };
+			if ((r ^ b) > 0.000001) // 0.000001 instead of 0 to avoid numerical precision issues
+				isActive = false;
+		}
+		else if (!v1touching && v2touching)
+		{
+			// box corrected displacement vector goes 'outside' v3 gosht edge segment vector -> collision is desactivated
+			Vect2d r = { v3 - v2 };
+			if ((r ^ b) > 0.000001) // 0.000001 instead of 0 to avoid numerical precision issues
+				isActive = false;
+		}
+		else
+		{
+			// box corrected displacement vector goes 'outside' edge segment vector -> collision is desactivated
+			Vect2d r = { v2 - v1 };
+			if ((r ^ b) > 0.000001) // 0.000001 instead of 0 to avoid numerical precision issues
+				isActive = false;
+		}
+
+		return isActive;
 
 	}
 
