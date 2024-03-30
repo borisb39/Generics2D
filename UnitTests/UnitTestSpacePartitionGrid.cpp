@@ -16,13 +16,13 @@ namespace UnitTests
 
 		TEST_METHOD(OutOfBoundgID)
 		{
-			//Out of bound gID is equal to number of cells + 1
+			//Out of bound gID is equal to number of cells
 			SpacePartitionGrid Grid1(10, 11, 25.0, 44.0);
-			int OOB1 = 10 * 11 + 1;
-			OOB1 == Grid1.OOBgID();
+			int OOB1 = 10 * 11;
+			Assert::IsTrue(OOB1 == Grid1.OOBgID());
 			SpacePartitionGrid Grid2(1, 1, 25.0, 44.0);
-			int OOB2 = 1 * 1 + 1;
-			OOB2 == Grid2.OOBgID();
+			int OOB2 = 1 * 1;
+			Assert::IsTrue(OOB2 == Grid2.OOBgID());
 		}
 		TEST_METHOD(GetGridID)
 		{
