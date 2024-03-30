@@ -3,6 +3,7 @@
  *
  * @file Generic_types.h
  * @author Boris Burdin
+ * @date 20240330 - Update forward declarations types
  * @date 20220215 - One way plateform : check for active collision
  *                  Collisison struct add isActive attribut
  * @date 20220116 - Add Contact Listener
@@ -38,11 +39,11 @@ namespace Generics
     ///Forward declarations
     class SpacePartitionGrid;
     class SpacePartitionBody;
-    class SpacePartitionBodyTemplate;
-    class SpacePartitionCollider;
+    struct SpacePartitionBodyTemplate;
+    struct SpacePartitionCollider;
     class SpacePartitionWorld;
     class SpacePartitionContactListener;
-    class SpacePartitionContact;
+    struct SpacePartitionContact;
     
     //StateMachine
 
